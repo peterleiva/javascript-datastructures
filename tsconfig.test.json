@@ -8,19 +8,17 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "src/*": [
-        "src/*"
+      "*": [
+        "*"
       ],
-      "test/*": [
-        "test/*"
-      ]
     },
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "test/**/*"
+    "test/**/*",
+    "src/**/*"
   ],
   "exclude": [
     "dist/**/*"
