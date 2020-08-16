@@ -1,6 +1,6 @@
 {
   "name": "tree-structures",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tree data structures, binary tree, general tree and so on",
   "scripts": {
     "build": "tsc && npm run lint",
