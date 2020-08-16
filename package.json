@@ -2,8 +2,9 @@
   "name": "tree-structures",
   "version": "0.1.0",
   "description": "Tree data structures, binary tree, general tree and so on",
-  "main": "index.js",
   "scripts": {
+    "build": "tsc && npm run lint",
+    "lint": "tsc --noEmit && eslint \"src/**/*.{js,ts}\"",
     "test": "jest",
     "test:live": "jest --watch"
   },
@@ -15,6 +16,15 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^26.0.10",
+    "@typescript-eslint/eslint-plugin": "^3.9.0",
+    "@typescript-eslint/parser": "^3.9.0",
+    "eslint": "^7.7.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "jest": "^26.4.0",
     "ts-jest": "^26.2.0",
     "typescript": "^3.9.7"
