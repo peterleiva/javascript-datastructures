@@ -6,7 +6,7 @@
 /**
  * Queue list to enqueue things and dequeue them
  */
-type QueueList<T> = Array<T> | T;
+export type List<T> = ArrayLike<T> | T;
 
 /**
  * Queue Abstract Data Type
@@ -17,8 +17,8 @@ type QueueList<T> = Array<T> | T;
 export interface QueueADT<T> {
   top(): T;
   isEmpty(): boolean;
-  enqueue(element: QueueList<T>): QueueList<T>;
-  dequeue(quantity?: number): QueueList<T>;
+  enqueue(element: List<T>): List<T>;
+  dequeue(quantity?: number): List<T>;
   size(): number;
   clear(): this;
 }
@@ -147,11 +147,11 @@ export class Queue<T> implements QueueADT<T> {
    * array or a single element
    *
    * @throws QueueMaxSizeError when exceeds the queue size
-   * @param {T | Array<T>} element elements to be enqueued
-   * @return {Array<T> | T}
+   * @param {List<T>} element elements to be enqueued
+   * @return {List<T>}
    */
-  enqueue(element: QueueList<T>): QueueList<T> {
-    const elements: Array<T> = Array.isArray(element) ? element : [element];
+  enqueue(element: List<T>): List<T> {
+    const elements: Array<T> = element instanceof Array ? element : [element];
 
     if (this.size() + elements.length >= Queue.MAX_SIZE) {
       throw new QueueFullError;
@@ -189,7 +189,7 @@ export class Queue<T> implements QueueADT<T> {
    * @param {number} quantity
    * @return {EnqueueArgument}
    */
-  dequeue(quantity = 1): QueueList<T> {
+  dequeue(quantity = 1): List<T> {
     if (quantity < 0) throw new PositiveValueError;
     if (quantity > this.length) throw new QueueEmptyError;
 
