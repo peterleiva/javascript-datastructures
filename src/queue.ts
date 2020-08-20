@@ -6,21 +6,25 @@
 /**
  * Queue list to enqueue things and dequeue them
  */
-export type List<T> = ArrayLike<T> | T;
+export type List<T> = ArrayLike<T>;
+type ListOrElement<R> = R extends List<(infer U)> ? List<U> : R;
 
+type QueueArgument<T> = List<T> | T;
+
+// retornar o memso objeto que seja
 /**
  * Queue Abstract Data Type
  *
  * All kinds of queues must implement this interface, them it can behave like a
  * queue
  */
-export interface QueueADT<T> {
+interface QueueADT<T> {
   top(): T;
   isEmpty(): boolean;
-  enqueue(element: List<T>): List<T>;
-  dequeue(quantity?: number): List<T>;
+  enqueue(element: ListOrElement<QueueArgument<T>>): ListOrElement<QueueArgument<T>>;
+  dequeue(quantity?: number): QueueArgument<T>;
   size(): number;
-  clear(): this;
+	clear(): this;
 }
 
 /**
@@ -91,7 +95,7 @@ interface PriorityFunction<T> {
  *
  * TODO: Usar uma função ao enfileirar para tornar em uma fila de prioridade
  */
-export class Queue<T> implements QueueADT<T> {
+export class Queue<T, U extends List<T> | T = T> implements QueueADT<T, U> {
   static MAX_SIZE = 2**32 - 1;
   #list: Array<T> = [];
   #size = 0;
@@ -150,8 +154,8 @@ export class Queue<T> implements QueueADT<T> {
    * @param {List<T>} element elements to be enqueued
    * @return {List<T>}
    */
-  enqueue(element: List<T>): List<T> {
-    const elements: Array<T> = element instanceof Array ? element : [element];
+  enqueue(element: ListOrElement<T>): ListOrElement<T> {
+    const elements: Array<T> = element instanceof Array ? element as : [element];
 
     if (this.size() + elements.length >= Queue.MAX_SIZE) {
       throw new QueueFullError;
@@ -189,7 +193,7 @@ export class Queue<T> implements QueueADT<T> {
    * @param {number} quantity
    * @return {EnqueueArgument}
    */
-  dequeue(quantity = 1): List<T> {
+  dequeue(quantity = 1): T[] | T {
     if (quantity < 0) throw new PositiveValueError;
     if (quantity > this.length) throw new QueueEmptyError;
 
