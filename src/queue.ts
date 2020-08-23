@@ -7,9 +7,6 @@
  * Queue list to enqueue things and dequeue them
  */
 export type List<T> = ArrayLike<T>;
-type ListOrElement<R> = R extends List<(infer U)> ? List<U> : R;
-
-type QueueArgument<T> = List<T> | T;
 
 // retornar o memso objeto que seja
 /**
@@ -21,8 +18,8 @@ type QueueArgument<T> = List<T> | T;
 interface QueueADT<T> {
   top(): T;
   isEmpty(): boolean;
-  enqueue(element: ListOrElement<QueueArgument<T>>): ListOrElement<QueueArgument<T>>;
-  dequeue(quantity?: number): QueueArgument<T>;
+  enqueue(element: T, ...rest: T[]): T | T[] | null;
+  dequeue(quantity?: number): T[] | T | null;
   size(): number;
 	clear(): this;
 }
@@ -95,7 +92,7 @@ interface PriorityFunction<T> {
  *
  * TODO: Usar uma função ao enfileirar para tornar em uma fila de prioridade
  */
-export class Queue<T, U extends List<T> | T = T> implements QueueADT<T, U> {
+export class Queue<T> implements QueueADT<T> {
   static MAX_SIZE = 2**32 - 1;
   #list: Array<T> = [];
   #size = 0;
@@ -104,7 +101,9 @@ export class Queue<T, U extends List<T> | T = T> implements QueueADT<T, U> {
    * Create the queue with a list of optional elements
    */
   constructor(...elements: Array<T>) {
-    this.enqueue(elements);
+		const [first, ...rest] = elements;
+
+		if (first) this.enqueue(first, ...rest);
   }
 
   /**
@@ -154,8 +153,8 @@ export class Queue<T, U extends List<T> | T = T> implements QueueADT<T, U> {
    * @param {List<T>} element elements to be enqueued
    * @return {List<T>}
    */
-  enqueue(element: ListOrElement<T>): ListOrElement<T> {
-    const elements: Array<T> = element instanceof Array ? element as : [element];
+	enqueue(element: T, ...rest: T[]): T | T[] | null {
+    const elements: Array<T> = [element, ...rest];
 
     if (this.size() + elements.length >= Queue.MAX_SIZE) {
       throw new QueueFullError;
@@ -164,7 +163,7 @@ export class Queue<T, U extends List<T> | T = T> implements QueueADT<T, U> {
     this.#list.push(...elements);
     this.#size += elements.length;
 
-    return element;
+    return elements.length === 1 ? element : elements;
   }
 
   /**
@@ -193,14 +192,16 @@ export class Queue<T, U extends List<T> | T = T> implements QueueADT<T, U> {
    * @param {number} quantity
    * @return {EnqueueArgument}
    */
-  dequeue(quantity = 1): T[] | T {
-    if (quantity < 0) throw new PositiveValueError;
-    if (quantity > this.length) throw new QueueEmptyError;
+	dequeue(quantity?: number): T[] | T | null {
+    if (quantity < 0) quantity = 0;
+		quantity = Math.min(quantity, this.length);
 
     let dequeued: T[] = [];
 
     dequeued = this.#list.splice(0, quantity);
-    this.#size -= quantity;
+		this.#size -= quantity;
+
+		if (dequeued.length === 0) return null;
 
     return dequeued.length === 1 ? dequeued.pop() : dequeued;
   }
