@@ -53,36 +53,12 @@ export class QueueFullError extends Error {
 }
 
 /**
- * Positive value error
- */
-export class PositiveValueError extends Error {
-  /**
-   * Creates a new PositiveValueError
-   */
-  constructor() {
-    super('The value must be positive');
-  }
-}
-
-/**
- * Dequeue a empty queue error throwed when dequeue an empty queue
- */
-export class QueueEmptyError extends Error {
-  /**
-   * Creates a QueueEmptyError with default message
-   */
-  constructor() {
-    super('Queue can\'t dequeue a empty queue');
-  }
-}
-
-/**
  * Priotity function to enqueue follwing this algorythm
  *
  * An priority queue must give this function as argument on enqueue function
  */
 interface PriorityFunction<T> {
-  (element: T): number
+	(comparable: T): boolean
 }
 
 /**
@@ -92,10 +68,10 @@ interface PriorityFunction<T> {
  *
  * TODO: Usar uma função ao enfileirar para tornar em uma fila de prioridade
  */
-export class Queue<T> implements QueueADT<T> {
+export class Queue<T> implements QueueADT<T>, Iterable<T> {
   static MAX_SIZE = 2**32 - 1;
   #list: Array<T> = [];
-  #size = 0;
+	#size = 0;
 
   /**
    * Create the queue with a list of optional elements
@@ -104,7 +80,13 @@ export class Queue<T> implements QueueADT<T> {
 		const [first, ...rest] = elements;
 
 		if (first) this.enqueue(first, ...rest);
-  }
+	}
+
+	*[Symbol.iterator](): Iterator<T> {
+		for(const item of this.#list) {
+			yield item;
+		}
+	}
 
   /**
    * Alias for .size method
@@ -188,12 +170,11 @@ export class Queue<T> implements QueueADT<T> {
    * deleted elements, sorted by queue order.
    *
    * @throws QueueEmptyError when queue is empty
-   * @throws PositiveValueError when quantity if less than 0
    * @param {number} quantity
    * @return {EnqueueArgument}
    */
 	dequeue(quantity?: number): T[] | T | null {
-    if (quantity < 0) quantity = 0;
+		if (quantity < 0) quantity = 0;
 		quantity = Math.min(quantity, this.length);
 
     let dequeued: T[] = [];
