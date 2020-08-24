@@ -18,7 +18,7 @@ export type List<T> = ArrayLike<T>;
 interface QueueADT<T> {
   top(): T;
   isEmpty(): boolean;
-  enqueue(element: T, ...rest: T[]): T | T[] | null;
+  enqueue(...elements: T[]): T | T[] | null;
   dequeue(quantity?: number): T[] | T | null;
   size(): number;
 	clear(): this;
@@ -44,12 +44,12 @@ interface Collection<Element> {
  * Max size queue error object
  */
 export class QueueFullError extends Error {
-  /**
+	/**
    * Creates a QueueMaxSizeError with default message
    */
-  constructor() {
-    super('Queue reached the maximum size 4,294,967,295');
-  }
+	constructor() {
+		super('Queue reached the maximum size 4,294,967,295');
+	}
 }
 
 /**
@@ -71,22 +71,22 @@ interface PriorityFunction<T> {
 export class Queue<T> implements QueueADT<T>, Iterable<T> {
   static MAX_SIZE = 2**32 - 1;
   #list: Array<T> = [];
-	#size = 0;
 
   /**
    * Create the queue with a list of optional elements
    */
   constructor(...elements: Array<T>) {
-		const [first, ...rest] = elements;
+		this.enqueue(...elements);
+  }
 
-		if (first) this.enqueue(first, ...rest);
-	}
-
-	*[Symbol.iterator](): Iterator<T> {
-		for(const item of this.#list) {
+  /**
+	 * Returns a iterator ordered as a queue
+	 */
+  * [Symbol.iterator](): Iterator<T> {
+		for (const item of this.#list) {
 			yield item;
 		}
-	}
+  }
 
   /**
    * Alias for .size method
@@ -94,7 +94,7 @@ export class Queue<T> implements QueueADT<T>, Iterable<T> {
    * @return {number}
    */
   get length(): number {
-    return this.size();
+		return this.size();
   }
 
   /**
@@ -103,7 +103,7 @@ export class Queue<T> implements QueueADT<T>, Iterable<T> {
    * @return {number}
    */
   size(): number {
-    return this.#size;
+  	return this.#list.length;
   }
 
   /**
@@ -115,9 +115,9 @@ export class Queue<T> implements QueueADT<T>, Iterable<T> {
    * @return {T}
    */
   top(): T {
-    if (this.size() === 0) return null;
+  	if (this.size() === 0) return null;
 
-    return this.#list.slice(0, 1).pop();
+  	return this.#list.slice(0, 1).pop();
   }
 
   /**
@@ -132,20 +132,19 @@ export class Queue<T> implements QueueADT<T>, Iterable<T> {
    * array or a single element
    *
    * @throws QueueMaxSizeError when exceeds the queue size
-   * @param {List<T>} element elements to be enqueued
+   * @param {List<T>} elements elements to be enqueued
    * @return {List<T>}
    */
-	enqueue(element: T, ...rest: T[]): T | T[] | null {
-    const elements: Array<T> = [element, ...rest];
+  enqueue(...elements: T[]): T | T[] | null {
+  	if (elements.length === 0) return null;
 
-    if (this.size() + elements.length >= Queue.MAX_SIZE) {
-      throw new QueueFullError;
-    }
+  	if (this.size() + elements.length >= Queue.MAX_SIZE) {
+  		throw new QueueFullError;
+  	}
 
-    this.#list.push(...elements);
-    this.#size += elements.length;
+  	this.#list.push(...elements);
 
-    return elements.length === 1 ? element : elements;
+  	return elements.length === 1 ? elements[0] : elements;
   }
 
   /**
@@ -154,37 +153,34 @@ export class Queue<T> implements QueueADT<T>, Iterable<T> {
    * @return {this}
    */
   clear(): this {
-    this.#list = [];
-    this.#size = 0;
+  	this.#list = [];
 
-    return this;
+  	return this;
   }
 
   /**
-   * Dequeue a list of elements from the queue
+   * Dequeue a number of elements stored in the same order as enqueued
    *
    * Dequeue is an operation with effects. The elements no long exists in Queue
-   * structure. Thereof it removes the n elements, specified by quantity
-   * argument, returning them on success. If the queue only have one element,
-   * them this single elements is returned otherwise it returns a array of
-   * deleted elements, sorted by queue order.
+   * structure. Thereof, it removes n elements, specified by quantity argument,
+	 * returning them on success. If the queue only have one element, them this
+	 * single elements is returned otherwise it returns a array of deleted
+	 * elements, sorted by queue order.
+	 * Notice empty queue always returns null
+	 * When quantity <= 0 dequeue returns null
+	 * When quantity >= n dequeue is empty
    *
-   * @throws QueueEmptyError when queue is empty
-   * @param {number} quantity
-   * @return {EnqueueArgument}
+   * @param {number} quantity [1] number of elements to dequeue
+   * @return {T[] | T | null}
    */
-	dequeue(quantity?: number): T[] | T | null {
-		if (quantity < 0) quantity = 0;
+  dequeue(quantity = 1): T[] | T | null {
+		if (quantity <= 0 || this.size() === 0) return null;
 		quantity = Math.min(quantity, this.length);
 
-    let dequeued: T[] = [];
+		let dequeued: T[] = [];
+		dequeued = this.#list.splice(0, quantity);
 
-    dequeued = this.#list.splice(0, quantity);
-		this.#size -= quantity;
-
-		if (dequeued.length === 0) return null;
-
-    return dequeued.length === 1 ? dequeued.pop() : dequeued;
+  	return dequeued.length === 1 ? dequeued.pop() : dequeued;
   }
 
   /**
@@ -193,7 +189,7 @@ export class Queue<T> implements QueueADT<T>, Iterable<T> {
    * @return {number}
    */
   isEmpty(): boolean {
-    return this.#size === 0;
+  	return this.size() === 0;
   }
 }
 
