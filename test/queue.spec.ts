@@ -136,6 +136,18 @@ describe('Queue', () => {
 					expect(queue.dequeue(4)).toEqual([1, 2, 3, 4]);
 				});
 
+				it('Enqueue successfuly n elements', () => {
+					queue.enqueue(1, 2, 3, 4);
+					expect([...queue]).toEqual([1, 2, 3, 4]);
+				});
+
+				it('The top element is the first enqueued', () => {
+					queue.enqueue(1);
+					queue.enqueue(2);
+					queue.enqueue(3);
+					expect(queue.top()).toBe(1);
+				});
+
 				it.todo('Throw QueueFullError when exceeds maximum size');
 			});
 		});
@@ -145,6 +157,11 @@ describe('Queue', () => {
 				it('Gets null', () => {
 					expect(queue.dequeue()).toBeNull();
 				});
+
+				it('Gets length equals to 0', () => {
+					queue.dequeue();
+					expect(queue.length).toBe(0);
+				})
 			});
 
 			describe('Dequeing more than queue size', () => {
@@ -164,13 +181,6 @@ describe('Queue', () => {
 					queue.enqueue(1, 2, 3, 4);
 					expect(queue.dequeue(4)).toEqual([1, 2, 3, 4]);
 				});
-
-				it('Empty queue by dequeuing all elements', () => {
-					const queue = new Queue(1, 2, 3, 4);
-					queue.dequeue(4);
-
-					expect(queue.isEmpty()).toBe(true);
-				});
 			});
 
 			describe('Dequeuing no element', () => {
@@ -178,28 +188,50 @@ describe('Queue', () => {
 					expect(queue.dequeue()).toBeNull();
 				});
 
-				it('Gets null when dequening negative values', () => {
+				it('Gets null when quantity = -1', () => {
 					queue.enqueue(1, 2, 3);
 					expect(queue.dequeue(-1)).toBeNull();
 				});
 
-				it('Do not change size', () => {
+				it('Do not change size dequening no element', () => {
 					queue.enqueue(1, 2, 3);
 					queue.dequeue(0);
 					expect(queue.length).toBe(3);
+				});
+
+				it('Gets null when quantity = 0', () => {
+					queue.enqueue(1, 2, 3);
+					expect(queue.dequeue(0)).toBeNull();
 				});
 			});
 
 			describe('Dequeue single element', () => {
 				it('Returns first element enqueued', () => {
 					queue.enqueue(1, 2, 3);
-					expect(queue.dequeue()).toBe(1);
+					expect(queue.dequeue(1)).toBe(1);
 				});
 
 				it('Decrease size by 1', () => {
 					queue.enqueue(1, 2, 3);
 					queue.dequeue();
 					expect(queue.length).toBe(2);
+				});
+
+				it('Gets the single element dequeued', () => {
+					queue.enqueue(1, 2, 3);
+					expect(queue.dequeue(1)).toBe(1);
+				});
+
+				it('Dequeue single element when no argument is passed', () => {
+					queue.enqueue(1, 2, 3);
+					expect(queue.dequeue()).toBe(1);
+				});
+
+				it('Gets empty queue when there\s only one queued element', () => {
+					queue.enqueue(1);
+					queue.dequeue();
+
+					expect(queue.isEmpty()).toBe(true);
 				})
 			});
 
@@ -210,7 +242,7 @@ describe('Queue', () => {
 					expect(queue.length).toBe(1);
 				});
 
-				it('Descrese queue size by n passed as argument', () => {
+				it('Descrese queue size by quantity passed as argument', () => {
 					const queue = new Queue(1, 2, 3, 4);
 
 					queue.dequeue(2);
@@ -219,8 +251,8 @@ describe('Queue', () => {
 
 				it('Gets the only element same enqueue element', () => {
 					const queue = new Queue();
-					queue.enqueue(1);
-					expect(queue.dequeue()).toBe(1);
+					queue.enqueue(1, 2, 3);
+					expect(queue.dequeue(2)).toEqual([1, 2]);
 				});
 
 				it('Descrese queue size by n for n successive dequeues', () => {
@@ -303,7 +335,7 @@ describe('Queue', () => {
 				const queue = new Queue(1, 2, 3);
 				queue.clear();
 
-				expect(queue.length).toBe(0);
+				expect([...queue].length).toBe(0);
 			});
 
 			it('Keeps the queue empty', () => {
