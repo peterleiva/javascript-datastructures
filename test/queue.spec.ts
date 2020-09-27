@@ -1,4 +1,4 @@
-import Queue, {QueueFullError} from 'src/queue.ts';
+import Queue, { QueueFullError } from 'src/queue.ts';
 
 describe('Queue', () => {
 	let queue: Queue<number>;
@@ -107,15 +107,17 @@ describe('Queue', () => {
 
 				it.skip('Throws QueueFullError when queue max size', async () => {
 					// FIXME: mocar size para que não possa cair no erro de heap
-					const fillQueue = (size: number) => new Promise((resolve) => {
-						const queue = new Queue();
+					const fillQueue = (size: number) =>
+						new Promise(resolve => {
+							const queue = new Queue();
 
-						for (let i = 0; i < size; i++) queue.enqueue(i);
-						resolve(queue);
-					});
+							for (let i = 0; i < size; i++) queue.enqueue(i);
+							resolve(queue);
+						});
 
-					await expect(fillQueue(Queue.MAX_SIZE + 1))
-						.rejects.toThrow(QueueFullError);
+					await expect(fillQueue(Queue.MAX_SIZE + 1)).rejects.toThrow(
+						QueueFullError
+					);
 				});
 			});
 
@@ -161,7 +163,7 @@ describe('Queue', () => {
 				it('Gets length equals to 0', () => {
 					queue.dequeue();
 					expect(queue.length).toBe(0);
-				})
+				});
 			});
 
 			describe('Dequeing more than queue size', () => {
@@ -227,12 +229,12 @@ describe('Queue', () => {
 					expect(queue.dequeue()).toBe(1);
 				});
 
-				it('Gets empty queue when there\s only one queued element', () => {
+				it('Gets empty queue when theres only one queued element', () => {
 					queue.enqueue(1);
 					queue.dequeue();
 
 					expect(queue.isEmpty()).toBe(true);
-				})
+				});
 			});
 
 			describe('Dequeue between queue size', () => {

@@ -1,24 +1,22 @@
 {
-		"env": {
-			"es2020": true
-		},
-		"extends": [
-			"eslint:recommended",
-			"plugin:@typescript-eslint/eslint-recommended",
-			"plugin:@typescript-eslint/recommended",
-			"google"
-		],
-		"parser": "@typescript-eslint/parser",
-		"parserOptions": {
-			"ecmaVersion": 6,
-			"sourceType": "module"
-		},
-		"plugins": [
-			"@typescript-eslint"
-		],
-		"rules": {
-			"max-len": ["error", 82],
-			"indent": ["error", "tab", 2],
-			"no-tabs": "off"
-		}
+	"env": {
+		"es2020": true
+	},
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended",
+		"google"
+	],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": 6,
+		"sourceType": "module"
+	},
+	"plugins": ["@typescript-eslint"],
+	"rules": {
+		"max-len": ["error", 82],
+		"indent": ["error", "tab", 2],
+		"no-tabs": "off"
+	}
 }

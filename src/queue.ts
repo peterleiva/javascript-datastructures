@@ -58,7 +58,7 @@ export class QueueFullError extends Error {
  * An priority queue must give this function as argument on enqueue function
  */
 interface PriorityFunction<T> {
-	(comparable: T): boolean
+	(comparable: T): boolean;
 }
 
 /**
@@ -69,7 +69,7 @@ interface PriorityFunction<T> {
  * TODO: Usar uma função ao enfileirar para tornar em uma fila de prioridade
  */
 export class Queue<T> implements QueueADT<T>, Iterable<T> {
-	static MAX_SIZE = 2**32 - 1;
+	static MAX_SIZE = 2 ** 32 - 1;
 	#list: Array<T> = [];
 
 	/**
@@ -82,7 +82,7 @@ export class Queue<T> implements QueueADT<T>, Iterable<T> {
 	/**
 	 * Returns a iterator ordered as a queue
 	 */
-	* [Symbol.iterator](): Iterator<T> {
+	*[Symbol.iterator](): Iterator<T> {
 		for (const item of this.#list) {
 			yield item;
 		}
@@ -138,7 +138,7 @@ export class Queue<T> implements QueueADT<T>, Iterable<T> {
 		if (elements.length === 0) return null;
 
 		if (this.size() + elements.length >= Queue.MAX_SIZE) {
-			throw new QueueFullError;
+			throw new QueueFullError();
 		}
 
 		this.#list.push(...elements);
