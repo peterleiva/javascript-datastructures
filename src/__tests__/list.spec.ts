@@ -1,11 +1,11 @@
 import { ListOutOfRange } from 'src/list/errors';
-import LinkedList from 'src/list/list';
+import List from 'src/list/list';
 
 describe('List', () => {
-	let list: LinkedList<unknown>;
+	let list: List<unknown>;
 
 	beforeEach(() => {
-		list = new LinkedList();
+		list = new List();
 	});
 
 	describe('.append', () => {
