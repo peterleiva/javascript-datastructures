@@ -1,5 +1,5 @@
 import { ListOutOfRange } from 'src/list/errors';
-import List from 'src/list/list';
+import { List } from 'src/list';
 
 describe('List', () => {
 	let list: List<unknown>;

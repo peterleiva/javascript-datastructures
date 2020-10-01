@@ -12,7 +12,7 @@ interface NodeEntry<T> {
 }
 
 /**
- * Linked list
+ * Doubly Linked list
  */
 export default class List<T> implements Iterable<T> {
 	protected head: Node<T> | null;
