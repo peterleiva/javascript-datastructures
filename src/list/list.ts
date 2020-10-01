@@ -1,7 +1,7 @@
 import { ListOutOfRange } from './errors';
 
 type Node<T> = {
-	data: T;
+	data: T | null;
 	right: Node<T> | null;
 	left: Node<T> | null;
 };
@@ -23,29 +23,31 @@ export default class LinkedList<T> implements Iterable<T> {
 		this._length = 0;
 	}
 
-	*[Symbol.iterator](): Iterator<T> {
+	*[Symbol.iterator](): IterableIterator<T> {
 		for (const [i, data] of this.entries()) {
 			yield data;
 		}
 	}
 
-	*values(): Iterator<T> {
-		return this[Symbol.iterator];
+	*values(): IterableIterator<T> {
+		for (const item of this) {
+			yield item;
+		}
 	}
 
-	*keys(): Iterator<number> {
+	*keys(): IterableIterator<number> {
 		for (const [i, data] of this.entries()) {
 			yield i;
 		}
 	}
 
-	*entries(): Generator<[number, T]> {
+	*entries(): IterableIterator<[number, T]> {
 		for (const node of this.nodeEntries()) {
-			if (node.current) yield [node.index, node.current.data];
+			if (node.current) yield [node.index, node.current.data as T];
 		}
 	}
 
-	private *nodeEntries(): Generator<NodeEntry<T>> {
+	private *nodeEntries(): IterableIterator<NodeEntry<T>> {
 		let current = this.head;
 		let index = 0;
 
@@ -68,20 +70,28 @@ export default class LinkedList<T> implements Iterable<T> {
 		return this.head === null;
 	}
 
-	append(data: T): this {
+	append(items: T[]): this;
+	append(item: T, ...rest: T[]): this;
+	append(items: T | T[], ...rest: T[]): this {
+		const data = this.regularizeListArgument(items, ...rest);
+
+		if (data.length === 0) return this;
+
 		let entry: NodeEntry<T> | null = null;
-		const node = this.createNode(data);
+		const nodes = this.createNodeList(data);
 
 		for (entry of this.nodeEntries());
 
-		if (!entry?.current) {
-			this.head = node;
+		const firstNode = nodes[0];
+
+		if (!entry) {
+			this.head = firstNode;
 		} else {
-			node.left = entry.current;
-			entry.current.right = node;
+			firstNode.left = entry.current;
+			entry.current.right = firstNode;
 		}
 
-		this._length++;
+		this._length += nodes.length;
 
 		return this;
 	}
@@ -92,26 +102,38 @@ export default class LinkedList<T> implements Iterable<T> {
 		}
 
 		let current: Node<T> | null = null;
-		let i: number;
+		let i: number = 0;
 
 		for ({ current, index: i } of this.nodeEntries()) {
 			if (i === index) break;
 		}
 
-		const previous = current?.left;
-		const next = current?.right;
+		if (!current) return null;
 
-		if (!(current && previous && next)) {
-			return null;
+		if (!(current.right || current.left)) {
+			this.head = null;
+		} else {
+			const previous = current.left;
+			const next = current.right;
+
+			if (!previous) {
+				(next as Node<T>).left = null;
+				this.head = next;
+			} else if (!next) {
+				(previous as Node<T>).right = null;
+			} else {
+				previous.right = next;
+				next.left = previous;
+			}
 		}
 
-		previous.right = next;
-		next.left = previous;
+		const { data } = current;
 
-		current.right = current.left = null;
+		// mark item to garbage collected
+		this.markGarbageCollect(current);
 		this._length--;
 
-		return current.data;
+		return data;
 	}
 
 	// pop(): T {}
@@ -136,23 +158,33 @@ export default class LinkedList<T> implements Iterable<T> {
 		return null;
 	}
 
-	prepend(data: T): this {
-		const node = this.createNode(data);
+	prepend(items: T[]): this;
+	prepend(...items: T[]): this;
+	prepend(items: T[] | T, ...rest: T[]): this {
+		const data = this.regularizeListArgument(items, ...rest);
+		if (data.length === 0) return this;
+
+		const nodes = this.createNodeList(data);
+		const firstNodeList = nodes[0];
+		const lastNodeList = nodes[nodes.length - 1];
 
 		if (!this.head) {
-			this.head = node;
+			this.head = firstNodeList;
 		} else {
-			node.right = this.head;
-			this.head.left = node;
-			this.head = node;
+			lastNodeList.right = this.head;
+			this.head.left = lastNodeList;
+			this.head = firstNodeList;
 		}
 
-		this._length++;
+		this._length += nodes.length;
 
 		return this;
 	}
 
 	clear(): this {
+		for (const entry of this.nodeEntries()) {
+			this.markGarbageCollect(entry.current);
+		}
 		this.head = null;
 		this._length = 0;
 
@@ -189,11 +221,35 @@ export default class LinkedList<T> implements Iterable<T> {
 		return false;
 	}
 
+	private regularizeListArgument(items: T | T[], ...rest: T[]): T[] {
+		return items instanceof Array ? [...items, ...rest] : [items, ...rest];
+	}
+
 	private createNode(data: T): Node<T> {
 		return {
 			data,
 			right: null,
 			left: null,
 		};
+	}
+
+	private createNodeList(items: T[]): Node<T>[] {
+		const nodeList: Node<T>[] = [];
+
+		for (const [i, item] of items.entries()) {
+			const node = this.createNode(item);
+			const previous = nodeList[i - 1] || null;
+
+			node.left = previous;
+			if (previous) previous.right = node;
+
+			nodeList.push(node);
+		}
+
+		return nodeList;
+	}
+
+	private markGarbageCollect(node: Node<T>) {
+		node.right = node.left = node.data = null;
 	}
 }
