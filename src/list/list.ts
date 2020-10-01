@@ -12,15 +12,17 @@ interface NodeEntry<T> {
 }
 
 /**
- * TODO: creates with a spread operator with list of items
+ * Linked list
  */
-export default class LinkedList<T> implements Iterable<T> {
+export default class List<T> implements Iterable<T> {
 	protected head: Node<T> | null;
 	protected _length: number;
 
-	constructor() {
+	constructor(...items: T[]) {
 		this.head = null;
 		this._length = 0;
+
+		this.append(items);
 	}
 
 	*[Symbol.iterator](): IterableIterator<T> {
@@ -45,6 +47,64 @@ export default class LinkedList<T> implements Iterable<T> {
 		for (const node of this.nodeEntries()) {
 			if (node.current) yield [node.index, node.current.data as T];
 		}
+	}
+
+	map(fn: (value: T) => T): List<T> {
+		const mappedList = new List<T>();
+
+		for (const value of this) {
+			mappedList.append(fn(value));
+		}
+
+		return mappedList;
+	}
+
+	concat(list: List<T>): List<T> {
+		const concatenatedList: List<T> = new List();
+
+		for (const value of this) {
+			concatenatedList.append(value);
+		}
+
+		for (const value of list) {
+			concatenatedList.append(value);
+		}
+
+		return concatenatedList;
+	}
+
+	// reduce(fn: (accumulator: number, currentValue: T) => number, initial: number): T {
+	// 	[].reduce
+	// }
+
+	partition(fn: (value: T) => boolean): [List<T>, List<T>] {
+		const left = new List<T>();
+		const right = new List<T>();
+
+		for (const value of this) {
+			fn(value) ? left.append(value) : right.append(value);
+		}
+
+		return [left, right];
+	}
+
+	indexOf(item: T): number {
+		for (const [i, value] of this.entries()) {
+			if (Object.is(value, item)) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	toArray(): T[] {
+		const array = [];
+		for (const value of this) {
+			array.push(value);
+		}
+
+		return array;
 	}
 
 	private *nodeEntries(): IterableIterator<NodeEntry<T>> {
