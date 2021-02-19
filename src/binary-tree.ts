@@ -5,7 +5,7 @@
 /**
  * Binary tree node
  */
-type Node<T> = {
+type Node<T> = null | {
 	data: T;
 	left: Node<T>;
 	right: Node<T>;
@@ -62,7 +62,7 @@ class BinaryTree<T> implements Tree<T>, TreeCollection<T> {
 	 *
 	 * @param {T} data [null]
 	 */
-	constructor(data: T = null) {
+	constructor(data: T | null = null) {
 		if (data) {
 			this.#root = {
 				data: data,

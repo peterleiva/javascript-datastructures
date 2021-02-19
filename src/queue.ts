@@ -16,10 +16,10 @@ export type List<T> = ArrayLike<T>;
  * queue
  */
 interface QueueADT<T> {
-	top(): T;
+	top(): T | null | undefined;
 	isEmpty(): boolean;
 	enqueue(...elements: T[]): T | T[] | null;
-	dequeue(quantity?: number): T[] | T | null;
+	dequeue(quantity?: number): T[] | T | null | undefined;
 	size(): number;
 	clear(): this;
 }
@@ -114,7 +114,7 @@ class Queue<T> implements QueueADT<T>, Iterable<T> {
 	 *
 	 * @return {T}
 	 */
-	top(): T {
+	top(): T | null | undefined {
 		if (this.size() === 0) return null;
 		return this.#list.slice(0, 1).pop();
 	}
@@ -172,7 +172,7 @@ class Queue<T> implements QueueADT<T>, Iterable<T> {
 	 * @param {number} quantity [1] number of elements to dequeue
 	 * @return {T[] | T | null}
 	 */
-	dequeue(quantity = 1): T[] | T | null {
+	dequeue(quantity = 1): T[] | T | null | undefined {
 		if (quantity <= 0 || this.size() === 0) return null;
 		quantity = Math.min(quantity, this.length);
 

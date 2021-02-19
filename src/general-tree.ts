@@ -19,15 +19,15 @@
  */
 export default class Tree<T> {
 	private _parent: Tree<T>;
-	private son: Tree<T>;
-	private next: Tree<T>;
+	private son: Tree<T> | null;
+	private next: Tree<T> | null;
 
 	/**
 	 * Create a tree with initial data
 	 *
 	 * @param {T} _data [null]
 	 */
-	constructor(private _data: T = null) {
+	constructor(private _data: T | null = null) {
 		this.son = this.next = null;
 		this._parent = this;
 	}
@@ -37,7 +37,7 @@ export default class Tree<T> {
 	 *
 	 * @return {T}
 	 */
-	get data(): T {
+	get data(): T | null {
 		return this._data;
 	}
 
@@ -46,7 +46,7 @@ export default class Tree<T> {
 	 *
 	 * @param {T} value
 	 */
-	set data(value: T) {
+	set data(value: T | null) {
 		this._data = value;
 	}
 
