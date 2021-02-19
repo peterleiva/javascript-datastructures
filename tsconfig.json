@@ -1,20 +1,14 @@
 {
-	"compilerOptions": {
-		"target": "es6",
-		"module": "commonjs",
-		"outDir": "./dist",
-		"rootDir": ".",
-		"noImplicitAny": true,
-		"moduleResolution": "node",
-		"baseUrl": ".",
-		"paths": {
-			"src/*": ["src/*"],
-			"test/*": ["test/*"]
-		},
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true
-	},
+  "extends": "@tsconfig/recommended/tsconfig.json",
 
-	"include": ["src/**/*", "test/**/*"],
-	"exclude": ["dist/**/*"]
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "declaration": true
+  },
+
+  "include": ["src/**/*.ts"]
 }
