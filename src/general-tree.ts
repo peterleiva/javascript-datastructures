@@ -89,28 +89,28 @@ export default class Tree<T> {
 	 * Get the tree depth
 	 */
 	private depth(): number {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 
 	/**
 	 * Get the tree height
 	 */
 	private height(): number {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 
 	/**
 	 * Get the node order
 	 */
 	private levelOrder(): number {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 
 	/**
 	 * Sort the tree according to a algorithm
 	 */
 	private sort(): void {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 
 	/**
@@ -142,11 +142,11 @@ export default class Tree<T> {
 	}
 
 	private isDisjuction(tree: Tree<T>): boolean {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 
 	private get ancestors(): Tree<T> {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 
 	/**
@@ -176,15 +176,15 @@ export default class Tree<T> {
 	}
 
 	private get nextSiblings(): Tree<T>[] {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 
 	private get root(): Tree<T> {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 
 	private subtree(): Tree<T>[] {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 
 	/**
@@ -192,7 +192,7 @@ export default class Tree<T> {
 	 * @param tree Tree<T>
 	 */
 	private join(tree: Tree<T>): Tree<T> {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 
 	/**
@@ -228,10 +228,10 @@ export default class Tree<T> {
 	}
 
 	private removeChild(child: Tree<T>): Tree<T> {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 
 	private map(): Tree<T>[] {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 }

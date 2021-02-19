@@ -48,7 +48,7 @@ export class QueueFullError extends Error {
 	 * Creates a QueueMaxSizeError with default message
 	 */
 	constructor() {
-		super('Queue reached the maximum size 4,294,967,295');
+		super("Queue reached the maximum size 4,294,967,295");
 	}
 }
 
@@ -68,7 +68,7 @@ interface PriorityFunction<T> {
  *
  * TODO: Usar uma função ao enfileirar para tornar em uma fila de prioridade
  */
-export class Queue<T> implements QueueADT<T>, Iterable<T> {
+class Queue<T> implements QueueADT<T>, Iterable<T> {
 	static MAX_SIZE = 2 ** 32 - 1;
 	#list: Array<T> = [];
 
@@ -109,7 +109,7 @@ export class Queue<T> implements QueueADT<T>, Iterable<T> {
 	/**
 	 * Get the next element in line witouth dequeueing it
 	 *
-	 * Creates a new copy with only the first element of the queue, without
+	 * Creates a new copy with only the first element of the queue, without anything
 	 * removing it. For empty queue it gets a null object
 	 *
 	 * @return {T}

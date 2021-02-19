@@ -100,6 +100,10 @@ class BinaryTree<T> implements Tree<T>, TreeCollection<T> {
 	isEmpty(): boolean {
 		return this.size() === 0;
 	}
+
+	find(finder: (data: T) => boolean): T {
+		throw new Error("Not implemented");
+	}
 }
 
 export default BinaryTree;
