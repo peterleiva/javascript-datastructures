@@ -4,7 +4,7 @@
  */
 
 import { EmptyListException, IndexOutOfRangeException } from "./errors";
-import type ListADT from "./list-adt.interface";
+import ListADT, { ComparableFn } from "./list-adt.interface";
 
 type Node<T> = null | {
 	data: T | null;
@@ -131,37 +131,8 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return this.length;
 	}
 
-	/**
-	 * Verifiy if list is empty
-	 */
 	isEmpty(): boolean {
 		return this.head === null;
-	}
-
-	append(items: T[]): this;
-	append(item: T, ...rest: T[]): this;
-	append(items: T | T[], ...rest: T[]): this {
-		const data = this.regularizeListArgument(items, ...rest);
-
-		if (data.length === 0) return this;
-
-		let entry: NodeEntry<T> | null = null;
-		const nodes = this.createNodeList(data);
-
-		for (entry of this.nodeEntries());
-
-		const firstNode = nodes[0];
-
-		if (!entry) {
-			this.head = firstNode;
-		} else {
-			firstNode.left = entry.current;
-			entry.current.right = firstNode;
-		}
-
-		this._length += nodes.length;
-
-		return this;
 	}
 
 	remove(index: number): T | null {
@@ -215,48 +186,98 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 	 * @param {number} index
 	 */
 	get(index: number): T | null {
+		return this.getNode(index)?.data || null;
+	}
+
+	/**
+	 * Returns a node according to index or null if do not exists
+	 */
+	private getNode(index: number): Node<T> {
 		if (index < 0 || index >= this.length) {
 			throw new IndexOutOfRangeException(this.length, index);
 		}
 
 		for (const entry of this.nodeEntries()) {
-			if (entry.index === index) return entry.current.data;
+			if (entry.index === index) return entry.current;
 		}
 
 		return null;
 	}
 
-	prepend(items: T[]): this;
-	prepend(...items: T[]): this;
-	prepend(items: T[] | T, ...rest: T[]): this {
-		const data = this.regularizeListArgument(items, ...rest);
-		if (data.length === 0) return this;
-
-		const nodes = this.createNodeList(data);
-		const firstNodeList = nodes[0];
-		const lastNodeList = nodes[nodes.length - 1];
-
-		if (!this.head) {
-			this.head = firstNodeList;
+	at(index: number): T | null {
+		if (index > 0) {
+			return this.get(index);
 		} else {
-			lastNodeList.right = this.head;
-			this.head.left = lastNodeList;
-			this.head = firstNodeList;
+			const absIndex = Math.abs(index);
+
+			if (absIndex > this.size()) {
+				throw new IndexOutOfRangeException(this.size(), index);
+			}
+
+			return this.at(this.size() - absIndex);
+		}
+	}
+
+	insert(comparator: ComparableFn<T>, ...data: T[]): T | T[];
+	insert(index: number, ...data: T[]): T | T[];
+	insert(criterea: number | ComparableFn<T>, ...data: T[]): T | T[] | null {
+		const newNodes = this.createNodeList(data);
+		if (newNodes.length === 0) return null;
+
+		let index = -1;
+
+		if (typeof criterea === "function") {
+			for (const [i, data] of this.entries()) {
+				if (criterea(data)) index = i;
+			}
 		}
 
-		this._length += nodes.length;
+		const insertionPoint = this.getNode(index);
+		const firstNode = newNodes[0];
+		const lastNode = newNodes[newNodes.length - 1];
 
-		return this;
+		if (!insertionPoint || !insertionPoint.left) {
+			this.head = firstNode;
+		} else {
+			// must be added to the head
+			if (insertionPoint.left) {
+				firstNode.left = insertionPoint.left;
+			}
+
+			insertionPoint.left = lastNode;
+			lastNode.right = insertionPoint;
+		}
+
+		return data;
 	}
 
 	push(data: T): this {
 		const node: Node<T> = this.createNode(data);
 
-		if (!this.head) {
-			this.head = node;
-		} else {
-			this.head.left = node;
+		if (this.head) {
 			node.right = this.head;
+			this.head.left = node;
+		}
+
+		this.head = node;
+		this._length++;
+
+		return this;
+	}
+
+	enqueue(data: T): this {
+		const node = this.createNode(data);
+
+		if (this.head) {
+			let lastNode = this.head;
+
+			for (const entry of this.nodeEntries()) {
+				lastNode = entry.current;
+			}
+
+			lastNode.right = node;
+			node.left = lastNode;
+		} else {
 			this.head = node;
 		}
 
@@ -327,8 +348,6 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return node?.current?.data ?? null;
 	}
 
-	// removeAfter(data: T): T {}
-
 	// sort(): this {}
 
 	// insertAfter(data: T): T {}
@@ -358,20 +377,22 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		};
 	}
 
-	private createNodeList(items: T[]): Node<T>[] {
-		const nodeList: Node<T>[] = [];
+	private createNodeList(items: T[]): NonNullable<Node<T>>[] {
+		const list: Node<T>[] = [];
 
 		for (const [i, item] of items.entries()) {
 			const node = this.createNode(item);
-			const previous = nodeList[i - 1] || null;
+			const preceding = list[i - 1] || null;
 
-			node.left = previous;
-			if (previous) previous.right = node;
+			if (preceding) {
+				node.left = preceding;
+				preceding.right = node;
+			}
 
-			nodeList.push(node);
+			list.push(node);
 		}
 
-		return nodeList;
+		return list;
 	}
 
 	private markGarbageCollect(node: NonNullable<Node<T>>) {
