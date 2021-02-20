@@ -1,9 +1,5 @@
 const path = require("path");
 const { pathsToModuleNameMapper } = require("ts-jest/utils");
-const { compilerOptions } = require("./tsconfig.spec.json");
-
-// For a detailed explanation regarding each configuration property, visit:
-// https://jestjs.io/docs/en/configuration.html
 
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
@@ -15,7 +11,9 @@ module.exports = {
 	},
 
 	collectCoverage: true,
-	coverageDirectory: "coverage",
+	coverageDirectory: path.resolve(__dirname, "coverage"),
+	coverageReporters: ["lcov", "text", "html"],
+
 	rootDir: path.resolve(__dirname, "src"),
 
 	// Indicates which provider should be used to instrument code for coverage
