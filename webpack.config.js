@@ -5,6 +5,7 @@ const { ProgressPlugin } = require("webpack");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const ESLintWebpackPlugin = require("eslint-webpack-plugin");
 
+const tsConfigFile = path.resolve(__dirname, "tsconfig.build.json");
 /**
  * Loads a configuration file living inside buid-tools
  *
@@ -39,15 +40,18 @@ module.exports = ({ mode = "production", presets = [] }) =>
 				rules: [
 					{
 						test: /\.ts$/,
-						use: "ts-loader",
 						exclude: /node_modules/,
+						use: {
+							loader: "ts-loader",
+							options: { configFile: tsConfigFile },
+						},
 					},
 				],
 			},
 
 			resolve: {
 				extensions: [".ts", ".js"],
-				plugins: [new TsconfigPathsPlugin()],
+				plugins: [new TsconfigPathsPlugin({ configFile: tsConfigFile })],
 			},
 
 			plugins: [
