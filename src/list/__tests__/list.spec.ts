@@ -8,95 +8,6 @@ describe("List", () => {
 		list = new List();
 	});
 
-	describe(".append", () => {
-		describe("with empty list", () => {
-			it("insert at the end", () => {
-				list.append(1);
-				expect([...list]).toEqual([1]);
-			});
-
-			it("Length is equal to 1", () => {
-				list.append(1);
-				expect(list).toHaveLength(1);
-			});
-		});
-
-		describe("With list of argument", () => {
-			it("Add in correct order they are called", () => {
-				list.append(1, 2);
-				expect([...list]).toEqual([1, 2]);
-			});
-
-			it("Increase by the length of items added", () => {
-				list.append(1, 2, 3);
-				expect(list).toHaveLength(3);
-			});
-		});
-		describe("without empty list", () => {
-			beforeEach(() => {
-				list.append(1, 2);
-			});
-
-			it("Insert at the end", () => {
-				list.append(3);
-				expect([...list]).toEqual([1, 2, 3]);
-			});
-
-			it("Length increase by 1", () => {
-				list.append(3);
-				expect(list).toHaveLength(3);
-			});
-		});
-	});
-
-	describe(".prepend", () => {
-		describe("With empty list", () => {
-			it("Get length is equal to 1", () => {
-				list.prepend(1);
-				expect(list).toHaveLength(1);
-			});
-
-			it("Get [1] for stored items", () => {
-				list.prepend(1);
-				expect([...list]).toEqual([1]);
-			});
-		});
-
-		describe("Without empty list", () => {
-			beforeEach(() => {
-				list.prepend(1);
-			});
-
-			it("Increse length by 1", () => {
-				list.prepend(2);
-				expect(list).toHaveLength(2);
-			});
-
-			it("Insert item at the beginning", () => {
-				list.prepend(2);
-				expect([...list]).toEqual([2, 1]);
-			});
-		});
-
-		describe("With list as argument", () => {
-			it("Prepend list as order of call", () => {
-				list.prepend(1, 2, 3);
-				expect([...list]).toEqual([1, 2, 3]);
-			});
-
-			it("Insert at beggining for already inserted items", () => {
-				list.append(4);
-				list.prepend(1, 2, 3);
-				expect([...list]).toEqual([1, 2, 3, 4]);
-			});
-
-			it("Increase length by added size", () => {
-				list.prepend(1, 2, 3);
-				expect(list).toHaveLength(3);
-			});
-		});
-	});
-
 	describe(".keys", () => {
 		it("Get empty array when list is empty", () => {
 			expect([...list.keys()]).toEqual([]);
@@ -413,6 +324,97 @@ describe("List", () => {
 			list.push(1).push("2");
 			list.pop();
 			expect([...list]).toStrictEqual(["2"]);
+		});
+	});
+
+	describe(".dequeue", () => {
+		it("Throws EmptyListException when empty", () => {
+			expect(() => list.dequeue()).toThrow(EmptyListException);
+		});
+
+		it("Decrease length by 1", () => {
+			list.push(1).push(2);
+			list.dequeue();
+			expect(list).toHaveLength(1);
+		});
+
+		it("Returns the first item of the list", () => {
+			list.push(1).push("2");
+			expect(list.dequeue()).toBe("2");
+		});
+
+		it("Leaves list empty when has a single item", () => {
+			list.push(1);
+			list.dequeue();
+			expect(list.isEmpty()).toBe(true);
+		});
+
+		it("Leaves list without first item", () => {
+			list.push(3);
+			list.push(2);
+			list.push(1);
+			list.dequeue();
+			expect([...list]).toStrictEqual([2, 3]);
+		});
+	});
+
+	describe(".enqueue", () => {
+		it("Increase length by 1", () => {
+			list.enqueue(1);
+			expect(list).toHaveLength(1);
+		});
+
+		it("Insert at the end when list isn't empty", () => {
+			list.enqueue(1).enqueue(2).enqueue(3);
+			expect([...list]).toStrictEqual([1, 2, 3]);
+		});
+
+		it("Leaves with a single element when empty", () => {
+			list.enqueue("1");
+			expect([...list]).toStrictEqual(["1"]);
+		});
+	});
+
+	describe(".at", () => {
+		it("Throws EmptyListException when list is empty", () => {
+			expect(() => list.at(10)).toThrow(EmptyListException);
+		});
+
+		it("Throws Exception when index n", () => {
+			list.enqueue(1);
+			expect(() => list.at(1)).toThrow(IndexOutOfRangeException);
+		});
+
+		it("Throws IndexOutOfRangeException when index is -(n + 1)", () => {
+			list.enqueue(1);
+
+			expect(() => list.at(-2)).toThrow(IndexOutOfRangeException);
+		});
+
+		it("Get the first item when index = 0", () => {
+			list.enqueue(1);
+
+			expect(list.at(0)).toBe(1);
+		});
+
+		it("Get the last item when index is the n - 1", () => {
+			list.enqueue(1).enqueue(2);
+			expect(list.at(list.length - 1)).toBe(2);
+		});
+
+		it("Get last item when index = -1", () => {
+			list.enqueue(1).enqueue(2);
+			expect(list.at(-1)).toBe(2);
+		});
+
+		it("Get first item when index = -n", () => {
+			list.enqueue(1).enqueue(4);
+			expect(list.at(-list.length)).toBe(1);
+		});
+
+		it("Get the correct item from the index", () => {
+			list.enqueue(1).enqueue(2).enqueue(3);
+			expect(list.at(2)).toBe(2);
 		});
 	});
 });
