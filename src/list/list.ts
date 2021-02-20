@@ -105,12 +105,7 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 	}
 
 	toArray(): T[] {
-		const array = [];
-		for (const value of this) {
-			array.push(value);
-		}
-
-		return array;
+		return [...this];
 	}
 
 	private *nodeEntries(): IterableIterator<NodeEntry<T>> {
