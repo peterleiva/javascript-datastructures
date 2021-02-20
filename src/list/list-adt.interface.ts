@@ -1,4 +1,4 @@
-interface ComparableFn<T> {
+export interface ComparableFn<T> {
 	(data: T): boolean;
 }
 
@@ -19,7 +19,7 @@ export default interface ListADT<T> {
 	/**
 	 * Insert a element at the end of the list
 	 */
-	enqueue(): T;
+	enqueue(data: T): this;
 	/**
 	 * Remove the first element of the list, which means with index 0
 	 */
@@ -56,7 +56,7 @@ export default interface ListADT<T> {
 	 *
 	 * @param index
 	 */
-	itemAt(index: number): T;
+	at(index: number): T | null;
 	/**
 	 * Remove permanently elements of the list
 	 *
@@ -68,12 +68,12 @@ export default interface ListADT<T> {
 	remove(index: number): T;
 	remove(comparator: ComparableFn<T>): T | T[];
 	/**
-	 * Insert a new data at the list
+	 * Insert a group data at the list
 	 *
 	 * @throws IndexOutOfRangeException
 	 * @param data
 	 * @param comparable
 	 */
-	insert(data: T | T[], comparator: ComparableFn<T>): T;
-	insert(index: number, data: T | T[]): T;
+	insert(comparator: ComparableFn<T>, ...data: T[]): T | T[];
+	insert(index: number, ...data: T[]): T | T[];
 }
