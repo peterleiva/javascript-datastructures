@@ -3,10 +3,10 @@
   "version": "0.3.0",
   "description": "Some data structures, binary tree, general tree, queue and so on",
   "scripts": {
-    "build": "tsc && npm run lint",
-    "lint": "tsc --noEmit && eslint \"src/**/*.{js,ts}\"",
+    "build": "webpack --env mode=production",
+    "dev": "webpack serve --env mode=development",
     "test": "jest",
-    "test:live": "jest --watch"
+    "coverage:reporter": "open-cli coverage/index.html"
   },
   "keywords": [
     "tree",
@@ -30,6 +30,8 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "jest": "^26.4.0",
+    "lodash": "^4.17.20",
+    "open-cli": "^6.0.1",
     "prettier": "^2.1.2",
     "ts-jest": "^26.2.0",
     "typescript": "^3.9.7"
