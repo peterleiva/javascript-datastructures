@@ -21,9 +21,7 @@ module.exports = {
 	// Indicates which provider should be used to instrument code for coverage
 	coverageProvider: "v8",
 
-	moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
-		prefix: "<rootDir>/",
-	}),
+	moduleDirectories: ["node_modules", "<rootDir>"],
 
 	notify: true,
 

@@ -1,10 +1,5 @@
 {
   "extends": "./tsconfig.base.json",
 
-  "compilerOptions": {
-    "paths": {
-      "@App/*": ["./*"]
-    }
-  },
   "include": ["./src/**/*.ts"]
 }
