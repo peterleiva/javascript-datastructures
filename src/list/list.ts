@@ -1,21 +1,27 @@
-import { ListOutOfRange } from './errors';
+/**
+ * List implemented with doubly linked list
+ * @version 1.0.0
+ */
 
-type Node<T> = {
+import { EmptyListException, IndexOutOfRangeException } from "./errors";
+import type ListADT from "./list-adt.interface";
+
+type Node<T> = null | {
 	data: T | null;
-	right: Node<T> | null;
-	left: Node<T> | null;
+	right: Node<T>;
+	left: Node<T>;
 };
 
 interface NodeEntry<T> {
-	current: Node<T>;
+	current: NonNullable<Node<T>>;
 	index: number;
 }
 
 /**
  * Doubly Linked list
  */
-export default class List<T> implements Iterable<T> {
-	protected head: Node<T> | null;
+export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
+	protected head: Node<T>;
 	protected _length: number;
 
 	constructor(...items: T[]) {
@@ -26,7 +32,7 @@ export default class List<T> implements Iterable<T> {
 	}
 
 	*[Symbol.iterator](): IterableIterator<T> {
-		for (const [i, data] of this.entries()) {
+		for (const [, data] of this.entries()) {
 			yield data;
 		}
 	}
@@ -38,7 +44,7 @@ export default class List<T> implements Iterable<T> {
 	}
 
 	*keys(): IterableIterator<number> {
-		for (const [i, data] of this.entries()) {
+		for (const [i] of this.entries()) {
 			yield i;
 		}
 	}
@@ -49,8 +55,8 @@ export default class List<T> implements Iterable<T> {
 		}
 	}
 
-	map(fn: (value: T) => T): List<T> {
-		const mappedList = new List<T>();
+	map(fn: (value: T) => T): LinkedList<T> {
+		const mappedList = new LinkedList<T>();
 
 		for (const value of this) {
 			mappedList.append(fn(value));
@@ -59,8 +65,8 @@ export default class List<T> implements Iterable<T> {
 		return mappedList;
 	}
 
-	concat(list: List<T>): List<T> {
-		const concatenatedList: List<T> = new List();
+	concat(list: LinkedList<T>): LinkedList<T> {
+		const concatenatedList: LinkedList<T> = new LinkedList();
 
 		for (const value of this) {
 			concatenatedList.append(value);
@@ -77,9 +83,9 @@ export default class List<T> implements Iterable<T> {
 	// 	[].reduce
 	// }
 
-	partition(fn: (value: T) => boolean): [List<T>, List<T>] {
-		const left = new List<T>();
-		const right = new List<T>();
+	partition(fn: (value: T) => boolean): [LinkedList<T>, LinkedList<T>] {
+		const left = new LinkedList<T>();
+		const right = new LinkedList<T>();
 
 		for (const value of this) {
 			fn(value) ? left.append(value) : right.append(value);
@@ -124,6 +130,13 @@ export default class List<T> implements Iterable<T> {
 	}
 
 	/**
+	 * alias for .length
+	 */
+	size(): number {
+		return this.length;
+	}
+
+	/**
 	 * Verifiy if list is empty
 	 */
 	isEmpty(): boolean {
@@ -158,11 +171,11 @@ export default class List<T> implements Iterable<T> {
 
 	remove(index: number): T | null {
 		if (index < 0 || index >= this.length) {
-			throw new ListOutOfRange(this.length, index);
+			throw new IndexOutOfRangeException(this.length, index);
 		}
 
 		let current: Node<T> | null = null;
-		let i: number = 0;
+		let i = 0;
 
 		for ({ current, index: i } of this.nodeEntries()) {
 			if (i === index) break;
@@ -208,7 +221,7 @@ export default class List<T> implements Iterable<T> {
 	 */
 	get(index: number): T | null {
 		if (index < 0 || index >= this.length) {
-			throw new ListOutOfRange(this.length, index);
+			throw new IndexOutOfRangeException(this.length, index);
 		}
 
 		for (const entry of this.nodeEntries()) {
@@ -241,6 +254,63 @@ export default class List<T> implements Iterable<T> {
 		return this;
 	}
 
+	push(data: T): this {
+		const node: Node<T> = this.createNode(data);
+
+		if (!this.head) {
+			this.head = node;
+		} else {
+			this.head.left = node;
+			node.right = this.head;
+			this.head = node;
+		}
+
+		this._length++;
+
+		return this;
+	}
+
+	dequeue(): T | null {
+		if (!this.head) {
+			throw new EmptyListException();
+		}
+
+		const { data } = this.head;
+		const nodeToBeRemoved = this.head;
+		this.head = nodeToBeRemoved.right;
+		this.markGarbageCollect(nodeToBeRemoved);
+
+		this._length--;
+
+		return data;
+	}
+
+	pop(): T | null {
+		if (!this.head) {
+			throw new EmptyListException();
+		}
+
+		let node: NonNullable<Node<T>> = this.head;
+
+		for (const entry of this.nodeEntries()) {
+			node = entry.current;
+		}
+
+		const { data } = node;
+
+		if (!node.left) {
+			this.head = null;
+		} else {
+			node.left.right = null;
+		}
+
+		this._length--;
+
+		this.markGarbageCollect(node);
+
+		return data;
+	}
+
 	clear(): this {
 		for (const entry of this.nodeEntries()) {
 			this.markGarbageCollect(entry.current);
@@ -259,7 +329,7 @@ export default class List<T> implements Iterable<T> {
 		let node: NodeEntry<T> | null = null;
 		for (node of this.nodeEntries());
 
-		return node?.current.data ?? null;
+		return node?.current?.data ?? null;
 	}
 
 	// removeAfter(data: T): T {}
@@ -275,7 +345,7 @@ export default class List<T> implements Iterable<T> {
 	 */
 	contains(data: T): boolean {
 		for (const item of this) {
-			if (item === data) return true;
+			if (Object.is(item, data)) return true;
 		}
 
 		return false;
@@ -285,7 +355,7 @@ export default class List<T> implements Iterable<T> {
 		return items instanceof Array ? [...items, ...rest] : [items, ...rest];
 	}
 
-	private createNode(data: T): Node<T> {
+	private createNode(data: T): NonNullable<Node<T>> {
 		return {
 			data,
 			right: null,
@@ -309,7 +379,7 @@ export default class List<T> implements Iterable<T> {
 		return nodeList;
 	}
 
-	private markGarbageCollect(node: Node<T>) {
+	private markGarbageCollect(node: NonNullable<Node<T>>) {
 		node.right = node.left = node.data = null;
 	}
 }
