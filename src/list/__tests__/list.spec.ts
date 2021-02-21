@@ -28,6 +28,24 @@ describe("List", () => {
 		});
 	});
 
+	describe.only(".insert", () => {
+		describe("When Comparable as argument", () => {
+			describe("When comparable returns false", () => {
+				it.todo("Leaves the list unmodified");
+				it.todo("Returns empty array");
+			});
+
+			// describe("When comparable returns true", () => {
+			// 	// repetir de with index...
+			// });
+		});
+
+		describe("With index as argument", () => {
+			it.todo("Throws IndexOutOfRangeException when index equals list size");
+			it.todo("Throws IndexOutOfRangeException when index is negative");
+		});
+	});
+
 	describe(".values", () => {
 		it("Get empty array when list is empty", () => {
 			expect([...list.values()]).toEqual([]);
