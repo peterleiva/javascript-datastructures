@@ -28,7 +28,7 @@ describe("List", () => {
 		});
 	});
 
-	describe.only(".insert", () => {
+	describe(".insert", () => {
 		describe("When Comparable as argument", () => {
 			describe("When comparable returns false", () => {
 				it.todo("Leaves the list unmodified");
