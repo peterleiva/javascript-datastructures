@@ -28,7 +28,7 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		this.head = null;
 		this._length = 0;
 
-		this.append(items);
+		for (const item of items) this.enqueue(item);
 	}
 
 	*[Symbol.iterator](): IterableIterator<T> {
@@ -49,9 +49,22 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		}
 	}
 
+	// FIXME: T pode retornar null também aqui está como as T
 	*entries(): IterableIterator<[number, T]> {
-		for (const node of this.nodeEntries()) {
-			if (node.current) yield [node.index, node.current.data as T];
+		for (const { index, current } of this.nodeEntries()) {
+			yield [index, current.data as T];
+		}
+	}
+
+	private *nodeEntries(): IterableIterator<NodeEntry<T>> {
+		let current = this.head;
+		let index = 0;
+
+		while (current !== null) {
+			yield { current, index };
+
+			index++;
+			current = current.right;
 		}
 	}
 
@@ -59,24 +72,21 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		const mappedList = new LinkedList<T>();
 
 		for (const value of this) {
-			mappedList.append(fn(value));
+			mappedList.enqueue(fn(value));
 		}
 
 		return mappedList;
 	}
 
-	concat(list: LinkedList<T>): LinkedList<T> {
-		const concatenatedList: LinkedList<T> = new LinkedList();
-
-		for (const value of this) {
-			concatenatedList.append(value);
-		}
-
+	/**
+	 * Modify the list concatenating a listing to end and returns it
+	 */
+	concat(list: LinkedList<T>): this {
 		for (const value of list) {
-			concatenatedList.append(value);
+			this.enqueue(value);
 		}
 
-		return concatenatedList;
+		return this;
 	}
 
 	// reduce(fn: (accumulator: number, currentValue: T) => number, initial: number): T {
@@ -88,7 +98,7 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		const right = new LinkedList<T>();
 
 		for (const value of this) {
-			fn(value) ? left.append(value) : right.append(value);
+			fn(value) ? left.enqueue(value) : right.enqueue(value);
 		}
 
 		return [left, right];
@@ -108,18 +118,6 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return [...this];
 	}
 
-	private *nodeEntries(): IterableIterator<NodeEntry<T>> {
-		let current = this.head;
-		let index = 0;
-
-		while (current !== null) {
-			yield { current, index };
-
-			index++;
-			current = current.right;
-		}
-	}
-
 	get length(): number {
 		return this._length;
 	}
@@ -135,44 +133,71 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return this.head === null;
 	}
 
-	remove(index: number): T | null {
-		if (index < 0 || index >= this.length) {
-			throw new IndexOutOfRangeException(this.length, index);
+	remove(index: number): T;
+	remove(data: T): T;
+	remove(comparator: ComparableFn<T>): T | T[];
+	remove(criterea: number | ComparableFn<T> | T): null | T | (T | null)[] {
+		if (typeof criterea === "number") {
+			return this.removeAt(criterea);
+		} else {
+			const removed: (T | null)[] = [];
+
+			// FIXME: Só itera uma vez quando existe match, devido ao iterator entries
+			for (const [i, data] of this.entries()) {
+				const matchesCriterea =
+					criterea instanceof Function
+						? criterea(data as T)
+						: Object.is(data, criterea);
+
+				if (matchesCriterea) {
+					console.log("before Remove", [...this]);
+					removed.push(this.removeAt(i));
+					console.log("After Remove", [...this]);
+				}
+			}
+
+			return removed;
+		}
+	}
+
+	private removeAt(index: number): T | null {
+		if (this.isOutOfIndex(index)) {
+			throw new IndexOutOfRangeException(this.size(), index);
 		}
 
-		let current: Node<T> | null = null;
+		const iterator = this.nodeEntries();
+		let precedence = null;
+		let current = this.head as NonNullable<Node<T>>;
 		let i = 0;
 
-		for ({ current, index: i } of this.nodeEntries()) {
-			if (i === index) break;
-		}
-
-		if (!current) return null;
-
-		if (!(current.right || current.left)) {
-			this.head = null;
-		} else {
-			const previous = current.left;
-			const next = current.right;
-
-			if (!previous) {
-				(next as Node<T>).left = null;
-				this.head = next;
-			} else if (!next) {
-				(previous as Node<T>).right = null;
-			} else {
-				previous.right = next;
-				next.left = previous;
-			}
+		while (i !== index) {
+			const { value } = iterator.next();
+			precedence = current;
+			({ index: i, current } = value);
 		}
 
 		const { data } = current;
 
-		// mark item to garbage collected
-		this.markGarbageCollect(current);
+		// the next node after the removed one
+		const following = current.right;
+
+		// the head (index = 0) must be deleted
+		if (!precedence) {
+			this.head = following;
+		} else {
+			precedence.right = following;
+		}
+
+		following && (following.left = precedence);
+
 		this._length--;
+		this.markGarbageCollect(current);
 
 		return data;
+	}
+
+	private isOutOfIndex(index: number): boolean {
+		return index < 0 || index >= this._length;
 	}
 
 	// pop(): T {}
@@ -216,6 +241,12 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 
 			return this.at(this.size() - absIndex);
 		}
+	}
+
+	join(list: LinkedList<T>, index: number): this {
+		throw new Error("Not implemented");
+
+		return this;
 	}
 
 	insert(comparator: ComparableFn<T>, ...data: T[]): T | T[];
@@ -365,10 +396,6 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return false;
 	}
 
-	private regularizeListArgument(items: T | T[], ...rest: T[]): T[] {
-		return items instanceof Array ? [...items, ...rest] : [items, ...rest];
-	}
-
 	private createNode(data: T): NonNullable<Node<T>> {
 		return {
 			data,
@@ -378,7 +405,7 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 	}
 
 	private createNodeList(items: T[]): NonNullable<Node<T>>[] {
-		const list: Node<T>[] = [];
+		const list: NonNullable<Node<T>>[] = [];
 
 		for (const [i, item] of items.entries()) {
 			const node = this.createNode(item);
