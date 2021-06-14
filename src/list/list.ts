@@ -136,7 +136,7 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 	remove(index: number): T;
 	remove(data: T): T;
 	remove(comparator: ComparableFn<T>): T | T[];
-	remove(criterea: number | ComparableFn<T> | T): null | T | (T | null)[] {
+	remove(criterea: number | ComparableFn<T> | T) {
 		if (typeof criterea === "number") {
 			return this.removeAt(criterea);
 		} else {
@@ -249,9 +249,9 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return this;
 	}
 
-	insert(comparator: ComparableFn<T>, ...data: T[]): T | T[];
 	insert(index: number, ...data: T[]): T | T[];
-	insert(criterea: number | ComparableFn<T>, ...data: T[]): T | T[] | null {
+	insert(comparator: ComparableFn<T>, ...data: T[]): T | T[];
+	insert(criterea: number | ComparableFn<T>, ...data: T[]) {
 		const newNodes = this.createNodeList(data);
 		if (newNodes.length === 0) return null;
 
