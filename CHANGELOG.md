@@ -13,5 +13,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add methods to [**LinkedList**](src/list/list.ts): `pop`, `push`, `size`, `isEmpty`, `length`, `size`, `indexOf`, `toArray`, `dequeue`, `clear`, `peek`, `tail` and `contains`.
 - Besides the methods above. Add `values`, `entries` (as the default) and `values` iterators to **LinkedList** the same as the [`Array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/array) has
 
-[unreleased]: https://github.com/pherval/elementary-js-structures/compare/v0.3.0...HEAD
-[0.1.0]: https://github.com/pherval/elementary-js-structures/tag/v0.1.0
+[unreleased]: https://github.com/pherval/elementary-js-structures/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/pherval/elementary-js-structures/releases/tag/v0.1.0
