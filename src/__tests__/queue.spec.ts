@@ -1,4 +1,4 @@
-import Queue, { QueueFullError } from "queue";
+import Queue, { QueueUnderflow } from "queue";
 
 describe("Queue", () => {
 	let queue: Queue<number>;
@@ -7,344 +7,196 @@ describe("Queue", () => {
 		queue = new Queue();
 	});
 
-	describe("Create Queues", () => {
+	describe("Queue creation", () => {
 		describe("With Argument", () => {
 			it("Create successfuly with 1 argument", () => {
 				const queue = new Queue(10);
-				expect(queue).toBeDefined();
+				expect(queue).toHaveLength(1);
 			});
 
-			it("Create successfuly with n arguments", () => {
-				const queue = new Queue(...[10, 20]);
-				expect(queue).toBeDefined();
+			it("Create successfuly with 2 items", () => {
+				const queue = new Queue(10, 20);
+				expect(queue).toHaveLength(2);
 			});
 
-			it("as the size of argument", () => {
+			it("Create successfuly with multiple items", () => {
 				const queue = new Queue(...[1, 2, 3, 4]);
-				expect(queue.length).toBe(4);
+				expect(queue).toHaveLength(4);
 			});
 		});
 
 		describe("Without Argument", () => {
-			it("Create a empty queue successfuly", () => {
+			it("creates empty queue", () => {
 				const queue = new Queue();
-				expect(queue).toBeDefined();
-			});
-
-			it("Has zero length", () => {
-				const queue = new Queue<number>();
-				expect(queue.length).toBe(0);
+				expect(queue).toHaveLength(0);
 			});
 		});
 	});
 
 	describe("Methods", () => {
 		describe("Iterating", () => {
-			it("Gives the same order of enqueue", () => {
+			it("Gives the order of insertion", () => {
 				const elements = [1, 2, 3];
 				const queue = new Queue();
-				queue.enqueue(...elements);
+				queue.insert(...elements);
 				expect([...queue]).toEqual(elements);
 			});
 		});
 
-		describe(".top", () => {
-			it("Returns null for empty queue", () => {
-				expect(new Queue().top()).toBeNull();
-			});
+		describe(".insert", () => {
+			let queue: Queue<unknown>;
+			beforeEach(() => (queue = new Queue()));
 
-			it("returns the only element", () => {
-				const element = 10;
-				const queue = new Queue(10);
-				expect(queue.top()).toBe(element);
-			});
-
-			it("Gets the first arg when constructing with various args", () => {
-				const first = 1;
-				const queue = new Queue(first, 2, 3, 4, 5);
-				expect(queue.top()).toBe(first);
-			});
-
-			it("Returns elements without removing it", () => {
-				const queue = new Queue(1, 2, 3);
-				queue.top();
-				expect(queue.length).toBe(3);
-			});
-		});
-
-		describe(".enqueue", () => {
-			describe("With single argument", () => {
-				it("Enqueue element sucessfully", () => {
-					const queue = new Queue();
-					queue.enqueue(1);
-					expect(queue.top()).toBe(1);
+			describe("With single item", () => {
+				it("Enqueue item sucessfully", () => {
+					queue.insert(1);
+					expect([...queue]).toEqual([1]);
 				});
 
-				it("Augment queue size by 1", () => {
-					const queue = new Queue(1, 2, 3, 4);
-					queue.enqueue(5);
+				it("Enqueues ordered by insertion time", () => {
+					queue.insert(1);
+					queue.insert(2);
+					queue.insert(3);
 
-					expect(queue.size()).toBe(5);
+					expect([...queue]).toEqual([1, 2, 3]);
 				});
 
-				it("Augment queue size by n following n enqueues", () => {
-					const queue = new Queue();
-					queue.enqueue(1);
-					queue.enqueue(2);
-					queue.enqueue(3);
+				it("Increase size by the number of insertions", () => {
+					queue.insert(1);
+					queue.insert(2);
+					queue.insert(3);
+					queue.insert(4);
 
-					expect(queue.size()).toBe(3);
-				});
-
-				it("Gets the first element after n sequence enqueues", () => {
-					const queue = new Queue();
-					queue.enqueue(1);
-					queue.enqueue(2);
-					queue.enqueue(3);
-
-					expect(queue.top()).toBe(1);
-				});
-
-				it.skip("Throws QueueFullError when queue max size", async () => {
-					// FIXME: mocar size para que não possa cair no erro de heap
-					const fillQueue = (size: number) =>
-						new Promise(resolve => {
-							const queue = new Queue();
-
-							for (let i = 0; i < size; i++) queue.enqueue(i);
-							resolve(queue);
-						});
-
-					await expect(fillQueue(Queue.MAX_SIZE + 1)).rejects.toThrow(
-						QueueFullError
-					);
+					expect(queue).toHaveLength(4);
 				});
 			});
 
 			describe("With multiple arguments", () => {
-				it("Augment the queue size by n elements added", () => {
-					const queue = new Queue();
-					queue.enqueue(1, 2, 3, 4);
+				it("insert items by order of argument", () => {
+					const items = [1, 2, 3, 4];
 
-					expect(queue.length).toBe(4);
+					queue.insert(...items);
+					expect([...queue]).toEqual(items);
 				});
 
-				it("The last n elements is the equals to array of n", () => {
-					const queue = new Queue();
-					queue.enqueue(1, 2, 3, 4);
-					queue.enqueue(10);
-					queue.enqueue(20);
+				it("Augment the queue length by quantity of arguments", () => {
+					queue.insert(1, 2, 3, 4);
+					expect(queue).toHaveLength(4);
+				});
 
-					expect(queue.dequeue(4)).toEqual([1, 2, 3, 4]);
+				it("Insert items at the rear", () => {
+					const items = [1, 2, 3, 4];
+					queue.insert(10);
+					queue.insert(20);
+					queue.insert(...items);
+
+					expect([...queue]).toEqual([10, 20, ...items]);
 				});
 
 				it("Enqueue successfuly n elements", () => {
-					queue.enqueue(1, 2, 3, 4);
+					queue.insert(1, 2, 3, 4);
 					expect([...queue]).toEqual([1, 2, 3, 4]);
 				});
-
-				it("The top element is the first enqueued", () => {
-					queue.enqueue(1);
-					queue.enqueue(2);
-					queue.enqueue(3);
-					expect(queue.top()).toBe(1);
-				});
-
-				it.todo("Throw QueueFullError when exceeds maximum size");
 			});
 		});
 
-		describe(".dequeue", () => {
-			describe("Dequeing empty queue", () => {
-				it("Gets null", () => {
-					expect(queue.dequeue()).toBeNull();
-				});
-
-				it("Gets length equals to 0", () => {
-					queue.dequeue();
-					expect(queue.length).toBe(0);
-				});
+		describe(".remove", () => {
+			it("Dequeuing empty queue throws QueueUnderflow", () => {
+				expect(() => queue.remove()).toThrow(QueueUnderflow);
 			});
 
-			describe("Dequeing more than queue size", () => {
-				it("Clear the whole queue when quantity = n", () => {
-					queue.enqueue(1, 2, 3, 4, 5);
-					queue.dequeue(5);
-					expect(queue.isEmpty()).toBe(true);
-				});
-
-				it("Clear the queue when quantity = n + 1", () => {
-					queue.enqueue(1, 2, 3, 4);
-					queue.dequeue(5);
-					expect(queue.isEmpty()).toBe(true);
-				});
-
-				it("Returns array ordered as enqueue operation", () => {
-					queue.enqueue(1, 2, 3, 4);
-					expect(queue.dequeue(4)).toEqual([1, 2, 3, 4]);
-				});
+			it("Returns first item inserted", () => {
+				queue.insert(1, 2, 3);
+				expect(queue.remove()).toBe(1);
 			});
 
-			describe("Dequeuing no element", () => {
-				it("Returns null", () => {
-					expect(queue.dequeue()).toBeNull();
-				});
-
-				it("Gets null when quantity = -1", () => {
-					queue.enqueue(1, 2, 3);
-					expect(queue.dequeue(-1)).toBeNull();
-				});
-
-				it("Do not change size dequening no element", () => {
-					queue.enqueue(1, 2, 3);
-					queue.dequeue(0);
-					expect(queue.length).toBe(3);
-				});
-
-				it("Gets null when quantity = 0", () => {
-					queue.enqueue(1, 2, 3);
-					expect(queue.dequeue(0)).toBeNull();
-				});
+			it("Decrease size by 1", () => {
+				queue.insert(1, 2, 3);
+				queue.remove();
+				expect(queue).toHaveLength(2);
 			});
 
-			describe("Dequeue single element", () => {
-				it("Returns first element enqueued", () => {
-					queue.enqueue(1, 2, 3);
-					expect(queue.dequeue(1)).toBe(1);
-				});
-
-				it("Decrease size by 1", () => {
-					queue.enqueue(1, 2, 3);
-					queue.dequeue();
-					expect(queue.length).toBe(2);
-				});
-
-				it("Gets the single element dequeued", () => {
-					queue.enqueue(1, 2, 3);
-					expect(queue.dequeue(1)).toBe(1);
-				});
-
-				it("Dequeue single element when no argument is passed", () => {
-					queue.enqueue(1, 2, 3);
-					expect(queue.dequeue()).toBe(1);
-				});
-
-				it("Gets empty queue when theres only one queued element", () => {
-					queue.enqueue(1);
-					queue.dequeue();
-
-					expect(queue.isEmpty()).toBe(true);
-				});
+			it("Gets empty queue when theres only one queued element", () => {
+				queue.insert(1);
+				queue.remove();
+				expect(queue.empty()).toBe(true);
 			});
 
-			describe("Dequeue between queue size", () => {
-				it("Decrease length to 1 when quantity = n - 1", () => {
-					queue.enqueue(1, 2, 3);
-					queue.dequeue(2);
-					expect(queue.length).toBe(1);
-				});
-
-				it("Descrese queue size by quantity passed as argument", () => {
-					const queue = new Queue(1, 2, 3, 4);
-
-					queue.dequeue(2);
-					expect(queue.size()).toBe(2);
-				});
-
-				it("Gets the only element same enqueue element", () => {
-					const queue = new Queue();
-					queue.enqueue(1, 2, 3);
-					expect(queue.dequeue(2)).toEqual([1, 2]);
-				});
-
-				it("Descrese queue size by n for n successive dequeues", () => {
-					const queue = new Queue(1, 2, 3, 4);
-
-					queue.dequeue();
-					queue.dequeue();
-
-					expect(queue.size()).toBe(2);
-				});
-
-				it("Empty the queue when dequeue its single element", () => {
-					const queue = new Queue(1);
-					queue.dequeue();
-					expect(queue.isEmpty()).toBe(true);
-				});
+			it("Remove last item", () => {
+				queue.insert(1);
+				queue.remove();
+				expect([...queue]).toEqual([]);
 			});
 		});
 
-		describe(".isEmpty", () => {
-			it("Returns true after added 1 element", () => {
+		describe(".empty", () => {
+			it("Returns true after insert item", () => {
 				const queue = new Queue();
-				queue.enqueue(1);
-				expect(queue.isEmpty()).toBe(false);
+				queue.insert(1);
+				expect(queue.empty()).toBe(false);
 			});
 
-			it("Returns false for no elements", () => {
+			it("Returns false for recent created queue", () => {
 				const queue = new Queue();
-				expect(queue.isEmpty()).toBe(true);
+				expect(queue.empty()).toBe(true);
 			});
 
-			it("Returns true after dequeue single element", () => {
+			it("Returns true after dequeue last item", () => {
 				const queue = new Queue(10);
-				queue.dequeue();
+				queue.remove();
 
-				expect(queue.isEmpty()).toBe(true);
+				expect(queue.empty()).toBe(true);
 			});
 
 			it("Returns false after dequeue and left with more than element", () => {
 				const queue = new Queue(10, 20);
 
-				queue.dequeue();
-				expect(queue.isEmpty()).toBe(false);
+				queue.remove();
+				expect(queue.empty()).toBe(false);
 			});
 
 			it("Returns false when constructing with single element", () => {
 				const queue = new Queue(10);
-				expect(queue.isEmpty()).toBe(false);
+				expect(queue.empty()).toBe(false);
 			});
 
 			it("Returns false when constructing with more than 1 element", () => {
 				const queue = new Queue(1, 2, 3);
-				expect(queue.isEmpty()).toBe(false);
+				expect(queue.empty()).toBe(false);
 			});
 		});
 
 		describe(".size", () => {
-			it("Returns 0 when constructing with no elements", () => {
+			it("Returns 0 for new queue", () => {
 				const queue = new Queue();
 				expect(queue.size()).toBe(0);
 			});
 
-			it("Returns 1 when constructing with 1 element", () => {
-				const queue = new Queue(1);
-				expect(queue.size()).toBe(1);
-			});
-
-			it.skip("Returns Max size elements for massive constructing", () => {
-				const size = Queue.MAX_SIZE;
-				const elements = [];
-				for (let i = 0; i < size; i++) elements.push(i);
-
-				const queue = new Queue(...elements);
-				expect(queue.size()).toBe(size);
+			it("Returns queued number of items", () => {
+				const queue = new Queue(1, 2, 3, 4);
+				expect(queue.size()).toBe(4);
 			});
 		});
 
 		describe(".clear", () => {
-			it("Removes all elements with no empty queue", () => {
-				const queue = new Queue(1, 2, 3);
+			it("Modify size equals 0", () => {
+				queue.insert(1, 2, 3, 4);
 				queue.clear();
 
-				expect([...queue].length).toBe(0);
+				expect(queue).toHaveLength(0);
+			});
+
+			it("Remove all items", () => {
+				queue.insert(1, 2, 3, 4);
+				queue.clear();
+				expect([...queue]).toEqual([]);
 			});
 
 			it("Keeps the queue empty", () => {
 				const queue = new Queue();
 				queue.clear();
 
-				expect(queue.length).toBe(0);
+				expect(queue).toHaveLength(0);
 			});
 		});
 	});

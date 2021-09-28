@@ -1,90 +1,107 @@
 /**
- * @file Queue data structure
- * @version 0.2.0
+ * @file Implementation of queue data structure usingo FIFO access collection
+ * @version 0.3.0
  */
 
-/**
- * Queue list to enqueue things and dequeue them
- */
-export type List<T> = ArrayLike<T>;
+import type { List } from "types";
 
-// retornar o memso objeto que seja
 /**
  * Queue Abstract Data Type
- *
- * All kinds of queues must implement this interface, them it can behave like a
- * queue
+ * @interface
  */
 interface QueueADT<T> {
-	top(): T | null | undefined;
-	isEmpty(): boolean;
-	enqueue(...elements: T[]): T | T[] | null;
-	dequeue(quantity?: number): T[] | T | null | undefined;
+	/**
+	 * return true of false depending whether or not the queue contains any items
+	 */
+	empty(): boolean;
+	/**
+	 * Insert several items in the queue, which can grow indefenely
+	 */
+	insert(...items: Array<T>): T | List<T> | null;
+	/**
+	 * Applied when the queue is nonempty
+	 * @throws {QueueUnderflow}
+	 */
+	remove(): T;
+	/**
+	 * returns the length of the queue
+	 */
 	size(): number;
+	/**
+	 * remove all elements from the queue
+	 */
 	clear(): this;
 }
 
 /**
- * Collection operation
+ * Throws Underflow Error when dequeuing empty queue
  */
-interface Collection<Element> {
-	concat(collection: Collection<Element>): Collection<Element>;
-
+export class QueueUnderflow extends Error {
 	/**
-	 * Transform each element in a collection modifying its values according to
-	 * callback function
-	 *
-	 * @param {function(data: Element): Element} callback Mapper function to
-	 *    transformer for each element from the collection
-	 */
-	map(callback: (data: Element) => Element): this;
-}
-
-/**
- * Max size queue error object
- */
-export class QueueFullError extends Error {
-	/**
-	 * Creates a QueueMaxSizeError with default message
+	 * created queue underflow error
 	 */
 	constructor() {
-		super("Queue reached the maximum size 4,294,967,295");
+		super("Queue underflow");
 	}
 }
 
 /**
- * Priotity function to enqueue follwing this algorythm
- *
- * An priority queue must give this function as argument on enqueue function
+ * The queue is implemented as a linked list, so node represents a list's node
  */
-interface PriorityFunction<T> {
-	(comparable: T): boolean;
-}
+type Node<T> = {
+	data: T;
+	next: Node<T>;
+} | null;
 
 /**
- * Define a queue data structure for queueing things
+ * A Queue is a linear structure which follows First In First Out order
  *
+ * A queue is an ordered collection os items from  which  items may  be deleted
+ * at one end (called front of the queue)  and into which items  may be
+ * inserted  at other end (called rear of the queue), which are implemented as
+ * a linked list
+ *
+ * @class
  * @implements {QueueADT}
+ * @implements {Iterable<T>}
  *
- * TODO: Usar uma função ao enfileirar para tornar em uma fila de prioridade
  */
 class Queue<T> implements QueueADT<T>, Iterable<T> {
-	static MAX_SIZE = 2 ** 32 - 1;
-	#list: Array<T> = [];
+	/**
+	 * Keeps track of queue size
+	 * @private
+	 */
+	#size: number;
+	/**
+	 * the front part of the queue, from where items gets removed
+	 * @private
+	 */
+	#front: Node<T>;
+	/**
+	 * the rear is where items get inserted
+	 * @private
+	 */
+	#rear: Node<T>;
 
 	/**
 	 * Create the queue with a list of optional elements
 	 */
-	constructor(...elements: Array<T>) {
-		this.enqueue(...elements);
+	constructor(...items: T[]) {
+		this.#size = 0;
+		this.#front = this.#rear = null;
+
+		this.insert(...items);
 	}
 
 	/**
 	 * Returns a iterator ordered as a queue
 	 */
 	*[Symbol.iterator](): Iterator<T> {
-		for (const item of this.#list) {
-			yield item;
+		let node = this.#front;
+
+		while (node !== null) {
+			yield node.data;
+			node = node.next;
 		}
 	}
 
@@ -98,25 +115,12 @@ class Queue<T> implements QueueADT<T>, Iterable<T> {
 	}
 
 	/**
-	 * Number of stored elements in the queue
+	 * Returns the quantity of stored items
 	 *
 	 * @return {number}
 	 */
 	size(): number {
-		return this.#list.length;
-	}
-
-	/**
-	 * Get the next element in line witouth dequeueing it
-	 *
-	 * Creates a new copy with only the first element of the queue, without anything
-	 * removing it. For empty queue it gets a null object
-	 *
-	 * @return {T}
-	 */
-	top(): T | null | undefined {
-		if (this.size() === 0) return null;
-		return this.#list.slice(0, 1).pop();
+		return this.#size;
 	}
 
 	/**
@@ -131,30 +135,31 @@ class Queue<T> implements QueueADT<T>, Iterable<T> {
 	 * element
 	 *
 	 * @throws QueueMaxSizeError when exceeds the queue size
-	 * @param {List<T>} elements elements to be enqueued
-	 * @return {List<T>}
+	 * @param {List<T>} items elements to be enqueued
+	 * @return {T | List<T> | null}
 	 */
-	enqueue(...elements: T[]): T | T[] | null {
-		if (elements.length === 0) return null;
+	insert(...items: Array<T>): T | List<T> | null {
+		const inserted = [];
 
-		if (this.size() + elements.length >= Queue.MAX_SIZE) {
-			throw new QueueFullError();
+		for (const item of items) {
+			const node = this.getnode(item);
+
+			if (this.#rear === null) {
+				this.#front = node;
+			} else {
+				this.#rear.next = node;
+			}
+
+			this.#rear = node;
+			inserted.push(item);
+			this.#size++;
 		}
 
-		this.#list.push(...elements);
-
-		return elements.length === 1 ? elements[0] : elements;
-	}
-
-	/**
-	 * Removes all elements turning the queue empty
-	 *
-	 * @return {this}
-	 */
-	clear(): this {
-		this.#list = [];
-
-		return this;
+		return inserted.length === 0
+			? null
+			: inserted.length === 1
+			? inserted[0]
+			: inserted;
 	}
 
 	/**
@@ -166,20 +171,38 @@ class Queue<T> implements QueueADT<T>, Iterable<T> {
 	 * single elements is returned otherwise it returns a array of deleted
 	 * elements, sorted by queue order.
 	 * Notice empty queue always returns null
-	 * When quantity <= 0 dequeue returns null
-	 * When quantity >= n dequeue is empty
 	 *
-	 * @param {number} quantity [1] number of elements to dequeue
-	 * @return {T[] | T | null}
+	 * @throws {QueueUnderflow}
+	 * @return {T}
 	 */
-	dequeue(quantity = 1): T[] | T | null | undefined {
-		if (quantity <= 0 || this.size() === 0) return null;
-		quantity = Math.min(quantity, this.length);
+	remove(): T {
+		if (this.empty()) {
+			throw new QueueUnderflow();
+		}
 
-		let dequeued: T[] = [];
-		dequeued = this.#list.splice(0, quantity);
+		const node = this.#front as NonNullable<Node<T>>;
+		const item = node.data;
 
-		return dequeued.length === 1 ? dequeued.pop() : dequeued;
+		this.#front = node.next;
+
+		if (this.#front === null) {
+			this.#rear = null;
+		}
+
+		this.#size--;
+		return item;
+	}
+
+	/**
+	 * Removes all elements turning the queue empty
+	 *
+	 * @return {this}
+	 */
+	clear(): this {
+		this.#rear = this.#front = null;
+		this.#size = 0;
+
+		return this;
 	}
 
 	/**
@@ -187,8 +210,26 @@ class Queue<T> implements QueueADT<T>, Iterable<T> {
 	 *
 	 * @return {number}
 	 */
-	isEmpty(): boolean {
+	empty(): boolean {
 		return this.size() === 0;
+	}
+
+	/**
+	 * Create a list node to be inserted at the queue
+	 *
+	 * Each node is a item from the perpective of the internal linked list. A
+	 * single node is then created by this method to be inserted at
+	 * {@link Queue#insert}
+	 *
+	 * @private
+	 * @param {T} data queue item information
+	 * @return {Node<T>}
+	 */
+	private getnode(data: T): NonNullable<Node<T>> {
+		return {
+			data,
+			next: null,
+		};
 	}
 }
 
