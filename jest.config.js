@@ -1,5 +1,4 @@
 const path = require("path");
-const { pathsToModuleNameMapper } = require("ts-jest/utils");
 
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
@@ -21,8 +20,11 @@ module.exports = {
 
 	moduleDirectories: ["node_modules", "<rootDir>"],
 
-	notify: true,
-
 	// The test environment that will be used for testing
 	testEnvironment: "node",
+
+	watchPlugins: [
+		"jest-watch-typeahead/filename",
+		"jest-watch-typeahead/testname",
+	],
 };
