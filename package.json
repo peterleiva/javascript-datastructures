@@ -5,7 +5,12 @@
   "scripts": {
     "build": "webpack --env mode=production",
     "dev": "webpack serve --env mode=development",
+    "lint": "eslint \".\"",
+    "format": "npm run prettier -- --write",
+    "format:check": "npm run prettier -- --check",
+    "prettier": "prettier \".\"",
     "test": "jest",
+    "test:watch": "npm t -- --watch",
     "coverage:reporter": "open-cli coverage/index.html"
   },
   "keywords": [
@@ -28,6 +33,7 @@
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-jest": "^24.4.2",
     "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^5.1.0",
     "jest": "^27.2.3",
     "lodash": "^4.17.20",
