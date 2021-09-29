@@ -65,6 +65,14 @@ type Node<T> = {
  * @implements {QueueADT}
  * @implements {Iterable<T>}
  *
+ * @example
+ * Inserting list of items
+ * ```js
+ * const items = [1, 2, 3, 4]
+ * const queue = new Queue()
+ * queue.insert(...items)
+ * ```
+ *
  */
 class Queue<T> implements QueueADT<T>, Iterable<T> {
 	/**
