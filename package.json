@@ -3,8 +3,7 @@
   "version": "0.3.0",
   "description": "Some data structures, binary tree, general tree, queue and so on",
   "scripts": {
-    "build": "webpack --env mode=production",
-    "dev": "webpack serve --env mode=development",
+    "build": "tsc -p tsconfig.build.json",
     "lint": "eslint \".\"",
     "format": "npm run prettier -- --write",
     "format:check": "npm run prettier -- --check",
@@ -12,7 +11,7 @@
     "test": "jest",
     "test:watch": "npm t -- --watch",
     "coverage:reporter": "open-cli coverage/index.html",
-    "generate-docs": "jsdoc -d docs src/index.ts"
+    "generate-docs": "jsdoc -d docs/api -R README.md dist"
   },
   "keywords": [
     "tree",
