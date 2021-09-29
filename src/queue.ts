@@ -15,11 +15,11 @@ interface QueueADT<T> {
 	 */
 	empty(): boolean;
 	/**
-	 * Insert several items in the queue, which can grow indefenely
+	 * Insert several items in the queue, which can grow indefinitely
 	 */
 	insert(...items: Array<T>): T | List<T> | null;
 	/**
-	 * Applied when the queue is nonempty
+	 * Remove the last first element inserted, applied when the queue is nonempty
 	 * @throws {QueueUnderflow}
 	 */
 	remove(): T;
