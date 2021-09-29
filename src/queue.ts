@@ -11,7 +11,7 @@ import type { List } from "types";
  */
 interface QueueADT<T> {
 	/**
-	 * return true of false depending whether or not the queue contains any items
+	 * return true or false depending whether or not the queue contains any items
 	 */
 	empty(): boolean;
 	/**
