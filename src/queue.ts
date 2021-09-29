@@ -46,7 +46,12 @@ export class QueueUnderflow extends Error {
 }
 
 /**
- * The queue is implemented as a linked list, so node represents a list's node
+ * This queue is implemented as a linked list. Node represents a single item
+ * stored in the queue
+ * @template T
+ * @typedef {?Object} Queue~Node
+ * @property {T} data - The actual item
+ * @property {QueueNode} next - next item of the queue
  */
 type Node<T> = {
 	data: T;
@@ -61,32 +66,40 @@ type Node<T> = {
  * inserted  at other end (called rear of the queue), which are implemented as
  * a linked list
  *
- * @class
- * @implements {QueueADT}
+ * @template T
  * @implements {Iterable<T>}
  *
- * @example
- * Inserting list of items
- * ```js
+ * @example <caption>Enqueing item</caption>
+ * const queue = new Queue()
+ * queue.insert('item') // size === 1
+ *
+ * @example <caption>Inserting multiple items</caption>
  * const items = [1, 2, 3, 4]
  * const queue = new Queue()
- * queue.insert(...items)
- * ```
+ * queue.insert(...items) // size === 4
+ *
+ * @example <caption>Removing item</caption>
+ * const queue = new Queue(1)
+ * queue.insert(2)
+ * const x = queue.remove() // x === 1
  *
  */
 class Queue<T> implements QueueADT<T>, Iterable<T> {
 	/**
 	 * Keeps track of queue size
+	 * @type {number}
 	 * @private
 	 */
 	#size: number;
 	/**
-	 * the front part of the queue, from where items gets removed
+	 * Place where items get removed
+	 * @type {Queue~Node}
 	 * @private
 	 */
 	#front: Node<T>;
 	/**
-	 * the rear is where items get inserted
+	 * Place where items get inserted
+	 * @type {Queue~Node}
 	 * @private
 	 */
 	#rear: Node<T>;
@@ -116,6 +129,7 @@ class Queue<T> implements QueueADT<T>, Iterable<T> {
 	/**
 	 * Alias for .size method
 	 *
+	 * @readonly
 	 * @return {number}
 	 */
 	get length(): number {
@@ -142,8 +156,8 @@ class Queue<T> implements QueueADT<T>, Iterable<T> {
 	 * are enqueue successfuly a copy of them is retuned as an array or a single
 	 * element
 	 *
-	 * @throws QueueMaxSizeError when exceeds the queue size
-	 * @param {List<T>} items elements to be enqueued
+	 * @template T
+	 * @param {...T} items elements to be enqueued
 	 * @return {T | List<T> | null}
 	 */
 	insert(...items: Array<T>): T | List<T> | null {
@@ -216,7 +230,7 @@ class Queue<T> implements QueueADT<T>, Iterable<T> {
 	/**
 	 * Check if the queue is empty
 	 *
-	 * @return {number}
+	 * @return {boolean}
 	 */
 	empty(): boolean {
 		return this.size() === 0;
