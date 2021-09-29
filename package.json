@@ -1,9 +1,12 @@
 {
-  "name": "tree-structures",
+  "name": "@algoritmos/data-structures",
   "version": "0.3.0",
   "description": "Some data structures, binary tree, general tree, queue and so on",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "lint": "eslint \".\"",
