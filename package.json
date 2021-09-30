@@ -16,7 +16,8 @@
     "test": "jest",
     "test:watch": "npm t -- --watch",
     "coverage:reporter": "open-cli coverage/index.html",
-    "generate-docs": "jsdoc -d docs/api -R README.md dist"
+    "generate-docs": "jsdoc -d docs/api -R README.md dist",
+    "prepare": "npm run build"
   },
   "keywords": [
     "tree",
