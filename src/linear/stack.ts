@@ -1,36 +1,11 @@
 /**
- * @file implementation of stack data structure. According to Last In, First Out
+ * @file implementation of stack data structure, following to Last In, First Out
  *  order
- * @version 0.2.0
+ * @version 0.3.0
  */
-type Node<T> = {
-	item: T;
-	next: Node<T>;
-} | null;
 
-interface StackADT<T> {
-	/**
-	 * Returns the top of the stack
-	 * @throws {StackUnderflow}
-	 */
-	top(): T;
-	/**
-	 * Remove the last item inserted
-	 * @throws {StackUnderflow}
-	 */
-	pop(): T;
-	/**
-	 * Insert item at the beginning of the stack
-	 *
-	 * @param {T} item new data to be inserted
-	 * @return {T}
-	 */
-	push(item: T): T;
-	/**
-	 * return true of false depending whether or not the stack contains any items
-	 */
-	empty(): boolean;
-}
+import Iterable from "../iterable";
+import type { Stack as StackADT, Node } from "./types";
 
 /**
  * Stack underflow is throwed when poping empty stack
@@ -68,7 +43,7 @@ export class StackUnderflow extends Error {
  * const queue = new Stack(1, 2)
  * const x = queue.pop() // x === 2
  */
-export default class Stack<T> implements StackADT<T>, Iterable<T> {
+export default class Stack<T> extends Iterable<T> implements StackADT<T> {
 	/**
 	 * Head of the stack
 	 * @private
@@ -84,6 +59,8 @@ export default class Stack<T> implements StackADT<T>, Iterable<T> {
 	 * Initializes new stack
 	 */
 	constructor(...items: Array<T>) {
+		super();
+
 		this.#size = 0;
 		this.#top = null;
 
@@ -93,15 +70,28 @@ export default class Stack<T> implements StackADT<T>, Iterable<T> {
 	}
 
 	/**
-	 * Defines iterator return ordered collection of stack items
+	 * Returns an iterable of key, value pairs for every entry in collection
 	 */
-	*[Symbol.iterator](): Iterator<T> {
+	*entries(): IterableIterator<[number, T]> {
 		let node = this.#top;
+		let index = 0;
 
 		while (node !== null) {
-			yield node.item;
+			yield [index, node.item];
 			node = node.next;
+			index++;
 		}
+	}
+
+	/**
+	 * Remove all elements from the collection
+	 * @return {this}
+	 */
+	clear(): this {
+		this.#size = 0;
+		this.#top = null;
+
+		return this;
 	}
 
 	/**

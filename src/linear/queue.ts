@@ -1,37 +1,9 @@
 /**
  * @file Implementation of queue data structure usingo FIFO access collection
- * @version 0.3.0
+ * @version 0.4.0
  */
 
-import type { List } from "./types";
-
-/**
- * Queue Abstract Data Type
- * @interface
- */
-interface QueueADT<T> {
-	/**
-	 * return true or false depending whether or not the queue contains any items
-	 */
-	empty(): boolean;
-	/**
-	 * Insert several items in the queue, which can grow indefinitely
-	 */
-	insert(...items: Array<T>): T | List<T> | null;
-	/**
-	 * Remove the last first element inserted, applied when the queue is nonempty
-	 * @throws {QueueUnderflow}
-	 */
-	remove(): T;
-	/**
-	 * returns the length of the queue
-	 */
-	size(): number;
-	/**
-	 * remove all elements from the queue
-	 */
-	clear(): this;
-}
+import type { List, Queue as QueueADT } from "./types";
 
 /**
  * Throws Underflow Error when dequeuing empty queue

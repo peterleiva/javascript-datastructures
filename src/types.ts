@@ -1,29 +1,54 @@
+export interface Collection {
+	/**
+	 * Alias for {@link Linear.size}
+	 * @type {number}
+	 */
+	length: number;
+	/**
+	 * Returns the quantity of items stored
+	 * @return {number}
+	 */
+	size(): number;
+	/**
+	 * return true of false depending whether or not the stack contains any items
+	 * @return {boolean}
+	 */
+	empty(): boolean;
+	/**
+	 * remove all elements from the collection
+	 * @return {this}
+	 */
+	clear(): this;
+}
+
 /**
  * Collection operation
  */
-export interface Collection<Element> {
+export interface CollectionOperations<Element> {
 	/**
 	 * Concatenate collections creating a new one
-	 * @param {Collection<Element>} collection
-	 * @return {Collection<Element>}
+	 * @param {CollectionOperations<Element>} collection
+	 * @return {CollectionOperations<Element>}
 	 */
-	concat(collection: Collection<Element>): Collection<Element>;
+	concat(
+		collection: CollectionOperations<Element>
+	): CollectionOperations<Element>;
 	/**
 	 * Transform each element in a collection modifying its values according to
 	 * callback function
 	 *
 	 * @param {Function} callback Mapper function to
 	 *    transform for each element from the collection
-	 * @return {Collection<Element>}
+	 * @return {CollectionOperations<Element>}
 	 */
-	map(callback: (data: Element) => Element): Collection<Element>;
+	map(callback: (data: Element) => Element): CollectionOperations<Element>;
 	/**
 	 * @todo define it better
 	 */
 	reduce(
 		callback: (data: Element) => Element,
 		initialValue: unknown
-	): Collection<Element>;
+	): CollectionOperations<Element>;
 	/**
 	 * Transform collection to internal javascript array element
 	 * @return {T[]}
@@ -45,9 +70,9 @@ export interface Collection<Element> {
 	/**
 	 * Partition collection following a criterea function
 	 * @param {Function} fn partition criterea
-	 * @return {[Collection<Element>, Collection<Element>]}
+	 * @return {[CollectionOperations<Element>, CollectionOperations<Element>]}
 	 */
 	partition(
 		fn: (value: Element) => boolean
-	): [Collection<Element>, Collection<Element>];
+	): [CollectionOperations<Element>, CollectionOperations<Element>];
 }
