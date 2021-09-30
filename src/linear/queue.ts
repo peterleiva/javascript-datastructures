@@ -3,7 +3,7 @@
  * @version 0.3.0
  */
 
-import type { List } from "types";
+import type { List } from "./types";
 
 /**
  * Queue Abstract Data Type

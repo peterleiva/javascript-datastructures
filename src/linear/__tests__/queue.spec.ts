@@ -1,4 +1,4 @@
-import Queue, { QueueUnderflow } from "queue";
+import Queue, { QueueUnderflow } from "../queue";
 
 describe("Queue", () => {
 	let queue: Queue<number>;
