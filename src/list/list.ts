@@ -24,6 +24,10 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 	protected head: Node<T>;
 	protected _length: number;
 
+	/**
+	 * Initializes list optionally with multiple items
+	 * @param {...T} items
+	 */
 	constructor(...items: T[]) {
 		this.head = null;
 		this._length = 0;
@@ -31,31 +35,45 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		for (const item of items) this.enqueue(item);
 	}
 
+	/**
+	 * Iterate over the list of items
+	 */
 	*[Symbol.iterator](): IterableIterator<T> {
 		for (const [, data] of this.entries()) {
 			yield data;
 		}
 	}
 
+	/**
+	 * Iterate over the values stored
+	 */
 	*values(): IterableIterator<T> {
 		for (const item of this) {
 			yield item;
 		}
 	}
 
+	/**
+	 * Iterate over index
+	 */
 	*keys(): IterableIterator<number> {
 		for (const [i] of this.entries()) {
 			yield i;
 		}
 	}
 
-	// FIXME: T pode retornar null também aqui está como as T
+	/**
+	 * FIXME: T pode retornar null também aqui está como as T
+	 */
 	*entries(): IterableIterator<[number, T]> {
 		for (const { index, current } of this.nodeEntries()) {
 			yield [index, current.data as T];
 		}
 	}
 
+	/**
+	 * Iterator helper, which iterates over node entries, used by other iterators
+	 */
 	private *nodeEntries(): IterableIterator<NodeEntry<T>> {
 		let current = this.head;
 		let index = 0;
@@ -67,19 +85,27 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 			current = current.right;
 		}
 	}
-
-	map(fn: (value: T) => T): LinkedList<T> {
+	/**
+	 * Transform each element in a collection modifying its values according to
+	 * callback function
+	 *
+	 * @param {Function} callback call for every item
+	 * @return {Collection<Element>}
+	 */
+	map(callback: (value: T) => T): LinkedList<T> {
 		const mappedList = new LinkedList<T>();
 
 		for (const value of this) {
-			mappedList.enqueue(fn(value));
+			mappedList.enqueue(callback(value));
 		}
 
 		return mappedList;
 	}
 
 	/**
-	 * Modify the list concatenating a listing to end and returns it
+	 * Concatenate collections creating a new one
+	 * @param {LinkedList<T>} list
+	 * @return {LinkedList<T>}
 	 */
 	concat(list: LinkedList<T>): this {
 		for (const value of list) {
@@ -88,11 +114,12 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 
 		return this;
 	}
-
-	// reduce(fn: (accumulator: number, currentValue: T) => number, initial: number): T {
-	// 	[].reduce
-	// }
-
+	/**
+	 * Partition collection following a criterea function
+	 *
+	 * @param {Function} fn partition criterea
+	 * @return {[Collection<Element>, Collection<Element>]}
+	 */
 	partition(fn: (value: T) => boolean): [LinkedList<T>, LinkedList<T>] {
 		const left = new LinkedList<T>();
 		const right = new LinkedList<T>();
@@ -104,6 +131,11 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return [left, right];
 	}
 
+	/**
+	 * Return index of stored element
+	 * @param {T} item
+	 * @return {number}
+	 */
 	indexOf(item: T): number {
 		for (const [i, value] of this.entries()) {
 			if (Object.is(value, item)) {
@@ -114,21 +146,32 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return -1;
 	}
 
+	/**
+	 * transform collection to array
+	 * @return {T[]}
+	 */
 	toArray(): T[] {
 		return [...this];
 	}
-
+	/**
+	 *  Returns the number of elements stored in the collection
+	 */
 	get length(): number {
 		return this._length;
 	}
 
 	/**
 	 * alias for .length
+	 * @return {number}
 	 */
 	size(): number {
 		return this.length;
 	}
 
+	/**
+	 * Return whether the collection has element stored or not
+	 * @return {boolean}
+	 */
 	isEmpty(): boolean {
 		return this.head === null;
 	}
@@ -136,30 +179,42 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 	remove(index: number): T;
 	remove(data: T): T;
 	remove(comparator: ComparableFn<T>): T | T[];
-	remove(criterea: number | ComparableFn<T> | T) {
-		if (typeof criterea === "number") {
-			return this.removeAt(criterea);
-		} else {
-			const removed: (T | null)[] = [];
+	/**
+	 * Remove item from the list
+	 * @param {number | ComparableFn<T>} criterea
+	 * @return {T | T[] | null}
+	 */
+	remove(criterea: number | ComparableFn<T> | T): T | T[] | null {
+		// if (typeof criterea === "number") {
+		// 	return this.removeAt(criterea);
+		// } else {
+		// 	const removed = [];
 
-			// FIXME: Só itera uma vez quando existe match, devido ao iterator entries
-			for (const [i, data] of this.entries()) {
-				const matchesCriterea =
-					criterea instanceof Function
-						? criterea(data as T)
-						: Object.is(data, criterea);
+		// 	// FIXME: Só itera uma vez quando existe match, devido ao iterator entries
+		// 	for (const [i, data] of this.entries()) {
+		// 		const matchesCriterea =
+		// 			criterea instanceof Function
+		// 				? criterea(data as T)
+		// 				: Object.is(data, criterea);
 
-				if (matchesCriterea) {
-					console.log("before Remove", [...this]);
-					removed.push(this.removeAt(i));
-					console.log("After Remove", [...this]);
-				}
-			}
+		// 		if (matchesCriterea) {
+		// 			console.log("before Remove", [...this]);
+		// 			removed.push(this.removeAt(i));
+		// 			console.log("After Remove", [...this]);
+		// 		}
+		// 	}
 
-			return removed;
-		}
+		// 	return removed;
+		// }
+		throw new Error("Must be fixed");
+		return null;
 	}
 
+	/**
+	 * Removes item from specified position
+	 * @param {number} index
+	 * @return {?T}
+	 */
 	private removeAt(index: number): T | null {
 		if (this.isOutOfIndex(index)) {
 			throw new IndexOutOfRangeException(this.size(), index);
@@ -196,19 +251,21 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return data;
 	}
 
+	/**
+	 * Checks whether some index is out of order
+	 * @param {number} index
+	 * @return {boolean}
+	 */
 	private isOutOfIndex(index: number): boolean {
 		return index < 0 || index >= this._length;
 	}
 
-	// pop(): T {}
-
-	// dequeue(): T {}
-
 	/**
 	 * Get a data stored at some index or null if empty or out of range
 	 *
-	 * @throws ListOutOfRange
+	 * @throws {ListOutOfRange}
 	 * @param {number} index
+	 * @return {?T}
 	 */
 	get(index: number): T | null {
 		return this.getNode(index)?.data || null;
@@ -216,6 +273,8 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 
 	/**
 	 * Returns a node according to index or null if do not exists
+	 * @param {number} index}
+	 * @return {Node<T>}
 	 */
 	private getNode(index: number): Node<T> {
 		if (index < 0 || index >= this.length) {
@@ -229,6 +288,11 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return null;
 	}
 
+	/**
+	 * Retrieve element at some position
+	 * @param {number} index
+	 * @return {?T}
+	 */
 	at(index: number): T | null {
 		if (index > 0) {
 			return this.get(index);
@@ -243,15 +307,17 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		}
 	}
 
-	join(list: LinkedList<T>, index: number): this {
-		throw new Error("Not implemented");
-
-		return this;
-	}
-
-	insert(index: number, ...data: T[]): T | T[];
+	insert(index: number, ...data: T[]): T | T[] | null;
 	insert(comparator: ComparableFn<T>, ...data: T[]): T | T[];
-	insert(criterea: number | ComparableFn<T>, ...data: T[]) {
+	/**
+	 * Insert a group data at the list
+	 *
+	 * @throws {IndexOutOfRangeException}
+	 * @param {number | ComparableFn<T>} criterea
+	 * @param {...T} data
+	 * @return {T | T[]}
+	 */
+	insert(criterea: number | ComparableFn<T>, ...data: T[]): T[] | T | null {
 		const newNodes = this.createNodeList(data);
 		if (newNodes.length === 0) return null;
 
@@ -282,6 +348,11 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return data;
 	}
 
+	/**
+	 * Insert a new data at the beginning of the list
+	 * @param {T} data
+	 * @return {this}
+	 */
 	push(data: T): this {
 		const node: Node<T> = this.createNode(data);
 
@@ -296,6 +367,11 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return this;
 	}
 
+	/**
+	 * Insert a element at the end of the list
+	 * @param {T} data
+	 * @return {this}
+	 */
 	enqueue(data: T): this {
 		const node = this.createNode(data);
 
@@ -316,7 +392,10 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 
 		return this;
 	}
-
+	/**
+	 * Remove the first element of the list, which means with index 0
+	 * @return {?T}
+	 */
 	dequeue(): T | null {
 		if (!this.head) {
 			throw new EmptyListException();
@@ -332,6 +411,11 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return data;
 	}
 
+	/**
+	 * Remove the last element from the list and return it
+	 * @throws EmptyListException
+	 * @return {?T}
+	 */
 	pop(): T | null {
 		if (!this.head) {
 			throw new EmptyListException();
@@ -358,6 +442,10 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return data;
 	}
 
+	/**
+	 * Remove all elements from the list
+	 * @return {this}
+	 */
 	clear(): this {
 		for (const entry of this.nodeEntries()) {
 			this.markGarbageCollect(entry.current);
@@ -368,10 +456,18 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return this;
 	}
 
+	/**
+	 * Returns the first element of the list
+	 * @return {?T}
+	 */
 	peek(): T | null {
 		return this.head?.data ?? null;
 	}
 
+	/**
+	 *  Returns the last element of the list
+	 * @return {?T}
+	 */
 	tail(): T | null {
 		let node: NodeEntry<T> | null = null;
 		for (node of this.nodeEntries());
@@ -379,14 +475,11 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return node?.current?.data ?? null;
 	}
 
-	// sort(): this {}
-
-	// insertAfter(data: T): T {}
-
 	/**
 	 * Linear search on list
 	 *
-	 * @param data data to be search
+	 * @param {T} data data to be search
+	 * @return {boolean}
 	 */
 	contains(data: T): boolean {
 		for (const item of this) {
@@ -396,6 +489,11 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return false;
 	}
 
+	/**
+	 * Create node for doubly linked list
+	 * @param {T} data
+	 * @return {!Node<T>}
+	 */
 	private createNode(data: T): NonNullable<Node<T>> {
 		return {
 			data,
@@ -404,6 +502,11 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		};
 	}
 
+	/**
+	 * Creates list of node items
+	 * @param {T[]} items
+	 * @return {Array<!Node<T>>}
+	 */
 	private createNodeList(items: T[]): NonNullable<Node<T>>[] {
 		const list: NonNullable<Node<T>>[] = [];
 
@@ -422,6 +525,10 @@ export default class LinkedList<T> implements ListADT<T>, Iterable<T> {
 		return list;
 	}
 
+	/**
+	 * Mark item to be freed
+	 * @param {!Node<T>} node
+	 */
 	private markGarbageCollect(node: NonNullable<Node<T>>) {
 		node.right = node.left = node.data = null;
 	}

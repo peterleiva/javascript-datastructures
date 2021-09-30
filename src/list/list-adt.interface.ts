@@ -10,24 +10,31 @@ export default interface ListADT<T> {
 	/**
 	 * Remove the last element from the list and return it
 	 * @throws EmptyListException
+	 * @return {?T}
 	 */
 	pop(): T | null;
 	/**
 	 * Insert a new data at the beginning of the list
+	 * @param {T} data
+	 * @return {this}
 	 */
 	push(data: T): this;
 	/**
 	 * Insert a element at the end of the list
+	 * @param {T} data
+	 * @return {this}
 	 */
 	enqueue(data: T): this;
 	/**
 	 * Remove the first element of the list, which means with index 0
+	 * @return {?T}
 	 */
 	dequeue(): T | null;
 	/**
-	 * Checks if a element exists with a Object.is comparison
+	 * Linear search on list
 	 *
-	 * @param {T} data
+	 * @param {T} data data to be search
+	 * @return {boolean}
 	 */
 	contains(data: T): boolean;
 	/**
@@ -60,20 +67,21 @@ export default interface ListADT<T> {
 	/**
 	 * Remove permanently elements of the list
 	 *
-	 * @throws IndexOutOfRangeException
-	 * @throws ElementDoNotExists
+	 * @throws {IndexOutOfRangeException}
+	 * @throws {ElementDoNotExists}
 	 * @param comparable
 	 */
-	remove(data: T): T;
+	remove(data: T): T | null;
 	remove(index: number): T;
 	remove(comparator: ComparableFn<T>): T | T[];
 	/**
 	 * Insert a group data at the list
 	 *
-	 * @throws IndexOutOfRangeException
-	 * @param data
-	 * @param comparable
+	 * @throws {IndexOutOfRangeException}
+	 * @param {number | ComparableFn<T>} criterea
+	 * @param {...T} data
+	 * @return {T | T[]}
 	 */
+	insert(index: number, ...data: T[]): T[] | T | null;
 	insert(comparator: ComparableFn<T>, ...data: T[]): T | T[];
-	insert(index: number, ...data: T[]): T | T[];
 }
