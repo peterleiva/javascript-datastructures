@@ -1,6 +1,3 @@
-import type { Collection } from "../types";
-import Iterable from "../iterable";
-
 /**
  * Queue list to enqueue things and dequeue them
  */
@@ -26,7 +23,7 @@ export type DoublyNode<T> = {
  * @interface
  * @template T
  */
-export interface Queue<T> extends Collection {
+export interface Queue<T> {
 	/**
 	 * Insert several items in the queue, which can grow indefinitely
 	 */
@@ -45,7 +42,7 @@ export interface Queue<T> extends Collection {
 	peek(): T;
 }
 
-export interface Stack<T> extends Collection {
+export interface Stack<T> {
 	/**
 	 * Returns the top of the stack
 	 * @throws {StackUnderflow}

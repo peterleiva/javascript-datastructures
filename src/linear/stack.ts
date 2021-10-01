@@ -1,10 +1,11 @@
 /**
  * @file implementation of stack data structure, following to Last In, First Out
  *  order
- * @version 0.3.0
+ * @version 0.4.0
  */
 
-import Iterable from "../iterable";
+import { iterable, Iterable } from "../iterable";
+import type { Collection } from "../types";
 import type { Stack as StackADT, Node } from "./types";
 
 /**
@@ -19,6 +20,7 @@ export class StackUnderflow extends Error {
 	}
 }
 
+@iterable
 /**
  * A Stack is a linear structure which follows First In Last Out order
  *
@@ -43,7 +45,7 @@ export class StackUnderflow extends Error {
  * const queue = new Stack(1, 2)
  * const x = queue.pop() // x === 2
  */
-export default class Stack<T> extends Iterable<T> implements StackADT<T> {
+export default class Stack<T> implements StackADT<T>, Collection {
 	/**
 	 * Head of the stack
 	 * @private
@@ -59,8 +61,6 @@ export default class Stack<T> extends Iterable<T> implements StackADT<T> {
 	 * Initializes new stack
 	 */
 	constructor(...items: Array<T>) {
-		super();
-
 		this.#size = 0;
 		this.#top = null;
 
@@ -179,3 +179,7 @@ export default class Stack<T> extends Iterable<T> implements StackADT<T> {
 		};
 	}
 }
+
+// Due to mixin iterable must define a merged interface for stack
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export default interface Stack<T> extends Iterable<T> {}
