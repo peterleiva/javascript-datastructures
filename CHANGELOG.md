@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Iterable mixin
+- Iterable mixin to transform linear data structure iterable
 
 #### [Queue](src/linear/queue.ts)
 
