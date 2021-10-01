@@ -1,9 +1,11 @@
 /**
  * @file Implementation of queue data structure usingo FIFO access collection
- * @version 0.4.0
+ * @version 0.5.0
  */
 
-import type { List, Queue as QueueADT } from "./types";
+import type { Collection } from "../types";
+import type { List, Queue as QueueADT, Node } from "./types";
+import { iterable, Iterable } from "../iterable";
 
 /**
  * Throws Underflow Error when dequeuing empty queue
@@ -17,19 +19,7 @@ export class QueueUnderflow extends Error {
 	}
 }
 
-/**
- * This queue is implemented as a linked list. Node represents a single item
- * stored in the queue
- * @template T
- * @typedef {?Object} Queue~Node
- * @property {T} data - The actual item
- * @property {QueueNode} next - next item of the queue
- */
-type Node<T> = {
-	data: T;
-	next: Node<T>;
-} | null;
-
+@iterable
 /**
  * A Queue is a linear structure which follows First In First Out order
  *
@@ -56,7 +46,7 @@ type Node<T> = {
  * const x = queue.remove() // x === 1
  *
  */
-class Queue<T> implements QueueADT<T>, Iterable<T> {
+export default class Queue<T> implements QueueADT<T>, Collection {
 	/**
 	 * Keeps track of queue size
 	 * @type {number}
@@ -89,13 +79,28 @@ class Queue<T> implements QueueADT<T>, Iterable<T> {
 	/**
 	 * Returns a iterator ordered as a queue
 	 */
-	*[Symbol.iterator](): Iterator<T> {
+	*entries(): IterableIterator<[number, T]> {
 		let node = this.#front;
+		let index = 0;
 
 		while (node !== null) {
-			yield node.data;
+			yield [index, node.item];
 			node = node.next;
+			index++;
 		}
+	}
+
+	/**
+	 * Retrieve the first element from the queue, the next to be removed
+	 * @throws {QueueUnderflow}
+	 * @return {T}
+	 */
+	peek(): T {
+		if (this.#rear === null) {
+			throw new QueueUnderflow();
+		}
+
+		return this.#rear.item;
 	}
 
 	/**
@@ -175,7 +180,7 @@ class Queue<T> implements QueueADT<T>, Iterable<T> {
 		}
 
 		const node = this.#front as NonNullable<Node<T>>;
-		const item = node.data;
+		const item = node.item;
 
 		this.#front = node.next;
 
@@ -216,15 +221,16 @@ class Queue<T> implements QueueADT<T>, Iterable<T> {
 	 * {@link Queue#insert}
 	 *
 	 * @private
-	 * @param {T} data queue item information
+	 * @param {T} item queue item information
 	 * @return {Node<T>}
 	 */
-	private getnode(data: T): NonNullable<Node<T>> {
+	private getnode(item: T): NonNullable<Node<T>> {
 		return {
-			data,
+			item,
 			next: null,
 		};
 	}
 }
 
-export default Queue;
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export default interface Queue<T> extends Iterable<T> {}

@@ -3,11 +3,27 @@
  */
 export type List<T> = ArrayLike<T>;
 
+/**
+ * Node represents a single node item with two link to next node
+ * @template T
+ * @typedef {?Object} Node
+ * @property {T} data - The actual item
+ * @property {Node} next - next item of the queue
+ */
 export type Node<T> = {
 	item: T;
 	next: Node<T>;
 } | null;
 
+/**
+ * Node represents a single node item with two link to previous and next node
+ * stored in the queue
+ * @template T
+ * @typedef {?Object} Node
+ * @property {T} data - The actual item
+ * @property {Node} prev - prev item of the queue
+ * @property {Node} next - next item of the queue
+ */
 export type DoublyNode<T> = {
 	item: T;
 	prev: DoublyNode<T>;
