@@ -76,3 +76,8 @@ export interface CollectionOperations<Element> {
 		fn: (value: Element) => boolean
 	): [CollectionOperations<Element>, CollectionOperations<Element>];
 }
+
+export type Constructor<T = Record<string, unknown>> = new (
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	...args: any[]
+) => T;
