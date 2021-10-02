@@ -8,12 +8,10 @@ export interface Iterable<T> {
 	 * Defines IterableIterator return ordered collection of stack items
 	 */
 	[Symbol.iterator](): IterableIterator<T>;
-
 	/**
 	 * Returns an iterable of keys in the collection
 	 */
 	keys(): IterableIterator<number>;
-
 	/**
 	 * Returns an iterable of values in the collection
 	 */

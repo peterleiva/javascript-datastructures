@@ -1,6 +1,6 @@
 export interface Collection {
 	/**
-	 * Alias for {@link Linear.size}
+	 * Alias for {@link Collection.size}
 	 * @type {number}
 	 */
 	length: number;
