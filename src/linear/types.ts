@@ -26,8 +26,8 @@ export type Node<T> = {
  */
 export type DoublyNode<T> = {
 	item: T;
-	prev: DoublyNode<T>;
-	next: DoublyNode<T>;
+	left: DoublyNode<T>;
+	right: DoublyNode<T>;
 } | null;
 
 /**
@@ -61,12 +61,12 @@ export interface Queue<T> {
 export interface Stack<T> {
 	/**
 	 * Returns the top of the stack
-	 * @throws {StackUnderflow}
+	 * @throws {Underflow}
 	 */
 	top(): T;
 	/**
 	 * Remove the last item inserted
-	 * @throws {StackUnderflow}
+	 * @throws {Underflow}
 	 */
 	pop(): T;
 	/**
@@ -76,4 +76,24 @@ export interface Stack<T> {
 	 * @return {T}
 	 */
 	push(item: T): T;
+}
+export interface Deque<T> {
+	/**
+	 * Insert item at the left end
+	 * @param item
+	 */
+	insertLeft(item: T): T;
+	/**
+	 * Insert item at the right end
+	 * @param item
+	 */
+	insertRight(item: T): T;
+	/**
+	 * Delete last item from the left end
+	 */
+	deleteLeft(): T;
+	/**
+	 * Delete last item from the right end
+	 */
+	deleteRight(): T;
 }
