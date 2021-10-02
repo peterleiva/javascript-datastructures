@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Stack should behave like iterable entries return tuple of index and values 1`] = `
+Array [
+  Array [
+    0,
+    3,
+  ],
+  Array [
+    1,
+    2,
+  ],
+  Array [
+    2,
+    1,
+  ],
+]
+`;
+
+exports[`Stack should behave like iterable keys returns indices from collection 1`] = `
+Array [
+  0,
+  1,
+  2,
+]
+`;
+
+exports[`Stack should behave like iterable must be iterator 1`] = `
+Array [
+  3,
+  2,
+  1,
+]
+`;
+
+exports[`Stack should behave like iterable values returns values of collection 1`] = `
+Array [
+  3,
+  2,
+  1,
+]
+`;

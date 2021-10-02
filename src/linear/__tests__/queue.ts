@@ -1,3 +1,4 @@
+import { shouldBehaveLikeIterable } from "shared";
 import Queue, { QueueUnderflow } from "../queue";
 
 describe("Queue", () => {
@@ -6,6 +7,7 @@ describe("Queue", () => {
 	beforeEach(() => {
 		queue = new Queue();
 	});
+	shouldBehaveLikeIterable(new Queue(1, 2, 3));
 
 	describe("Queue creation", () => {
 		describe("With Argument", () => {

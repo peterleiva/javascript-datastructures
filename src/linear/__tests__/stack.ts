@@ -1,28 +1,18 @@
 import Stack, { StackUnderflow } from "../stack";
+import { shouldBehaveLikeIterable } from "shared/should-behave-like-iterable";
 
 describe("Stack", () => {
 	let stack: Stack<unknown>;
 
 	beforeEach(() => (stack = new Stack()));
 
+	shouldBehaveLikeIterable(new Stack(1, 2, 3));
 	describe("Methods", () => {
 		describe("Initiating", () => {
 			it("push in order of arguments", () => {
 				const items = [1, 2, 3, 4];
 				const stack = new Stack(...items);
 				expect([...stack]).toEqual(items.reverse());
-			});
-		});
-
-		describe("Iterating", () => {
-			it("Gets no items for empty stack", () => {
-				expect([...stack]).toEqual([]);
-			});
-
-			it("Ordered by LIFO", () => {
-				stack.push(1);
-				stack.push(2);
-				expect([...stack]).toEqual([2, 1]);
 			});
 		});
 
