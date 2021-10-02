@@ -7,18 +7,7 @@
 import { iterable, Iterable } from "../iterable";
 import type { Collection } from "../types";
 import type { Stack as StackADT, Node } from "./types";
-
-/**
- * Stack underflow is throwed when poping empty stack
- */
-export class StackUnderflow extends Error {
-	/**
-	 * initializes stack underflow
-	 */
-	constructor() {
-		super("Stack underflow");
-	}
-}
+import { Underflow } from "./errors";
 
 @iterable
 /**
@@ -27,7 +16,7 @@ export class StackUnderflow extends Error {
  * A queue is an ordered collection os items from  which  items may be deleted
  * and inserted only at the top of the stack (called front of the top). An
  * operation of {@link Stack#pop} and {@link Stack#top} can throws
- * {@link StackUnderflow} exception when the stack is empty
+ * {@link Underflow} exception when the stack is empty
  *
  * @template T
  * @implements {Iterable<T>}
@@ -121,12 +110,12 @@ export default class Stack<T> implements StackADT<T>, Collection {
 	/**
 	 * Returns the top of the stack
 	 *
-	 * @throws {StackUnderflow}
+	 * @throws {Underflow}
 	 * @return {T}
 	 */
 	top(): T {
 		if (this.#top === null) {
-			throw new StackUnderflow();
+			throw new Underflow();
 		}
 
 		return this.#top.item;
@@ -150,12 +139,12 @@ export default class Stack<T> implements StackADT<T>, Collection {
 	/**
 	 * Remove the last item inserted
 	 *
-	 * @throws {StackUnderflow}
+	 * @throws {Underflow}
 	 * @return {T}
 	 */
 	pop(): T {
 		if (this.#top === null) {
-			throw new StackUnderflow();
+			throw new Underflow();
 		}
 
 		const node = this.#top;

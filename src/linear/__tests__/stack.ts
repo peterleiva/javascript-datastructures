@@ -1,4 +1,5 @@
-import Stack, { StackUnderflow } from "../stack";
+import Stack from "../stack";
+import { Underflow } from "../errors";
 import { shouldBehaveLikeIterable } from "shared/should-behave-like-iterable";
 
 describe("Stack", () => {
@@ -18,7 +19,7 @@ describe("Stack", () => {
 
 		describe("#top", () => {
 			it("throws StackUnderflow for empty stack", () => {
-				expect(() => stack.top()).toThrow(StackUnderflow);
+				expect(() => stack.top()).toThrow(Underflow);
 			});
 
 			it("returns single item stored", () => {
@@ -40,8 +41,8 @@ describe("Stack", () => {
 		});
 
 		describe("#pop", () => {
-			it("throws StackUnderflow for empty stack", () => {
-				expect(() => stack.pop()).toThrow(StackUnderflow);
+			it("throws Underflow for empty stack", () => {
+				expect(() => stack.pop()).toThrow(Underflow);
 			});
 
 			it("return last item pushed", () => {

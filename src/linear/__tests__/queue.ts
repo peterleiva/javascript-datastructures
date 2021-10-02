@@ -1,5 +1,6 @@
 import { shouldBehaveLikeIterable } from "shared";
-import Queue, { QueueUnderflow } from "../queue";
+import Queue from "../queue";
+import { Underflow } from "../errors";
 
 describe("Queue", () => {
 	let queue: Queue<number>;
@@ -103,8 +104,8 @@ describe("Queue", () => {
 		});
 
 		describe(".remove", () => {
-			it("Dequeuing empty queue throws QueueUnderflow", () => {
-				expect(() => queue.remove()).toThrow(QueueUnderflow);
+			it("Dequeuing empty queue throws Underflow", () => {
+				expect(() => queue.remove()).toThrow(Underflow);
 			});
 
 			it("Returns first item inserted", () => {

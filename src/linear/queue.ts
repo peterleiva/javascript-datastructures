@@ -6,18 +6,7 @@
 import type { Collection } from "../types";
 import type { List, Queue as QueueADT, Node } from "./types";
 import { iterable, Iterable } from "../iterable";
-
-/**
- * Throws Underflow Error when dequeuing empty queue
- */
-export class QueueUnderflow extends Error {
-	/**
-	 * created queue underflow error
-	 */
-	constructor() {
-		super("Queue underflow");
-	}
-}
+import { Underflow } from "./errors";
 
 @iterable
 /**
@@ -92,12 +81,12 @@ export default class Queue<T> implements QueueADT<T>, Collection {
 
 	/**
 	 * Retrieve the first element from the queue, the next to be removed
-	 * @throws {QueueUnderflow}
+	 * @throws {Underflow}
 	 * @return {T}
 	 */
 	peek(): T {
 		if (this.#rear === null) {
-			throw new QueueUnderflow();
+			throw new Underflow();
 		}
 
 		return this.#rear.item;
@@ -171,12 +160,12 @@ export default class Queue<T> implements QueueADT<T>, Collection {
 	 * elements, sorted by queue order.
 	 * Notice empty queue always returns null
 	 *
-	 * @throws {QueueUnderflow}
+	 * @throws {Underflow}
 	 * @return {T}
 	 */
 	remove(): T {
 		if (this.empty()) {
-			throw new QueueUnderflow();
+			throw new Underflow();
 		}
 
 		const node = this.#front as NonNullable<Node<T>>;
