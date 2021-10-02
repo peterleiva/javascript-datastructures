@@ -1,30 +1,16 @@
+import { Stack } from "../types";
+
 export interface ComparableFn<T> {
 	(data: T): boolean;
 }
 
-export default interface ListADT<T> {
+export default interface ListADT<T> extends Stack<T> {
 	/**
-	 * Checks if the list has any element
-	 */
-	isEmpty(): boolean;
-	/**
-	 * Remove the last element from the list and return it
-	 * @throws EmptyListException
-	 * @return {?T}
-	 */
-	pop(): T | null;
-	/**
-	 * Insert a new data at the beginning of the list
-	 * @param {T} data
+	 * append items to the end of the List
+	 * @param {...T} items
 	 * @return {this}
 	 */
-	push(data: T): this;
-	/**
-	 * Insert a element at the end of the list
-	 * @param {T} data
-	 * @return {this}
-	 */
-	enqueue(data: T): this;
+	append(...items: T[]): this;
 	/**
 	 * Remove the first element of the list, which means with index 0
 	 * @return {?T}
@@ -38,17 +24,9 @@ export default interface ListADT<T> {
 	 */
 	contains(data: T): boolean;
 	/**
-	 * Returns the first element of the list without removing it
-	 */
-	peek(): T | null;
-	/**
 	 * Returns the last element of the list without removing it
 	 */
 	tail(): T | null;
-	/**
-	 * Get the numbers of elements stored in the list
-	 */
-	size(): number;
 	/**
 	 * Get the index of the first apparition of the element or -1 if isn't there
 	 *
