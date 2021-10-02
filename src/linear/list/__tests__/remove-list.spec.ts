@@ -13,7 +13,7 @@ describe("Removing items from list", () => {
 			});
 
 			it("Index is the length of the list", () => {
-				list.enqueue(1);
+				list.push(1);
 				expect(() => list.remove(1)).toThrow(IndexOutOfRangeException);
 			});
 
@@ -24,7 +24,7 @@ describe("Removing items from list", () => {
 
 		describe("Delete Successfully", () => {
 			beforeEach(() => {
-				list.enqueue(1).enqueue(2).enqueue(3);
+				list.append(1, 2, 3);
 			});
 
 			it("Decrease list size", () => {
@@ -91,7 +91,7 @@ describe("Removing items from list", () => {
 
 		describe("Non-empty list", () => {
 			beforeEach(() => {
-				list.enqueue(1).enqueue(2).enqueue(3).enqueue(4);
+				list.append(1, 2, 3, 4);
 			});
 
 			it.only("Remove all list items", () => {
