@@ -21,7 +21,12 @@
       "plugins": ["@typescript-eslint"]
     },
     {
-      "files": ["**/__tests__/**", "**/__mocks__/**", "**/__snapshots__/**"],
+      "files": [
+        "**/__tests__/**",
+        "**/__mocks__/**",
+        "**/__snapshots__/**",
+        "test/**/*"
+      ],
       "env": {
         "jest/globals": true
       },
@@ -29,6 +34,13 @@
       "plugins": ["jest"],
       "rules": {
         "max-statements": "off"
+      }
+    },
+    {
+      "files": "test/**/*",
+      "rules": {
+        "jest/no-export": "off",
+        "require-jsdoc": "off"
       }
     }
   ]

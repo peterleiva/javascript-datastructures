@@ -1,27 +1,23 @@
-const path = require("path");
+const { resolve } = require("path");
 
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
 	preset: "ts-jest",
 	globals: {
 		"ts-jest": {
-			tsconfig: path.resolve(__dirname, "tsconfig.spec.json"),
+			tsconfig: resolve(__dirname, "tsconfig.spec.json"),
 		},
 	},
 
-	collectCoverage: true,
-	coverageDirectory: path.resolve(__dirname, "coverage"),
-	coverageReporters: ["lcov", "text", "html"],
-
-	rootDir: path.resolve(__dirname, "src"),
-
-	// Indicates which provider should be used to instrument code for coverage
-	coverageProvider: "v8",
-
-	moduleDirectories: ["node_modules", "<rootDir>"],
-
-	// The test environment that will be used for testing
 	testEnvironment: "node",
+	roots: ["<rootDir>/src", "<rootDir>/test"],
+	moduleDirectories: ["node_modules", "<rootDir>/src", "<rootDir>/test"],
+
+	collectCoverage: true,
+	coverageDirectory: resolve(__dirname, "coverage"),
+	coverageReporters: ["lcov", "text", "html"],
+	coverageProvider: "v8",
+	coveragePathIgnorePatterns: ["<rootDir>/test"],
 
 	watchPlugins: [
 		"jest-watch-typeahead/filename",
