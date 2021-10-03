@@ -175,22 +175,22 @@ describe("List", () => {
 
 	describe(".tail", () => {
 		it("Get null when list is empty", () => {
-			expect(list.tail()).toBeNull();
+			expect(list.last()).toBeNull();
 		});
 
 		it("Get single element stored", () => {
 			list.append(1);
-			expect(list.tail()).toBe(1);
+			expect(list.last()).toBe(1);
 		});
 
 		it("Get the last element", () => {
 			list.append(1, 2, 3, 4);
-			expect(list.tail()).toBe(list.get(list.length - 1));
+			expect(list.last()).toBe(list.get(list.length - 1));
 		});
 
 		it("Do not modify the list", () => {
 			list.append(1, 2);
-			list.tail();
+			list.last();
 			expect([...list]).toStrictEqual([1, 2]);
 		});
 	});

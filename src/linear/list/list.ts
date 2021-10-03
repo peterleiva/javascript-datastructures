@@ -1,13 +1,12 @@
 /**
  * List implemented with doubly linked list
- * @version 1.0.0
+ * @version 0.2.0
  */
 
 import { iterable, Iterable } from "iterable";
-import type { Collection } from "../../types";
 import type { DoublyNode as Node } from "../types";
 import { IndexOutOfRangeException } from "./errors";
-import ListADT, { ComparableFn } from "./list-adt.interface";
+import { List as ListADT, ComparableFn } from "./list-adt.interface";
 import { Underflow } from "../errors";
 
 interface NodeEntry<T> {
@@ -19,7 +18,7 @@ interface NodeEntry<T> {
 /**
  * Doubly Linked list
  */
-export default class LinkedList<T> implements ListADT<T>, Collection {
+export default class List<T> implements ListADT<T> {
 	#head: Node<T>;
 	#tail: Node<T>;
 	#length: number;
@@ -386,7 +385,7 @@ export default class LinkedList<T> implements ListADT<T>, Collection {
 	 *
 	 * @return {?T}
 	 */
-	tail(): T | null {
+	last(): T | null {
 		return this.#tail?.item ?? null;
 	}
 

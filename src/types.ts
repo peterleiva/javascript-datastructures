@@ -24,57 +24,42 @@ export interface Collection {
 /**
  * Collection operation
  */
-export interface CollectionOperations<Element> {
+export interface Transformation<Element> {
 	/**
 	 * Concatenate collections creating a new one
-	 * @param {CollectionOperations<Element>} collection
-	 * @return {CollectionOperations<Element>}
+	 * @param {Transformation<Element>} collection
+	 * @return {Transformation<Element>}
 	 */
-	concat(
-		collection: CollectionOperations<Element>
-	): CollectionOperations<Element>;
+	concat(collection: Transformation<Element>): Transformation<Element>;
 	/**
 	 * Transform each element in a collection modifying its values according to
 	 * callback function
 	 *
 	 * @param {Function} callback Mapper function to
 	 *    transform for each element from the collection
-	 * @return {CollectionOperations<Element>}
+	 * @return {Transformation<Element>}
 	 */
-	map(callback: (data: Element) => Element): CollectionOperations<Element>;
+	map(callback: (data: Element) => Element): Transformation<Element>;
 	/**
 	 * @todo define it better
 	 */
 	reduce(
 		callback: (data: Element) => Element,
 		initialValue: unknown
-	): CollectionOperations<Element>;
+	): Transformation<Element>;
 	/**
 	 * Transform collection to internal javascript array element
 	 * @return {T[]}
 	 */
 	toArray(): Array<Element>;
 	/**
-	 *  Returns the number of elements stored in the collection
-	 */
-	length: number;
-	/**
-	 * alias for .length
-	 */
-	size(): number;
-	/**
-	 * Return whether the collection has element stored or not
-	 * @return {boolean}
-	 */
-	isEmpty(): boolean;
-	/**
 	 * Partition collection following a criterea function
 	 * @param {Function} fn partition criterea
-	 * @return {[CollectionOperations<Element>, CollectionOperations<Element>]}
+	 * @return {[Transformation<Element>, Transformation<Element>]}
 	 */
 	partition(
 		fn: (value: Element) => boolean
-	): [CollectionOperations<Element>, CollectionOperations<Element>];
+	): [Transformation<Element>, Transformation<Element>];
 }
 
 export type Constructor<T = Record<string, unknown>> = new (
