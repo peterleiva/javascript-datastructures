@@ -1,4 +1,4 @@
-import { shouldBehaveLikeIterable } from "shared";
+import { shouldBehaveLikeCollection, shouldBehaveLikeIterable } from "shared";
 import Queue from "../queue";
 import { Underflow } from "../errors";
 
@@ -9,6 +9,7 @@ describe("Queue", () => {
 		queue = new Queue();
 	});
 	shouldBehaveLikeIterable(new Queue(1, 2, 3));
+	shouldBehaveLikeCollection(Queue);
 
 	describe("Queue creation", () => {
 		describe("With Argument", () => {
