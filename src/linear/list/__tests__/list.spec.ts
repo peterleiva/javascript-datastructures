@@ -1,5 +1,5 @@
 import List from "../list";
-import { IndexOutOfRangeException } from "../errors";
+import { IndexOutOfRange } from "../errors";
 import { Underflow } from "../../errors";
 
 describe("List", () => {
@@ -95,7 +95,7 @@ describe("List", () => {
 
 	describe(".get", () => {
 		it("throws IndexOutOfRangeException when list is empty", () => {
-			expect(() => list.get(0)).toThrow(IndexOutOfRangeException);
+			expect(() => list.get(0)).toThrow(IndexOutOfRange);
 		});
 
 		describe("With stored items", () => {
@@ -104,11 +104,11 @@ describe("List", () => {
 			});
 
 			it("throws IndexOutOfRangeException when index is equal the length", () => {
-				expect(() => list.get(list.length)).toThrow(IndexOutOfRangeException);
+				expect(() => list.get(list.length)).toThrow(IndexOutOfRange);
 			});
 
 			it("throws IndexOutOfRangeException when index is negative", () => {
-				expect(() => list.get(-1)).toThrow(IndexOutOfRangeException);
+				expect(() => list.get(-1)).toThrow(IndexOutOfRange);
 			});
 
 			it("Get the correct item when is between bound", () => {
@@ -120,7 +120,7 @@ describe("List", () => {
 	describe(".remove", () => {
 		describe("Empty list", () => {
 			it("Throw IndexOutOfRangeException", () => {
-				expect(() => list.remove(0)).toThrow(IndexOutOfRangeException);
+				expect(() => list.remove(0)).toThrow(IndexOutOfRange);
 			});
 		});
 
@@ -365,13 +365,13 @@ describe("List", () => {
 
 		it("Throws Exception when index n", () => {
 			list.push(1);
-			expect(() => list.at(1)).toThrow(IndexOutOfRangeException);
+			expect(() => list.at(1)).toThrow(IndexOutOfRange);
 		});
 
 		it("Throws IndexOutOfRangeException when index is -(n + 1)", () => {
 			list.push(1);
 
-			expect(() => list.at(-2)).toThrow(IndexOutOfRangeException);
+			expect(() => list.at(-2)).toThrow(IndexOutOfRange);
 		});
 
 		it("Get the first item when index = 0", () => {

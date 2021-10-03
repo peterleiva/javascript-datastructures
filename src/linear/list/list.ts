@@ -5,14 +5,9 @@
 
 import { iterable, Iterable } from "iterable";
 import type { DoublyNode as Node } from "../types";
-import { IndexOutOfRangeException } from "./errors";
+import { IndexOutOfRange } from "./errors";
 import { List as ListADT, ComparableFn } from "./list-adt.interface";
 import { Underflow } from "../errors";
-
-interface NodeEntry<T> {
-	current: NonNullable<Node<T>>;
-	index: number;
-}
 
 @iterable
 /**
@@ -129,7 +124,7 @@ export default class List<T> implements ListADT<T> {
 	 */
 	private removeAt(index: number): T | null {
 		if (this.isOutOfIndex(index)) {
-			throw new IndexOutOfRangeException(this.size(), index);
+			throw new IndexOutOfRange(this.size(), index);
 		}
 
 		const iterator = this.nodeEntries();
@@ -181,7 +176,7 @@ export default class List<T> implements ListADT<T> {
 	 */
 	private getNode(index: number): Node<T> {
 		if (index < 0 || index >= this.length) {
-			throw new IndexOutOfRangeException(this.length, index);
+			throw new IndexOutOfRange(this.length, index);
 		}
 
 		for (const { current, index: i } of this.nodeEntries()) {

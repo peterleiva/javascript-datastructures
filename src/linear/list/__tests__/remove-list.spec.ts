@@ -1,5 +1,5 @@
 import List from "../list";
-import { IndexOutOfRangeException } from "../errors";
+import { IndexOutOfRange } from "../errors";
 
 describe("Removing items from list", () => {
 	let list: List<unknown>;
@@ -9,16 +9,16 @@ describe("Removing items from list", () => {
 	describe("Removing with index", () => {
 		describe("Throws IndexOutOfRangeException when", () => {
 			it("List is empty", () => {
-				expect(() => list.remove(0)).toThrow(IndexOutOfRangeException);
+				expect(() => list.remove(0)).toThrow(IndexOutOfRange);
 			});
 
 			it("Index is the length of the list", () => {
 				list.push(1);
-				expect(() => list.remove(1)).toThrow(IndexOutOfRangeException);
+				expect(() => list.remove(1)).toThrow(IndexOutOfRange);
 			});
 
 			it("Index is -1", () => {
-				expect(() => list.remove(-1)).toThrow(IndexOutOfRangeException);
+				expect(() => list.remove(-1)).toThrow(IndexOutOfRange);
 			});
 		});
 
