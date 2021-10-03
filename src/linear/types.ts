@@ -31,10 +31,6 @@ export type DoublyNode<T> = {
 } | null;
 
 /**
- * Implementa
- */
-
-/**
  * Queue Abstract Data Type
  * @interface
  * @template T
@@ -60,23 +56,33 @@ export interface Queue<T> {
 
 export interface Stack<T> {
 	/**
-	 * Returns the top of the stack
+	 * O(1). Extract the first element of a stack, which must be non-empty
+	 *
+	 * @example
+	 * const s = new Stack(1, 2, 3)
+	 * s.top() // returns 1
+	 *
+	 * const l = new Stack()
+	 * s.top() // Error: Underflow
+	 *
 	 * @throws {Underflow}
+	 * @return {!T}
 	 */
 	top(): T;
 	/**
-	 * Remove the last item inserted
+	 * O(1). Remove the last item inserted
 	 * @throws {Underflow}
 	 */
 	pop(): T;
 	/**
-	 * Insert item at the beginning of the stack
+	 * O(1). Insert item at the beginning of the stack
 	 *
 	 * @param {T} item new data to be inserted
 	 * @return {T}
 	 */
 	push(item: T): T;
 }
+
 export interface Deque<T> {
 	/**
 	 * Insert item at the left end

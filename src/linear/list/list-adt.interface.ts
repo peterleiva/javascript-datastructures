@@ -87,7 +87,7 @@ export interface Indexing<T> {
 	 * @param {number} index
 	 * @return {?T}
 	 */
-	remove(index: number): T | null;
+	removeAt(index: number): T | null;
 }
 
 export interface Set<T> {
@@ -102,6 +102,7 @@ export interface Set<T> {
 
 export interface Sublist<T> {
 	take(length: number): List<T>;
+	drop(length: number): List<T>;
 }
 
 export interface Ordered<T> {
@@ -110,21 +111,34 @@ export interface Ordered<T> {
 
 export interface List<T> extends Stack<T>, Collection {
 	/**
-	 * O(1). Extract the first element of a list, which must be non-empty
+	 * O(n). Extract the first element of a list, which must be non-empty. Alias
+	 * for {@link Stack.top}. For no argument it gives O(1)
 	 *
-	 * @example
+	 * @example <caption>Head of list</caption>
 	 * const l = new List(1, 2, 3)
 	 * l.head() // returns 1
 	 *
+	 * @example <caption>Head of empty list throws Underflow</caption>
 	 * const l = new List()
-	 * list.head() // Error: Underflow
+	 * l.head() // Error: Underflow
+	 *
+	 * @example <caption>Fist n elements</caption>
+	 * const l = new List(1, 2, 3, 4)
+	 * l.head(3) // returns [1, 2, 3]
+	 *
+	 * @example <caption>Head of Negative length throws IndexOutOfRange</caption>
+	 * const l = new List(1, 2, 3)
+	 * l.head(-1) // Error: IndexOutOfRange
 	 *
 	 * @throws {Underflow}
+	 * @throws {IndexOutOfRange}
+	 * @param {number} [length = 1]
 	 * @return {!T | T[]}
 	 */
-	head(length: number): T | T[];
+	head(length?: number): T | T[];
 	/**
-	 * O(1). Extract the last element of a list, which must non-empty
+	 * O(n). Extract the last element of a list, which must non-empty. For no
+	 * argument it gives O(1)
 	 *
 	 * @example
 	 * const l = new List(1, 2, 3)
@@ -134,12 +148,12 @@ export interface List<T> extends Stack<T>, Collection {
 	 * l.last() // Error: Underflow
 	 *
 	 * @throws {Underflow}
-	 * @return {!T}
+	 * @param {number} [length = 1]
+	 * @return {!T | T[]}
 	 */
-	last(length: number): T | T[];
+	last(length?: number): T | T[];
 	/**
-	 * O(1). Extract the elements after the head of a list, which must be
-	 * non-empty
+	 * O(1). Extract the elements after the head of non-empty list
 	 *
 	 * @example
 	 * const l = new List(1, 2, 3);
@@ -156,8 +170,7 @@ export interface List<T> extends Stack<T>, Collection {
 	 */
 	tail(): List<T>;
 	/**
-	 * O(n). Return all the elements of a list except the last one. The list
-	 * must be non-empty
+	 * O(n). Return all the elements of non-empty list except the last one
 	 *
 	 * @example
 	 * const l = new List(1, 2, 3);
@@ -174,8 +187,7 @@ export interface List<T> extends Stack<T>, Collection {
 	 */
 	init(): List<T>;
 	/**
-	 * O(1). Remove the first element of the list, which means with index 0 and
-	 * return the removed value
+	 * O(1). Remove the first element of non-empty list and return the value
 	 *
 	 * @throws {Underflow}
 	 * @return {!T}
@@ -194,13 +206,13 @@ export interface List<T> extends Stack<T>, Collection {
 	 * l.append(new List(3, 4, 5)) // returns new list: [1, 2, 3, 4, 5, 6];
 	 *
 	 *
-	 * @param {...T} items
-	 * @return {this}
+	 * @param {...T | List<T>} items
+	 * @return {this | List<T>}
 	 */
 	append(...items: T[]): this;
 	append(list: List<T>): List<T>;
 	/**
-	 * O(1). Adds element to the beginning of an array and returns the new length
+	 * O(n). Adds element	 to the beginning of an array and returns the new length
 	 * of the array.
 	 *
 	 * @example
@@ -210,9 +222,9 @@ export interface List<T> extends Stack<T>, Collection {
 	 * const l = new List(1, 2, 3)
 	 * l.unshift()
 	 *
-	 * @throws {Underflow}
-	 * @return {this}
+	 * @param {...T | List<T>} items
+	 * @return {this | List<T>}
 	 */
-	prepend(...item: T[]): this;
+	prepend(...items: T[]): this;
 	prepend(list: List<T>): List<T>;
 }
