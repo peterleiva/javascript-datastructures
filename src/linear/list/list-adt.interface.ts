@@ -140,14 +140,24 @@ export interface List<T> extends Stack<T>, Collection {
 	 * O(n). Extract the last element of a list, which must non-empty. For no
 	 * argument it gives O(1)
 	 *
-	 * @example
+	 * @example <caption>Last element of list</caption>
 	 * const l = new List(1, 2, 3)
-	 * l.last() // returns 3
+	 * l.last() // returns 1
 	 *
+	 * @example <caption>Empty list throws Underflow</caption>
 	 * const l = new List()
 	 * l.last() // Error: Underflow
 	 *
+	 * @example <caption>Last n elements</caption>
+	 * const l = new List(1, 2, 3, 4)
+	 * l.last(3) // returns [1, 2, 3]
+	 *
+	 * @example <caption>Negative length throws IndexOutOfRange</caption>
+	 * const l = new List(1, 2, 3)
+	 * l.last(-1) // Error: IndexOutOfRange
+	 *
 	 * @throws {Underflow}
+	 * @throws {IndexOutOfRange}
 	 * @param {number} [length = 1]
 	 * @return {!T | T[]}
 	 */
@@ -189,10 +199,23 @@ export interface List<T> extends Stack<T>, Collection {
 	/**
 	 * O(1). Remove the first element of non-empty list and return the value
 	 *
+	 * @example <caption>Removing first element</caption>
+	 * const l = new List(1, 2, 3)
+	 * l.shift() // returns 1 -> List: [1, 2]
+	 *
+	 * @example <caption>Throws Underflow when list is empty</caption>
+	 * const l = new List()
+	 * l.shift() // Error: Underflow
+	 *
+	 * @example <caption>Leaves empty list</caption>
+	 * const l = new List(1)
+	 * l.shift() // returns 1 -> List: []
+	 *
 	 * @throws {Underflow}
 	 * @return {!T}
 	 */
 	shift(): T;
+
 	/**
 	 * O(n). Insert multiple elements at the end, keeping the specified order
 	 * Also a alias for {@link Stack.push} with multiple items
@@ -203,8 +226,7 @@ export interface List<T> extends Stack<T>, Collection {
 	 *
 	 * @example <caption>Immutable interface</caption>
 	 * const l = new List(1, 2, 3)
-	 * l.append(new List(3, 4, 5)) // returns new list: [1, 2, 3, 4, 5, 6];
-	 *
+	 * l.append(new List(3, 4, 5)) // returns list: [1, 2, 3, 4, 5, 6];
 	 *
 	 * @param {...T | List<T>} items
 	 * @return {this | List<T>}
@@ -215,12 +237,13 @@ export interface List<T> extends Stack<T>, Collection {
 	 * O(n). Adds element	 to the beginning of an array and returns the new length
 	 * of the array.
 	 *
-	 * @example
+	 * @example <caption>Modify list</caption>
 	 * const l = new List()
-	 * l.unshift(1) // gives [1]
+	 * l.prepend(1, 2, 3) // > List [1, 2, 3]
 	 *
-	 * const l = new List(1, 2, 3)
-	 * l.unshift()
+	 * @example <caption>Immutable list</caption>
+	 * const l = new List(4, 5, 6)
+	 * l.prepend(new List(1, 2, 3)) // returns [1, 2, 3, 4, 5, 6]
 	 *
 	 * @param {...T | List<T>} items
 	 * @return {this | List<T>}
