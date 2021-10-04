@@ -1,6 +1,11 @@
 import List from "../list";
 import { IndexOutOfRange } from "../errors";
 import { Underflow } from "../../errors";
+import {
+	shouldBehaveLikeCollection,
+	shouldBehaveLikeIterable,
+	shouldBehaveLikeStack,
+} from "shared";
 
 describe("List", () => {
 	let list: List<unknown>;
@@ -9,24 +14,17 @@ describe("List", () => {
 		list = new List();
 	});
 
-	describe(".keys", () => {
-		it("Get empty array when list is empty", () => {
-			expect([...list.keys()]).toEqual([]);
-		});
+	shouldBehaveLikeStack(List);
+	shouldBehaveLikeCollection(List);
+	shouldBehaveLikeIterable(new List(1, 2, 3));
 
-		it("Get list of index of stored items", () => {
-			list.append(1, 2, 3);
-			expect([...list.keys()]).toEqual([0, 1, 2]);
-		});
-
-		it("Iterate over indexes", () => {
-			let index = 0;
-			list.append(1, 2, 3);
-			for (const i of list.keys()) {
-				expect(i).toBe(index);
-				index++;
-			}
-		});
+	describe(".head", () => {
+		it.todo("extract the first element of the list");
+		it.todo("throws Underflow when list is empty");
+		it.todo("extract n first element of the list");
+		it.todo("extract all list when length is greater than list");
+		it.todo("extract empty list when length is 0");
+		it.todo("throws IndexOutOfRange when length is negative");
 	});
 
 	describe(".insert", () => {
@@ -44,52 +42,6 @@ describe("List", () => {
 		describe("With index as argument", () => {
 			it.todo("Throws IndexOutOfRangeException when index equals list size");
 			it.todo("Throws IndexOutOfRangeException when index is negative");
-		});
-	});
-
-	describe(".values", () => {
-		it("Get empty array when list is empty", () => {
-			expect([...list.values()]).toEqual([]);
-		});
-
-		it("Get list of items", () => {
-			list.append(1, 2, 3);
-			expect([...list.values()]).toEqual([1, 2, 3]);
-		});
-
-		it("Iterate over values", () => {
-			let index = 0;
-			list.append(1, 2, 3);
-			for (const value of list.values()) {
-				expect(value).toBe(list.get(index));
-				index++;
-			}
-		});
-	});
-
-	describe(".entries", () => {
-		it("Get empty array when list is empty", () => {
-			expect([...list.entries()]).toEqual([]);
-		});
-
-		it("Get list of same stored items", () => {
-			list.append(1, 2, 3);
-
-			expect([...list.entries()]).toEqual([
-				[0, 1],
-				[1, 2],
-				[2, 3],
-			]);
-		});
-
-		it("Iterate over entries of list", () => {
-			let i = 0;
-			list.append(1, 2, 3);
-
-			for (const [index, item] of list.entries()) {
-				expect([index, item]).toEqual([i, list.get(index)]);
-				i++;
-			}
 		});
 	});
 
@@ -117,62 +69,6 @@ describe("List", () => {
 		});
 	});
 
-	describe(".remove", () => {
-		describe("Empty list", () => {
-			it("Throw IndexOutOfRangeException", () => {
-				expect(() => list.remove(0)).toThrow(IndexOutOfRange);
-			});
-		});
-
-		describe("single element", () => {
-			beforeEach(() => {
-				list.append(1);
-			});
-
-			it("Remove all elements", () => {
-				list.remove(0);
-				expect([...list]).toEqual([]);
-			});
-
-			it("Get 0 length", () => {
-				list.remove(0);
-				expect(list).toHaveLength(0);
-			});
-		});
-
-		describe("More than 1 element", () => {
-			beforeEach(() => {
-				list.append(1).append(2);
-			});
-
-			it("Decrease length by 1", () => {
-				list.remove(0);
-				expect(list).toHaveLength(1);
-			});
-
-			it("Get the element removed", () => {
-				list.append(3);
-				expect(list.remove(2)).toBe(3);
-			});
-
-			it("Remove tail element", () => {
-				list.remove(1);
-				expect([...list]).toEqual([1]);
-			});
-
-			it("Remove head element", () => {
-				list.remove(0);
-				expect([...list]).toEqual([2]);
-			});
-
-			it("Remove the between head and tail", () => {
-				list.append(3);
-				list.remove(1);
-				expect([...list]).toEqual([1, 3]);
-			});
-		});
-	});
-
 	describe(".tail", () => {
 		it("Get null when list is empty", () => {
 			expect(list.last()).toBeNull();
@@ -191,24 +87,6 @@ describe("List", () => {
 		it("Do not modify the list", () => {
 			list.append(1, 2);
 			list.last();
-			expect([...list]).toStrictEqual([1, 2]);
-		});
-	});
-
-	describe(".push", () => {
-		it("Increase length by 1", () => {
-			list.push(1);
-			expect(list).toHaveLength(1);
-		});
-
-		it("Store a single data in the list", () => {
-			list.push(1);
-			expect([...list]).toStrictEqual([1]);
-		});
-
-		it("Insert at the end if already has elements", () => {
-			list.push(1);
-			list.push(2);
 			expect([...list]).toStrictEqual([1, 2]);
 		});
 	});
@@ -281,71 +159,25 @@ describe("List", () => {
 		});
 	});
 
-	describe(".clear", () => {
-		it("get length = 0", () => {
-			list.append(1, 2, 3);
-			list.clear();
-
-			expect(list).toHaveLength(0);
-		});
-
-		it("Remove all elements", () => {
-			list.append(1, 2, 3);
-			list.clear();
-			expect([...list]).toEqual([]);
-		});
-	});
-
-	describe(".pop", () => {
-		it("Throws EmptyListException when list is empty", () => {
-			expect(() => list.pop()).toThrow(Underflow);
-		});
-
-		it("Leaves list empty when has single element", () => {
-			list.push(1);
-			list.pop();
-
-			expect(list.empty()).toBe(true);
-		});
-
-		it("Decrease element by 1", () => {
-			list.append(1, 2);
-			list.pop();
-			expect(list).toHaveLength(1);
-		});
-
-		it("Returns the last element", () => {
-			list.append(1, 2);
-
-			expect(list.pop()).toBe(2);
-		});
-
-		it("Remove the last element from the list", () => {
-			list.append(1, "2");
-			list.pop();
-			expect([...list]).toStrictEqual([1]);
-		});
-	});
-
-	describe(".dequeue", () => {
+	describe(".shift", () => {
 		it("Throws EmptyListException when empty", () => {
-			expect(() => list.dequeue()).toThrow(Underflow);
+			expect(() => list.shift()).toThrow(Underflow);
 		});
 
 		it("Decrease length by 1", () => {
 			list.append(1, 2);
-			list.dequeue();
+			list.shift();
 			expect(list).toHaveLength(1);
 		});
 
 		it("Returns the first item of the list", () => {
 			list.append(1, "2");
-			expect(list.dequeue()).toBe("2");
+			expect(list.shift()).toBe("2");
 		});
 
 		it("Leaves list empty when has a single item", () => {
 			list.push(1);
-			list.dequeue();
+			list.shift();
 			expect(list.empty()).toBe(true);
 		});
 
@@ -353,7 +185,7 @@ describe("List", () => {
 			list.push(3);
 			list.push(2);
 			list.push(1);
-			list.dequeue();
+			list.shift();
 			expect([...list]).toStrictEqual([2, 3]);
 		});
 	});
@@ -398,6 +230,37 @@ describe("List", () => {
 		it("Get the correct item from the index", () => {
 			list.append(1, 2, 3);
 			expect(list.at(2)).toBe(3);
+		});
+	});
+
+	describe(".append", () => {
+		describe("arguments is a List", () => {
+			it("concatenate all lists", () => {
+				const list1 = new List(1, 2, 3);
+				const list2 = new List(4, 5, 6);
+				const l = new List();
+
+				expect([...l.append(list1, list2)]).toEqual([1, 2, 3, 4, 5, 6]);
+			});
+		});
+
+		describe("arguments isn't a List", () => {
+			it("returns the own list reference", () => {
+				const l = new List();
+				expect(l.append(1)).toBe(l);
+			});
+
+			it("mutates list", () => {
+				const l = new List(1, 2, 3);
+				l.append(4, 5);
+				expect([...l]).toEqual([1, 2, 3, 4, 5]);
+			});
+
+			it("adds items ordered by argument order", () => {
+				const l = new List();
+				l.append(3, 4, 5);
+				expect([...l]).toEqual([3, 4, 5]);
+			});
 		});
 	});
 });
