@@ -3,15 +3,15 @@
  * @version 0.2.0
  */
 
-import { iterable, Iterable } from "iterable";
 import type { DoublyNode as Node } from "../types";
+import type { List as ListADT, ComparableFn } from "./list-adt.interface";
+import { iterable, Iterable } from "iterable";
 import { IndexOutOfRange } from "./errors";
-import { List as ListADT, ComparableFn } from "./list-adt.interface";
 import { Underflow } from "../errors";
 
 @iterable
 /**
- * Doubly Linked list
+ * Ordered generic list
  */
 export default class List<T> implements ListADT<T> {
 	#head: Node<T>;
@@ -33,7 +33,7 @@ export default class List<T> implements ListADT<T> {
 	 * FIXME: T pode retornar null também aqui está como as T
 	 */
 	*entries(): IterableIterator<[number, T]> {
-		for (const { index, current } of this.nodeEntries()) {
+		for (const [index, current] of this.nodeEntries()) {
 			yield [index, current.item as T];
 		}
 	}
@@ -82,39 +82,138 @@ export default class List<T> implements ListADT<T> {
 	empty(): boolean {
 		return this.#head === null;
 	}
-
-	remove(index: number): T;
-	remove(data: T): T;
-	remove(comparator: ComparableFn<T>): T | T[];
 	/**
-	 * Remove item from the list
-	 * @param {number | ComparableFn<T>} criterea
-	 * @return {T | T[] | null}
+	 * O(n). Extract the first element of a list, which must be non-empty. Alias
+	 * for {@link Stack.top}. For no argument it gives O(1)
+	 *
+	 * @example <caption>Head of list</caption>
+	 * const l = new List(1, 2, 3)
+	 * l.head() // returns 1
+	 *
+	 * @example <caption>Head of empty list throws Underflow</caption>
+	 * const l = new List()
+	 * l.head() // Error: Underflow
+	 *
+	 * @example <caption>Fist n elements</caption>
+	 * const l = new List(1, 2, 3, 4)
+	 * l.head(3) // returns [1, 2, 3]
+	 *
+	 * @example <caption>Head of Negative length throws IndexOutOfRange</caption>
+	 * const l = new List(1, 2, 3)
+	 * l.head(-1) // Error: IndexOutOfRange
+	 *
+	 * @throws {Underflow}
+	 * @throws {IndexOutOfRange}
+	 * @param {number} [length = 1]
+	 * @return {!T | T[]}
 	 */
-	remove(criterea: number | ComparableFn<T> | T): T | T[] | null {
-		// if (typeof criterea === "number") {
-		// 	return this.removeAt(criterea);
-		// } else {
-		// 	const removed = [];
+	head(length?: number): T | T[] {
+		throw new Error("must be implemented");
+	}
+	/**
+	 * O(n). Extract the last element of a list, which must non-empty. For no
+	 * argument it gives O(1)
+	 *
+	 * @example <caption>Last element of list</caption>
+	 * const l = new List(1, 2, 3)
+	 * l.last() // returns 1
+	 *
+	 * @example <caption>Empty list throws Underflow</caption>
+	 * const l = new List()
+	 * l.last() // Error: Underflow
+	 *
+	 * @example <caption>Last n elements</caption>
+	 * const l = new List(1, 2, 3, 4)
+	 * l.last(3) // returns [1, 2, 3]
+	 *
+	 * @example <caption>Negative length throws IndexOutOfRange</caption>
+	 * const l = new List(1, 2, 3)
+	 * l.last(-1) // Error: IndexOutOfRange
+	 *
+	 * @throws {Underflow}
+	 * @throws {IndexOutOfRange}
+	 * @param {number} [length = 1]
+	 * @return {!T | T[]}
+	 */
+	last(length?: number): T | T[] {
+		throw new Error("must be implemented");
+	}
+	/**
+	 * O(1). Extract the elements after the head of non-empty list
+	 *
+	 * @example
+	 * const l = new List(1, 2, 3);
+	 * l.tail(); // [2, 3]
+	 *
+	 * const l = new List(1);
+	 * l.tail(); // []
+	 *
+	 * const l = new List();
+	 * l.tail(); // Error: Underflow
+	 *
+	 * @throws {Underflow}
+	 * @return {List<T>}
+	 */
+	tail(): List<T> {
+		throw new Error("must be implemented");
+	}
+	/**
+	 * O(1). Remove the first element of non-empty list and return the value
+	 *
+	 * @example <caption>Removing first element</caption>
+	 * const l = new List(1, 2, 3)
+	 * l.shift() // returns 1 -> List: [1, 2]
+	 *
+	 * @example <caption>Throws Underflow when list is empty</caption>
+	 * const l = new List()
+	 * l.shift() // Error: Underflow
+	 *
+	 * @example <caption>Leaves empty list</caption>
+	 * const l = new List(1)
+	 * l.shift() // returns 1 -> List: []
+	 *
+	 * @throws {Underflow}
+	 * @return {!T}
+	 */
+	shift(): T {
+		const node: Node<T> = this.#head;
 
-		// 	// FIXME: Só itera uma vez quando existe match, devido ao iterator entries
-		// 	for (const [i, data] of this.entries()) {
-		// 		const matchesCriterea =
-		// 			criterea instanceof Function
-		// 				? criterea(data as T)
-		// 				: Object.is(data, criterea);
+		if (node === null) {
+			throw new Underflow();
+		}
 
-		// 		if (matchesCriterea) {
-		// 			console.log("before Remove", [...this]);
-		// 			removed.push(this.removeAt(i));
-		// 			console.log("After Remove", [...this]);
-		// 		}
-		// 	}
+		this.#head = node.right;
 
-		// 	return removed;
-		// }
-		throw new Error("Must be fixed");
-		return null;
+		if (this.#head) {
+			this.#head.left = null;
+		} else {
+			this.#tail = null;
+		}
+
+		this.#length--;
+		this.markGarbageCollect(node);
+
+		return node.item;
+	}
+
+	/**
+	 * O(n). Return all the elements of non-empty list except the last one
+	 *
+	 * @example
+	 * const l = new List(1, 2, 3);
+	 * l.init() // returns [1, 2]
+	 *
+	 * const l = new List(1);
+	 * l.init() // returns []
+	 *
+	 * const l = new List();
+	 * l.init() // Error: Underflow
+	 *
+	 * @throws {Underflow}
+	 * @return {List<T>}
+	 */
+	init(): ListADT<T> {
+		throw new Error("must be implemented");
 	}
 
 	/**
@@ -179,7 +278,7 @@ export default class List<T> implements ListADT<T> {
 			throw new IndexOutOfRange(this.length, index);
 		}
 
-		for (const { current, index: i } of this.nodeEntries()) {
+		for (const [i, current] of this.nodeEntries()) {
 			if (i === index) return current;
 		}
 
@@ -241,12 +340,13 @@ export default class List<T> implements ListADT<T> {
 	}
 
 	/**
-	 * Insert a new data at the end of the list
-	 * @param {T} data
+	 * O(1). Insert item at the beginning of the stack
+	 *
+	 * @param {T} item new data to be inserted
 	 * @return {T}
 	 */
-	push(data: T): T {
-		const node = this.createNode(data);
+	push(item: T): T {
+		const node = this.createNode(item);
 
 		if (this.#tail) {
 			this.#tail.right = node;
@@ -262,13 +362,46 @@ export default class List<T> implements ListADT<T> {
 	}
 
 	/**
-	 * append items to the end of the List
-	 * @param {...T} items
-	 * @return {this}
+	 * O(n). Insert multiple elements at the end, keeping the specified order
+	 * Also a alias for {@link Stack.push} with multiple items
+	 *
+	 * @example <caption>Modifying list</caption>
+	 * const l = new List(1, 2, 3)
+	 * l.append(4, 5, 6) // gives [1, 2, 3, 4, 5, 6];
+	 *
+	 * @example <caption>Immutable interface</caption>
+	 * const l = new List(1, 2, 3)
+	 * l.append(new List(3, 4, 5)) // returns list: [1, 2, 3, 4, 5, 6];
+	 *
+	 * @param {...T[]} item
+	 * @return {this | List<T>}
 	 */
 	append(...items: T[]): this {
 		for (const item of items) {
 			this.push(item);
+		}
+
+		return this;
+	}
+
+	/**
+	 * O(n). Adds element	 to the beginning of an array and returns the new length
+	 * of the array.
+	 *
+	 * @example <caption>Modify list</caption>
+	 * const l = new List()
+	 * l.prepend(1, 2, 3) // > List [1, 2, 3]
+	 *
+	 * @example <caption>Immutable list</caption>
+	 * const l = new List(4, 5, 6)
+	 * l.prepend(new List(1, 2, 3)) // returns [1, 2, 3, 4, 5, 6]
+	 *
+	 * @param {...T[]} element
+	 * @return {this}
+	 */
+	prepend(...items: T[]): this {
+		for (const item of items) {
+			this.unshift(item);
 		}
 
 		return this;
@@ -296,34 +429,9 @@ export default class List<T> implements ListADT<T> {
 	}
 
 	/**
-	 * Remove the first element of the list, which means with index 0
-	 * @return {?T}
-	 */
-	dequeue(): T | null {
-		const node: Node<T> = this.#head;
-
-		if (node === null) {
-			throw new Underflow();
-		}
-
-		this.#head = node.right;
-
-		if (this.#head) {
-			this.#head.left = null;
-		} else {
-			this.#tail = null;
-		}
-
-		this.#length--;
-		this.markGarbageCollect(node);
-
-		return node.item;
-	}
-
-	/**
-	 * Remove the last element from the list and return the element
+	 * O(1). Remove the last item inserted
 	 * @throws {Underflow}
-	 * @return {?T}
+	 * @return {T}
 	 */
 	pop(): T {
 		const node: Node<T> = this.#tail;
@@ -351,7 +459,7 @@ export default class List<T> implements ListADT<T> {
 	 * @return {this}
 	 */
 	clear(): this {
-		for (const { current: node } of this.nodeEntries()) {
+		for (const [, node] of this.nodeEntries()) {
 			this.markGarbageCollect(node);
 		}
 
@@ -376,15 +484,6 @@ export default class List<T> implements ListADT<T> {
 	}
 
 	/**
-	 *  Returns the last element of the list
-	 *
-	 * @return {?T}
-	 */
-	last(): T | null {
-		return this.#tail?.item ?? null;
-	}
-
-	/**
 	 * Linear search on list
 	 *
 	 * @param {T} data data to be search
@@ -401,12 +500,12 @@ export default class List<T> implements ListADT<T> {
 	/**
 	 * Iterator helper, which iterates over node entries, used by other iterators
 	 */
-	private *nodeEntries(): IterableIterator<NodeEntry<T>> {
+	private *nodeEntries(): IterableIterator<[number, NonNullable<Node<T>>]> {
 		let node = this.#head;
 		let index = 0;
 
 		while (node !== null) {
-			yield { current: node, index };
+			yield [index, node];
 
 			index++;
 			node = node.right;

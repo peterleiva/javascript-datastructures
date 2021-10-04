@@ -215,7 +215,6 @@ export interface List<T> extends Stack<T>, Collection {
 	 * @return {!T}
 	 */
 	shift(): T;
-
 	/**
 	 * O(n). Insert multiple elements at the end, keeping the specified order
 	 * Also a alias for {@link Stack.push} with multiple items
@@ -224,15 +223,10 @@ export interface List<T> extends Stack<T>, Collection {
 	 * const l = new List(1, 2, 3)
 	 * l.append(4, 5, 6) // gives [1, 2, 3, 4, 5, 6];
 	 *
-	 * @example <caption>Immutable interface</caption>
-	 * const l = new List(1, 2, 3)
-	 * l.append(new List(3, 4, 5)) // returns list: [1, 2, 3, 4, 5, 6];
-	 *
-	 * @param {...T | List<T>} items
-	 * @return {this | List<T>}
+	 * @param {...T[]} items
+	 * @return {this}
 	 */
 	append(...items: T[]): this;
-	append(list: List<T>): List<T>;
 	/**
 	 * O(n). Adds element	 to the beginning of an array and returns the new length
 	 * of the array.
@@ -241,13 +235,8 @@ export interface List<T> extends Stack<T>, Collection {
 	 * const l = new List()
 	 * l.prepend(1, 2, 3) // > List [1, 2, 3]
 	 *
-	 * @example <caption>Immutable list</caption>
-	 * const l = new List(4, 5, 6)
-	 * l.prepend(new List(1, 2, 3)) // returns [1, 2, 3, 4, 5, 6]
-	 *
-	 * @param {...T | List<T>} items
-	 * @return {this | List<T>}
+	 * @param {...T[]} items
+	 * @return {this}
 	 */
 	prepend(...items: T[]): this;
-	prepend(list: List<T>): List<T>;
 }

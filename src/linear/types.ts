@@ -72,6 +72,7 @@ export interface Stack<T> {
 	/**
 	 * O(1). Remove the last item inserted
 	 * @throws {Underflow}
+	 * @return {T}
 	 */
 	pop(): T;
 	/**
