@@ -1,6 +1,5 @@
-import { Stack } from "linear";
+import type { Stack } from "linear/types";
 import { Underflow } from "linear/errors";
-import { shouldBehaveLikeCollection } from "shared";
 import { shouldBehaveLike } from "should-behave-like";
 
 interface StackConstructor<T> {
@@ -13,8 +12,6 @@ export function shouldBehaveLikeStack(Stack: StackConstructor<unknown>): void {
 	beforeEach(() => (stack = new Stack()));
 
 	shouldBehaveLike("stack", () => {
-		shouldBehaveLikeCollection(Stack);
-
 		describe("#top", () => {
 			it("returns single item stored", () => {
 				stack.push(1);
@@ -27,12 +24,6 @@ export function shouldBehaveLikeStack(Stack: StackConstructor<unknown>): void {
 				expect(stack.top()).toBe(2);
 			});
 
-			it("size remains the same", () => {
-				stack.push(1);
-				stack.push(2);
-				expect(stack.size()).toBe(2);
-			});
-
 			it("throws StackUnderflow for empty stack", () => {
 				expect(() => stack.top()).toThrow(Underflow);
 			});
@@ -42,22 +33,14 @@ export function shouldBehaveLikeStack(Stack: StackConstructor<unknown>): void {
 			const item = 1;
 			beforeEach(() => stack.push(item));
 
-			it("size is equal to 1 for empty stack", () => {
-				expect(stack.size()).toBe(1);
+			it("returns inserted item", () => {
+				expect(stack.push(item)).toBe(item);
 			});
 
-			it("increase size by 1", () => {
+			it("insert at the top", () => {
 				stack.push(2);
-				expect(stack.size()).toBe(2);
-			});
-
-			it("empty is false", () => {
-				expect(stack.empty()).toBe(false);
-			});
-
-			it("ordered iteration is LIFO", () => {
-				stack.push(2);
-				expect([...stack]).toEqual([2, item]);
+				stack.push(item);
+				expect(stack.top()).toBe(item);
 			});
 		});
 
@@ -79,7 +62,7 @@ export function shouldBehaveLikeStack(Stack: StackConstructor<unknown>): void {
 			it("empties stack when have single item stored", () => {
 				stack.push(1);
 				stack.pop();
-				expect(stack.empty()).toBe(true);
+				expect(stack).toHaveLength(0);
 			});
 
 			it("returns single item stored", () => {
