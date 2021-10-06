@@ -2,21 +2,45 @@
  * @file Binary tree data structure
  */
 
+import type { Collection } from "types";
+
 /**
- * Binary tree node
+ * Represents a Subtree with information about data, father, left/right subtree
  */
-type Node<T> = null | {
-	data: T;
-	left: Node<T>;
-	right: Node<T>;
-};
+class Node<T> implements BT<T>, Collection {
+	#data: T;
+	#father: Node<T>;
+	#left: Node<T>;
+	#right: Node<T>;
+
+	constructor({ father, right, left, data }) {}
+}
 
 /**
  * Binary tree generic interface
  */
-interface Tree<T> {
+interface BT<T> {
 	size(): number;
-	isEmpty(): boolean;
+	empty(): boolean;
+
+	data: T;
+	father: BT<T> | null;
+	left: BT<T> | null;
+	right: BT<T> | null;
+	brother: BT<T> | null;
+
+	isRight(): boolean;
+	isLeft(): boolean;
+
+	depth(): number;
+
+	almostComplete(): boolean;
+	strictBinary(): boolean;
+	complete(): boolean;
+
+	similar(tree: BT<T>): boolean;
+	mirrorSimilar(tree: BT<T>): boolean;
+	similarAndMirrorSimilar(tree: BT<T>): boolean;
 }
 
 /**
@@ -41,20 +65,16 @@ interface TreeCollection<T> {
  * Binary tree structural mofidier
  */
 interface TreeModification<T> {
-	insertRoot(data: T): Tree<T>;
-	insertRight(data: T): Tree<T>;
-	insertRight(subtree: Tree<T>): Tree<T>;
-	insertLeft(data: T): Tree<T>;
-	insertLeft(subtree: Tree<T>): Tree<T>;
-	removeRight(node: Node<T>): boolean;
-	removeLeft(node: Node<T>): boolean;
+	insert(comparison: (value: T) => boolean): this;
 }
+
+type BSTRoot<T> = Node<T> | null;
 
 /**
  * Binary tree container
  */
-class BinaryTree<T> implements Tree<T>, TreeCollection<T> {
-	#root: Node<T> = null;
+class BinaryTree<T> implements TreeCollection<T>, Collection {
+	#root: BSTRoot<T> = null;
 	#size = 0;
 
 	/**
@@ -62,26 +82,20 @@ class BinaryTree<T> implements Tree<T>, TreeCollection<T> {
 	 *
 	 * @param {T} data [null]
 	 */
-	constructor(data: T | null = null) {
-		if (data) {
-			this.#root = {
-				data: data,
-				right: null,
-				left: null,
-			};
-
-			this.#size = 1;
-		}
-	}
+	constructor() {}
 
 	/**
 	 * Getter for root node
 	 *
 	 * @return {Node<T>}
 	 */
-	get root(): Node<T> {
+	get root(): BSTRoot<T> {
 		return this.#root;
 	}
+	/**
+	 *
+	 */
+	depth(): number {}
 
 	/**
 	 * Gets the tree size
@@ -97,7 +111,7 @@ class BinaryTree<T> implements Tree<T>, TreeCollection<T> {
 	 *
 	 * @return {number}
 	 */
-	isEmpty(): boolean {
+	empty(): boolean {
 		return this.size() === 0;
 	}
 
@@ -107,3 +121,5 @@ class BinaryTree<T> implements Tree<T>, TreeCollection<T> {
 }
 
 export default BinaryTree;
+
+class BST<T> extends BinaryTree<T> {}

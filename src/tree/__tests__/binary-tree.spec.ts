@@ -1,4 +1,4 @@
-import BinaryTree from "binary-tree";
+import BinaryTree from "../binary-tree";
 
 describe("Binary Tree", () => {
 	describe("Creating the tree", () => {
@@ -52,7 +52,7 @@ describe("Binary Tree", () => {
 				});
 
 				it("Returns true", () => {
-					expect(tree.isEmpty()).toBe(true);
+					expect(tree.empty()).toBe(true);
 				});
 
 				it.todo("Returns true after inserting at root");
@@ -60,7 +60,7 @@ describe("Binary Tree", () => {
 
 			it("Gets false for new tree with data", () => {
 				const tree = new BinaryTree(10);
-				expect(tree.isEmpty()).toBe(false);
+				expect(tree.empty()).toBe(false);
 			});
 		});
 

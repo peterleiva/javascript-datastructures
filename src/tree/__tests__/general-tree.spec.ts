@@ -1,4 +1,4 @@
-import Tree from "general-tree";
+import Tree from "../general-tree";
 
 describe("Tree Class", () => {
 	describe("Methods", () => {
