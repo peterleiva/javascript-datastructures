@@ -51,6 +51,11 @@ export type BinaryTreeNode<T> = {
 	 */
 	isRight(): boolean;
 	/**
+	 * returns true whether tree is a leaft, which means has no sons
+	 * @return {boolean}
+	 */
+	isLeaf(): boolean;
+	/**
 	 * returns true whether tree is left subtree or false otherwise
 	 * @return {boolean}
 	 */
@@ -63,9 +68,24 @@ export type BinaryTreeNode<T> = {
 	 * @return {number}
 	 */
 	level(): number;
+	/**
+	 * Checks whether the tree is ancestor of the tree
+	 * @return {boolean}
+	 */
+	ancestor(tree: BinaryTreeNode<T>): boolean;
+	/**
+	 * Checks whether the tree is the root node
+	 * @return {boolean}
+	 */
+	descendant(tree: BinaryTreeNode<T>): boolean;
 } | null;
 
-export interface BinaryTree {
+export interface BinaryTree<T> {
+	/**
+	 * getter for the root of the tree
+	 */
+	root: BTNode<T>;
+
 	/**
 	 * The depth of a binary tree is the maximum level of any leaf in the tree.
 	 * This equals the length of the longest path from the root to any leaf.
