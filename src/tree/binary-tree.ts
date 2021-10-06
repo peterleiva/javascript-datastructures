@@ -2,96 +2,50 @@
  * @file Binary tree data structure
  */
 
-import type { Collection } from "types";
+import type { Collection } from "../types";
+import type {
+	BinaryTreeNode as BT,
+	TreeCollection,
+	Traversable,
+} from "./types";
+
+type BTNode<T> = BinaryTree<T> | null;
 
 /**
- * Represents a Subtree with information about data, father, left/right subtree
+ * Binary tree using **dynamic node representation**
+ *
+ * A binary tree is a finite Set of elements that is either empty or is
+ * partitioned into three disjoint subsets. The first subset contains a single
+ * element called the root of the tree. The other two subsets are themselves
+ * binary trees, called the left and right subtrees of the original tree. A left
+ * or right subtree can be empty. Each element of a binary tree is called a node
+ * of the tree.
  */
-class Node<T> implements BT<T>, Collection {
+export default class BinaryTree<T>
+	implements BT<T>, TreeCollection<T>, Collection
+{
 	#data: T;
-	#father: Node<T>;
-	#left: Node<T>;
-	#right: Node<T>;
-
-	constructor({ father, right, left, data }) {}
-}
-
-/**
- * Binary tree generic interface
- */
-interface BT<T> {
-	size(): number;
-	empty(): boolean;
-
-	data: T;
-	father: BT<T> | null;
-	left: BT<T> | null;
-	right: BT<T> | null;
-	brother: BT<T> | null;
-
-	isRight(): boolean;
-	isLeft(): boolean;
-
-	depth(): number;
-
-	almostComplete(): boolean;
-	strictBinary(): boolean;
-	complete(): boolean;
-
-	similar(tree: BT<T>): boolean;
-	mirrorSimilar(tree: BT<T>): boolean;
-	similarAndMirrorSimilar(tree: BT<T>): boolean;
-}
-
-/**
- * Binary tree collection operations
- */
-interface TreeCollection<T> {
-	/**
-	 * Find a data inside a tree according to finder algorythm
-	 *
-	 * @param {(data: T) => boolean} finder
-	 */
-	find(finder: (data: T) => boolean): T;
-	/**
-	 * Tranverse a tree according to one of its al
-	 *
-	 * @param {function(data: T):boolean} callback
-	 */
-	// map(callback: (data: T) => T, traversal: TreeTraversal<T>): Iterator<T>;
-}
-
-/**
- * Binary tree structural mofidier
- */
-interface TreeModification<T> {
-	insert(comparison: (value: T) => boolean): this;
-}
-
-type BSTRoot<T> = Node<T> | null;
-
-/**
- * Binary tree container
- */
-class BinaryTree<T> implements TreeCollection<T>, Collection {
-	#root: BSTRoot<T> = null;
-	#size = 0;
-
 	/**
 	 * Create a binary tree with optional root data
 	 *
 	 * @param {T} data [null]
 	 */
-	constructor() {}
+	constructor(data: T) {
+		this.#data = data;
+		this.#father = this.#left = this.#right = null;
+		this.#size = 0;
+	}
 
 	/**
-	 * Getter for root node
-	 *
-	 * @return {Node<T>}
+	 * set left node
+	 * @param {T} data
+	 * @return {void}
 	 */
-	get root(): BSTRoot<T> {
-		return this.#root;
+	set left(data: T): void {
+		// TODO: decidir o que fazer quando árvore já tiver nó esquerdo definido
+		this.#left = new BinaryTree(data);
 	}
+
 	/**
 	 *
 	 */
@@ -114,12 +68,4 @@ class BinaryTree<T> implements TreeCollection<T>, Collection {
 	empty(): boolean {
 		return this.size() === 0;
 	}
-
-	find(finder: (data: T) => boolean): T {
-		throw new Error("Not implemented");
-	}
 }
-
-export default BinaryTree;
-
-class BST<T> extends BinaryTree<T> {}
