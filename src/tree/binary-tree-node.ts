@@ -1,6 +1,18 @@
 import { BTNode } from "./types";
 
 /**
+ * Incorrect insertion of tree
+ */
+export class InvalidInsertion extends Error {
+	/**
+	 * initialize message to invalid insertion
+	 */
+	constructor() {
+		super("invalid tree insertion. Node already exists");
+	}
+}
+
+/**
  * Represents a element (node) of Binary Tree
  *
  * A node of binary tree is implemented using **dynamic node represensation**
@@ -153,6 +165,7 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 *
 	 * The root of the tree has level 0, and the level of any other node in the
 	 * tree is one more than the level of its father.
+	 *
 	 * @return {number}
 	 */
 	level(): number {
@@ -167,6 +180,7 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	ancestor(tree: BTNode<T>): boolean {
 		throw new Error("must be implemented");
 	}
+
 	/**
 	 * Checks whether the tree is the root node
 	 * @param {BTNode<T>} tree
