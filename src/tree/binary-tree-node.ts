@@ -1,3 +1,4 @@
+import { Stack } from "linear";
 import { BTNode } from "./types";
 
 /**
@@ -18,7 +19,6 @@ export class InvalidInsertion extends Error {
  * A node of binary tree is implemented using **dynamic node represensation**
  * which represents three disjoint subsets, called **left**, **right** and
  * **father**, each node holds some information called **data**
- * @class
  */
 export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	/**
@@ -62,7 +62,7 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * @return {T}
 	 */
 	get data(): T {
-		throw new Error("must be implemented");
+		return this.#data;
 	}
 
 	/**
@@ -71,16 +71,24 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * @return {BTNode<T>}
 	 */
 	get father(): BTNode<T> {
-		throw new Error("must be implemented");
+		return this.#father;
 	}
 
 	/**
 	 * creates a leaft to insert data in, for tree with no left son
 	 * @throws {InvalidInsertion}
 	 * @param {T} data
+	 * @return {this}
 	 */
 	setLeft(data: T): this {
-		throw new Error("must be implemented");
+		if (this.left) {
+			throw new InvalidInsertion();
+		}
+
+		this.#left = new BinaryTreeNode(data);
+		(this.#left as NonNullable<BinaryTreeNode<T>>).#father = this;
+
+		return this;
 	}
 
 	/**
@@ -89,16 +97,24 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * @return {BTNode<T>}
 	 */
 	get left(): BTNode<T> {
-		throw new Error("must be implemented");
+		return this.#left;
 	}
 
 	/**
-	 * creates a leaft to insert data in, for tree with no right son
+	 * creates a leaf to insert data in, for tree with no right son
 	 * @throws {InvalidInsertion}
 	 * @param {T} data
+	 * @return {this}
 	 */
 	setRight(data: T): this {
-		throw new Error("must be implemented");
+		if (this.right) {
+			throw new InvalidInsertion();
+		}
+
+		this.#right = new BinaryTreeNode(data);
+		(this.#right as NonNullable<BinaryTreeNode<T>>).#father = this;
+
+		return this;
 	}
 
 	/**
@@ -107,7 +123,7 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * @return {BTNode<T>}
 	 */
 	get right(): BTNode<T> {
-		throw new Error("must be implemented");
+		return this.#right;
 	}
 
 	/**
@@ -116,7 +132,15 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * @return {BTNode<T>}
 	 */
 	get brother(): BTNode<T> {
-		throw new Error("must be implemented");
+		if (this.#father === null) {
+			return null;
+		}
+
+		if (this.isLeft()) {
+			return this.#father.right;
+		}
+
+		return this.#father.left;
 	}
 
 	/**
@@ -125,7 +149,14 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * @return {BTNode<T>}
 	 */
 	get root(): BTNode<T> {
-		throw new Error("must be implemented");
+		// eslint-disable-next-line @typescript-eslint/no-this-alias
+		let node: BTNode<T> = this;
+
+		while (node.father !== null) {
+			node = node.father;
+		}
+
+		return node;
 	}
 
 	/**
@@ -141,7 +172,7 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * @return {boolean}
 	 */
 	isLeaf(): boolean {
-		throw new Error("must be implemented");
+		return this.left === null && this.right === null;
 	}
 
 	/**
@@ -149,7 +180,7 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * @return {boolean}
 	 */
 	isRight(): boolean {
-		throw new Error("must be implemented");
+		return this.father?.right === this;
 	}
 
 	/**
@@ -157,7 +188,7 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * @return {boolean}
 	 */
 	isLeft(): boolean {
-		throw new Error("must be implemented");
+		return this.father?.left === this;
 	}
 
 	/**
@@ -169,16 +200,34 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * @return {number}
 	 */
 	level(): number {
-		throw new Error("must be implemented");
+		let level = 0;
+		let node = this.father;
+
+		while (node !== null) {
+			node = node.father;
+			level++;
+		}
+
+		return level;
 	}
 
 	/**
-	 * Checks whether the tree is ancestor of the tree
+	 * O(l). Checks whether the tree is ancestor of the tree
 	 * @param {BTNode<T>} tree
 	 * @return {boolean}
 	 */
 	ancestor(tree: BTNode<T>): boolean {
-		throw new Error("must be implemented");
+		let node = this.father;
+
+		while (node !== null) {
+			if (node === tree) {
+				return true;
+			}
+
+			node = node.father;
+		}
+
+		return false;
 	}
 
 	/**
@@ -186,7 +235,22 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * @param {BTNode<T>} tree
 	 * @return {boolean}
 	 */
-	descendant(tree: BinaryTreeNode<T>): boolean {
-		throw new Error("must be implemented");
+	descendant(tree: BTNode<T>): boolean {
+		const visited = new Stack<BTNode<T>>();
+		visited.push(this.left);
+		visited.push(this.right);
+
+		while (!visited.empty()) {
+			const node = visited.pop();
+
+			if (node === tree) {
+				return true;
+			}
+
+			if (node?.left) visited.push(node.left);
+			if (node?.right) visited.push(node.right);
+		}
+
+		return false;
 	}
 }

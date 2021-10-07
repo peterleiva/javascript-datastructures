@@ -169,4 +169,46 @@ describe("Binary Tree Node", () => {
 			expect(leaf.level()).toBe(2);
 		});
 	});
+
+	describe("ancestor", () => {
+		it("returns true is direct father", () => {
+			expect(left.ancestor(tree)).toBe(true);
+			expect(right.ancestor(tree)).toBe(true);
+			expect(leaf.ancestor(left)).toBe(true);
+		});
+
+		it("returns true when father of node's ascending", () => {
+			expect(leaf.ancestor(tree)).toBe(true);
+		});
+
+		it("returns false when they are siblings", () => {
+			expect(left.ancestor(right)).toBe(false);
+			expect(right.ancestor(left)).toBe(false);
+		});
+
+		it("returns false when they are equals", () => {
+			expect(tree.ancestor(tree)).toBe(false);
+		});
+	});
+
+	describe("descendant", () => {
+		it("returns true is direct child", () => {
+			expect(tree.descendant(right)).toBe(true);
+			expect(tree.descendant(left)).toBe(true);
+			expect(left.descendant(leaf)).toBe(true);
+		});
+
+		it("returns true when child's descendant", () => {
+			expect(tree.descendant(leaf)).toBe(true);
+		});
+
+		it("returns false when they are siblings", () => {
+			expect(left.descendant(right)).toBe(false);
+			expect(right.descendant(left)).toBe(false);
+		});
+
+		it("returns false when they are equals", () => {
+			expect(tree.descendant(tree)).toBe(false);
+		});
+	});
 });
