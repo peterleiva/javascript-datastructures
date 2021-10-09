@@ -4,12 +4,11 @@
 
 import type { Collection } from "../../types";
 import type {
-	BinaryTreeNode as BT,
+	BinaryTreeNode as BTNode,
+	BinaryTree as BinaryTreeADT,
 	TreeCollection,
 	Traversable,
 } from "../types";
-
-type BTNode<T> = BinaryTree<T> | null;
 
 /**
  * Binary tree using **dynamic node representation**
@@ -21,39 +20,36 @@ type BTNode<T> = BinaryTree<T> | null;
  * or right subtree can be empty. Each element of a binary tree is called a node
  * of the tree.
  */
-export default class BinaryTree<T>
-	implements BT<T>, TreeCollection<T>, Collection
-{
-	#data: T;
+export default class BinaryTree<T> implements Collection, BinaryTreeADT<T> {
+	#root: BTNode<T>;
+	#size: number;
 	/**
 	 * Create a binary tree with optional root data
 	 *
 	 * @param {T} data [null]
 	 */
-	constructor(data: T) {
-		this.#data = data;
-		this.#father = this.#left = this.#right = null;
+	constructor(data?: T) {
+		this.#root = null;
 		this.#size = 0;
 	}
 
 	/**
-	 * set left node
-	 * @param {T} data
-	 * @return {void}
+	 * getter for the root of the tree
 	 */
-	set left(data: T): void {
-		// TODO: decidir o que fazer quando árvore já tiver nó esquerdo definido
-		this.#left = new BinaryTree(data);
+	get root(): BTNode<T> {
+		return this.#root;
 	}
 
 	/**
-	 *
+	 * Alias for {@link Collection.size}
+	 * @type {number}
 	 */
-	depth(): number {}
+	get length(): number {
+		return this.size();
+	}
 
 	/**
-	 * Gets the tree size
-	 *
+	 * Returns the quantity of items stored
 	 * @return {number}
 	 */
 	size(): number {
@@ -61,11 +57,31 @@ export default class BinaryTree<T>
 	}
 
 	/**
-	 * Checks if there's no node on the tree
+	 * return true of false depending whether or not the stack contains any items
+	 * @return {boolean}
+	 */
+	empty(): boolean {
+		return this.#root === null;
+	}
+
+	/**
+	 * remove all elements from the collection
+	 * @return {this}
+	 */
+	clear(): this {
+		this.#size = 0;
+		this.#root = null;
+
+		return this;
+	}
+
+	/**
+	 * The depth of a binary tree is the maximum level of any leaf in the tree.
+	 * This equals the length of the longest path from the root to any leaf.
 	 *
 	 * @return {number}
 	 */
-	empty(): boolean {
-		return this.size() === 0;
+	depth(): number {
+		throw new Error("Must be implemented");
 	}
 }
