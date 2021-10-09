@@ -7,9 +7,12 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
-    "./linear/*": "./dist/linear/*",
+    "./linear": "./dist/linear/index.js",
+    "./linear/*": "./dist/linear/*.js",
     "./linear/list/*": null,
-    "./linear/deque/*": null
+    "./linear/deque*": null,
+    "./tree/binary-tree": "./dist/binary-tree/index.js",
+    "./tree/binary-tree/*": "./dist/binary-tree/*.js"
   },
   "publishConfig": {
     "access": "public"
