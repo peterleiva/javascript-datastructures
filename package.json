@@ -2,8 +2,15 @@
   "name": "@algoritmos/data-structures",
   "version": "0.4.0",
   "description": "Some data structures, binary tree, general tree, queue and so on",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./linear/*": "./dist/linear/*",
+    "./linear/list/*": null,
+    "./linear/deque/*": null
+  },
   "publishConfig": {
     "access": "public"
   },

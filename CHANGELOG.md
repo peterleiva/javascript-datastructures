@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Explicit export package public interface
+
 ### Added
 
 - Iterable mixin to transform linear data structure iterable
+
+#### [Binary Tree Node](src/tree/binary-tree-node.ts)
+
+- Add BinaryTreeNode (BTNode) to be used as a node for binary trees
 
 #### [Queue](src/linear/queue.ts)
 
