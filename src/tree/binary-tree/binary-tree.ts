@@ -2,12 +2,12 @@
  * @file Binary tree data structure
  */
 
-import type { Collection } from "../types";
+import type { Collection } from "../../types";
 import type {
 	BinaryTreeNode as BT,
 	TreeCollection,
 	Traversable,
-} from "./types";
+} from "../types";
 
 type BTNode<T> = BinaryTree<T> | null;
 
