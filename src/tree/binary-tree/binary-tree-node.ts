@@ -45,6 +45,12 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * @private
 	 */
 	#right: BTNode<T>;
+	/**
+	 * Node's level
+	 * @type {number}
+	 * @private
+	 */
+	#level: number;
 
 	/**
 	 * Creates a node tree with data and no subtree
@@ -54,6 +60,7 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	constructor(data: T) {
 		this.#data = data;
 		this.#father = this.#left = this.#right = null;
+		this.#level = 0;
 	}
 
 	/**
@@ -85,8 +92,9 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 			throw new InvalidInsertion();
 		}
 
-		this.#left = new BinaryTreeNode(data);
-		(this.#left as NonNullable<BinaryTreeNode<T>>).#father = this;
+		const left = (this.#left = new BinaryTreeNode(data));
+		left.#father = this;
+		left.#level = this.level() + 1;
 
 		return this;
 	}
@@ -111,8 +119,9 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 			throw new InvalidInsertion();
 		}
 
-		this.#right = new BinaryTreeNode(data);
-		(this.#right as NonNullable<BinaryTreeNode<T>>).#father = this;
+		const right = (this.#right = new BinaryTreeNode(data));
+		right.#father = this;
+		right.#level = this.level() + 1;
 
 		return this;
 	}
@@ -200,15 +209,7 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * @return {number}
 	 */
 	level(): number {
-		let level = 0;
-		let node = this.father;
-
-		while (node !== null) {
-			node = node.father;
-			level++;
-		}
-
-		return level;
+		return this.#level;
 	}
 
 	/**
