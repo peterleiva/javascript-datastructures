@@ -1,4 +1,4 @@
-import BTNode from "tree/binary-tree-node";
+import BTNode from "tree/binary-tree/binary-tree-node";
 
 /**
  *
@@ -11,7 +11,7 @@ import BTNode from "tree/binary-tree-node";
  *
  * @return {Record<string, BTNode<number>>}
  */
-export function setupTree(): Record<string, BTNode<number>> {
+export function setupBTNode(): Record<string, BTNode<number>> {
 	const root = new BTNode(10);
 	root.setLeft(20);
 	root.setRight(30);

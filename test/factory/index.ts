@@ -1,1 +1,1 @@
-export * from "./setup-tree";
+export * from "./setup-bt-node";

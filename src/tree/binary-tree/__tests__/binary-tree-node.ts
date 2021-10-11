@@ -1,8 +1,8 @@
 import BTNode, { InvalidInsertion } from "../binary-tree-node";
-import { setupTree } from "factory";
+import { setupBTNode } from "factory";
 
 describe("Binary Tree Node", () => {
-	const { root: tree, left, right, leaf } = setupTree();
+	const { root: tree, left, right, leaf } = setupBTNode();
 
 	describe("making node", () => {
 		it("constructs node with data", () => {
