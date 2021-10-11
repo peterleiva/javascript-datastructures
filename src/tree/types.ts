@@ -3,7 +3,7 @@
  */
 
 type Callback<T> = (data: T) => unknown;
-
+type Comparator<T> = (a: T, b: T) => boolean;
 export type BTNode<T> = BinaryTreeNode<T>;
 
 /**
@@ -92,6 +92,18 @@ export interface BinaryTree<T> {
 	 * @return {number}
 	 */
 	depth(): number;
+	/**
+	 * Compare values insert false values in the left otherwise in the right
+	 * @param comparison
+	 * @return {this}
+	 */
+	insert(comparison: Comparator<T>, ...items: T[]): this;
+	/**
+	 * Insert items, removing duplicates comparison is made with `Object.is`
+	 * @param items
+	 * @return {this}
+	 */
+	insertDistinct(...items: T[]): this;
 }
 
 export interface BTComparisson {
@@ -122,13 +134,6 @@ export interface TreeCollection<T> {
 	 * @param {function(data: T):boolean} callback
 	 */
 	// map(callback: (data: T) => T, traversal: TreeTraversal<T>): Iterator<T>;
-}
-
-/**
- * Binary tree structural mofidier
- */
-export interface TreeModification<T> {
-	insert(comparison: (value: T) => boolean): this;
 }
 
 export enum TraversalMethod {
