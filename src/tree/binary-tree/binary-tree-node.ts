@@ -168,7 +168,7 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	}
 
 	/**
-	 * returns true whether tree is a leaft, which means has no sons
+	 * O(1). returns true whether tree has no sons, also known as a leaf
 	 * @return {boolean}
 	 */
 	isLeaf(): boolean {
@@ -192,8 +192,8 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	}
 
 	/**
-	 * Calculates the level of the subtree
-	 *
+	 * O(1). Calculates the level of the subtree
+	 * TODO:  refactor algorithm to use O(1) cost
 	 * The root of the tree has level 0, and the level of any other node in the
 	 * tree is one more than the level of its father.
 	 *

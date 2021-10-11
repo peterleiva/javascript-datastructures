@@ -26,7 +26,7 @@ export default class BinaryTree<T> implements Collection, BinaryTreeADT<T> {
 	/**
 	 * Create a binary tree with optional root data
 	 *
-	 * @param {T} data [null]
+	 * @param {T} [data]
 	 */
 	constructor(data?: T) {
 		this.#root = null;

@@ -2,7 +2,7 @@
  * @file Tree tranversal interface for navigation
  */
 
-type Callback = (...args: any[]) => unknown[];
+type Callback<T> = (data: T) => unknown;
 
 export type BTNode<T> = BinaryTreeNode<T>;
 
@@ -51,7 +51,7 @@ export type BinaryTreeNode<T> = {
 	 */
 	isRight(): boolean;
 	/**
-	 * returns true whether tree is a leaft, which means has no sons
+	 * O(1). returns true whether tree has no sons, also known as a leaf
 	 * @return {boolean}
 	 */
 	isLeaf(): boolean;
@@ -149,22 +149,22 @@ export interface Traversable<T> {
 	/**
 	 * Tranverse the tree in pre order
 	 */
-	preorder(callback: Callback): this;
+	preorder(callback: Callback<T>): this;
 	preorder(): Iterator<T>;
 	/**
 	 * Tranverse the tree in order
 	 */
-	inorder(callback: Callback): this;
+	inorder(callback: Callback<T>): this;
 	inorder(): Iterator<T>;
 	/**
 	 * Tranverse a tree in pos order
 	 */
-	postorder(callback: Callback): this;
+	postorder(callback: Callback<T>): this;
 	postorder(): Iterator<T>;
 	/**
 	 * helper to traverse the tree
 	 * @param callback
 	 * @param {TraversalMethod} [method = TraversalMethod.PREORDER]
 	 */
-	traverse(callback: Callback, method: TraversalMethod): this;
+	traverse(callback: Callback<T>, method: TraversalMethod): this;
 }
