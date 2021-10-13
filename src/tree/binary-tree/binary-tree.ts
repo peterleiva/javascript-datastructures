@@ -1,14 +1,18 @@
 /**
  * @file Binary tree data structure
+ * @version 0.1.0
  */
 
-import type { Collection } from "../../types";
+import type { Collection, Searchable, Finder } from "../../types";
 import type {
 	BinaryTreeNode as BTNode,
-	BinaryTree as BinaryTreeADT,
-	TreeCollection,
+	BinaryTree as ADT,
 	Traversable,
+	Comparator,
+	Callback,
+	TraversalMethod,
 } from "../types";
+import BinaryTreeNode from "./binary-tree-node";
 
 /**
  * Binary tree using **dynamic node representation**
@@ -20,7 +24,9 @@ import type {
  * or right subtree can be empty. Each element of a binary tree is called a node
  * of the tree.
  */
-export default class BinaryTree<T> implements Collection, BinaryTreeADT<T> {
+export default class BinaryTree<T>
+	implements Collection, ADT<T>, Searchable<T>, Traversable<T>
+{
 	#root: BTNode<T>;
 	#size: number;
 	/**
@@ -31,18 +37,44 @@ export default class BinaryTree<T> implements Collection, BinaryTreeADT<T> {
 	constructor(data?: T) {
 		this.#root = null;
 		this.#size = 0;
+
+		if (data) {
+			this.#root = new BinaryTreeNode(data);
+		}
 	}
 
 	/**
 	 * getter for the root of the tree
+	 * @return {BTNode<T>}
 	 */
 	get root(): BTNode<T> {
 		return this.#root;
 	}
 
 	/**
+	 * getter for the root of the tree
+	 */
+	get data(): T | undefined {
+		return this.root?.data;
+	}
+
+	/**
+	 * getter for left subtree
+	 */
+	get left(): BTNode<T> {
+		return this.root?.left ?? null;
+	}
+
+	/**
+	 * getter for right subtree
+	 */
+	get right(): BTNode<T> {
+		return this.root?.right ?? null;
+	}
+
+	/**
 	 * Alias for {@link Collection.size}
-	 * @type {number}
+	 * @return {numder}
 	 */
 	get length(): number {
 		return this.size();
@@ -77,11 +109,89 @@ export default class BinaryTree<T> implements Collection, BinaryTreeADT<T> {
 
 	/**
 	 * The depth of a binary tree is the maximum level of any leaf in the tree.
-	 * This equals the length of the longest path from the root to any leaf.
-	 *
+	 * This equals the length of the longest path from the root to any leaf. It
+	 * given -1 when the root is empty
 	 * @return {number}
 	 */
 	depth(): number {
-		throw new Error("Must be implemented");
+		throw new Error("must be implemented");
+	}
+	/**
+	 * Compare values insert false values in the left otherwise in the right
+	 * @param {Function} comparison
+	 * @param {...T} items
+	 * @return {this}
+	 */
+	insert(comparison: Comparator<T>, ...items: T[]): this {
+		throw new Error("must be implemented");
+
+		return this;
+	}
+
+	/**
+	 * Insert items, removing duplicates comparison is made with `Object.is`
+	 * @param {Function} comparison
+	 * @param {...T} items
+	 * @return {this}
+	 */
+	insertDistinct(comparison: Comparator<T>, ...items: T[]): this {
+		throw new Error("must be implemented");
+
+		return this;
+	}
+
+	/**
+	 * Find a data inside a tree according to finder callback
+	 *
+	 * @param {Function} finder
+	 * @return {?T}
+	 */
+	search(finder: Finder<T>): T | null {
+		throw new Error("must be implemented");
+	}
+
+	preorder(callback: Callback<T>): this;
+	preorder(): Iterator<T>;
+	/**
+	 * Tranverse the tree in pre order
+	 *
+	 *
+	 * @param {Function} [callback]
+	 * @return {this | Iterator<T>}
+	 */
+	preorder(callback?: Callback<T>): this | Iterator<T> {
+		throw new Error("must be implemented");
+	}
+
+	inorder(callback: Callback<T>): this;
+	inorder(): Iterator<T>;
+	/**
+	 * Tranverse the tree in order
+	 *
+	 * @param {Function} [callback]
+	 * @return {this | Iterator<T>}
+	 */
+	inorder(callback?: Callback<T>): this | Iterator<T> {
+		throw new Error("must be implemented");
+	}
+
+	postorder(callback: Callback<T>): this;
+	postorder(): Iterator<T>;
+	/**
+	 * Tranverse a tree in pos order
+	 * @param {Function} [callback]
+	 * @return {this | Iterator<T>}
+	 */
+	postorder(callback?: Callback<T>): this | Iterator<T> {
+		throw new Error("must be implemented");
+	}
+
+	/**
+	 * helper to traverse the tree
+	 * @param {Funtion} callback
+	 * @param {TraversalMethod} [method = TraversalMethod.PREORDER]
+	 */
+	traverse(callback: Callback<T>, method: TraversalMethod): this {
+		throw new Error("must be implemented");
 	}
 }

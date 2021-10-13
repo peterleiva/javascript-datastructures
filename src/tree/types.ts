@@ -2,8 +2,8 @@
  * @file Tree tranversal interface for navigation
  */
 
-type Callback<T> = (data: T) => unknown;
-type Comparator<T> = (a: T, b: T) => boolean;
+export type Callback<T> = (data: T) => unknown;
+export type Comparator<T> = (a: T, b: T) => boolean;
 export type BTNode<T> = BinaryTreeNode<T>;
 
 /**
@@ -61,6 +61,20 @@ export type BinaryTreeNode<T> = {
 	 */
 	isLeft(): boolean;
 	/**
+	 * creates a leaft to insert data in, for tree with no left son
+	 * @throws {InvalidInsertion}
+	 * @param {T} data
+	 * @return {this}
+	 */
+	setLeft(data: T): BinaryTreeNode<T>;
+	/**
+	 * creates a leaf to insert data in, for tree with no right son
+	 * @throws {InvalidInsertion}
+	 * @param {T} data
+	 * @return {this}
+	 */
+	setRight(data: T): BinaryTreeNode<T>;
+	/**
 	 * Calculates the level of the subtree
 	 *
 	 * The root of the tree has level 0, and the level of any other node in the
@@ -85,10 +99,22 @@ export interface BinaryTree<T> {
 	 * getter for the root of the tree
 	 */
 	root: BTNode<T>;
-
+	/**
+	 * getter for left subtree
+	 */
+	left: BTNode<T>;
+	/**
+	 * getter for right subtree
+	 */
+	right: BTNode<T>;
+	/**
+	 * data for root node
+	 */
+	data: T | undefined;
 	/**
 	 * The depth of a binary tree is the maximum level of any leaf in the tree.
-	 * This equals the length of the longest path from the root to any leaf.
+	 * This equals the length of the longest path from the root to any leaf. It
+	 * given -1 when the root is empty
 	 * @return {number}
 	 */
 	depth(): number;
@@ -103,7 +129,8 @@ export interface BinaryTree<T> {
 	 * @param items
 	 * @return {this}
 	 */
-	insertDistinct(...items: T[]): this;
+	insertDistinct(comparison: Comparator<T>, ...items: T[]): this;
+	// mirror(): BinaryTree<T>;
 }
 
 export interface BTComparisson {
@@ -118,24 +145,6 @@ export interface Similarity<T> {
 	similarAndMirrorSimilar(tree: BinaryTreeNode<T>): boolean;
 }
 
-/**
- * Binary tree collection operations
- */
-export interface TreeCollection<T> {
-	/**
-	 * Find a data inside a tree according to finder algorythm
-	 *
-	 * @param {(data: T) => boolean} finder
-	 */
-	find(finder: (data: T) => boolean): T;
-	/**
-	 * Tranverse a tree according to one of its al
-	 *
-	 * @param {function(data: T):boolean} callback
-	 */
-	// map(callback: (data: T) => T, traversal: TreeTraversal<T>): Iterator<T>;
-}
-
 export enum TraversalMethod {
 	ASC,
 	DESC,
@@ -143,6 +152,7 @@ export enum TraversalMethod {
 	POSTORDER,
 	INORDER,
 }
+
 /**
  * Traversable defines common ways to traverse its a tree. When talk about
  * traversal always has to do with ordered tree, so to successfully traversal

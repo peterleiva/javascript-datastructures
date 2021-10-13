@@ -81,3 +81,15 @@ export type Constructor<T = Record<string, unknown>> = new (
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	...args: any[]
 ) => T;
+
+export type Finder<T> = (data: T) => boolean;
+
+export interface Searchable<T> {
+	/**
+	 * Find a data inside a tree according to finder callback
+	 *
+	 * @param {(data: T) => boolean} finder
+	 * @return {?T}
+	 */
+	search(finder: Finder<T>): T | null;
+}
