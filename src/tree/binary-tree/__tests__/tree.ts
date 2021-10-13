@@ -1,5 +1,5 @@
-import BinaryTree from "../binary-tree";
-import BTNode from "../binary-tree-node";
+import BinaryTree from "../tree";
+import BTNode from "../node";
 
 describe("Binary Tree", () => {
 	let tree: BinaryTree<unknown>;

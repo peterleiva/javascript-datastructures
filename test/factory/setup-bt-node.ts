@@ -1,4 +1,4 @@
-import BTNode from "tree/binary-tree/binary-tree-node";
+import BTNode from "tree/binary-tree/node";
 
 /**
  *

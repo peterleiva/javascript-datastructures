@@ -1,6 +1,6 @@
 /**
  * @file Binary tree data structure
- * @version 0.1.0
+ * @version 0.2.0
  */
 
 import type { Collection, Searchable, Finder } from "../../types";
@@ -12,7 +12,7 @@ import type {
 	Callback,
 	TraversalMethod,
 } from "../types";
-import BinaryTreeNode from "./binary-tree-node";
+import Node from "./node";
 
 type BinaryTreeOptions<T> = Partial<{
 	root: T;
@@ -52,7 +52,7 @@ export default class BinaryTree<T>
 			};
 
 		if (rootData) {
-			this.#root = new BinaryTreeNode(rootData);
+			this.#root = new Node(rootData);
 			this.#size = 1;
 		}
 	}
@@ -198,7 +198,7 @@ export default class BinaryTree<T>
 		}
 
 		if (!father) {
-			this.#root = new BinaryTreeNode(item);
+			this.#root = new Node(item);
 		} else if (comparator(item, father.data)) {
 			father.setLeft(item);
 		} else {

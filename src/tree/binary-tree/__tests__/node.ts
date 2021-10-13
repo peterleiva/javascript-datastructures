@@ -1,4 +1,4 @@
-import BTNode, { InvalidInsertion } from "../binary-tree-node";
+import BTNode, { InvalidInsertion } from "../node";
 import { setupBTNode } from "factory";
 
 describe("Binary Tree Node", () => {

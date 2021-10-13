@@ -1,5 +1,10 @@
+/**
+ * @file Binary Tree node
+ * @version 0.2.0
+ */
+
+import type { BTNode } from "../types";
 import { Stack } from "linear";
-import { BTNode } from "../types";
 
 /**
  * Incorrect insertion of tree
@@ -202,7 +207,7 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * O(1). Calculates the level of the subtree
-	 * TODO:  refactor algorithm to use O(1) cost
+	 *
 	 * The root of the tree has level 0, and the level of any other node in the
 	 * tree is one more than the level of its father.
 	 *
