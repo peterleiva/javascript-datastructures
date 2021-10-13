@@ -14,6 +14,11 @@ import type {
 } from "../types";
 import BinaryTreeNode from "./binary-tree-node";
 
+type BinaryTreeOptions<T> = Partial<{
+	root: T;
+	comparator: Comparator<T>;
+}>;
+
 /**
  * Binary tree using **dynamic node representation**
  *
@@ -29,17 +34,26 @@ export default class BinaryTree<T>
 {
 	#root: BTNode<T>;
 	#size: number;
+	#comparator: Comparator<T>;
+
 	/**
 	 * Create a binary tree with optional root data
 	 *
 	 * @param {T} [data]
+	 * @param {Function} comparator
 	 */
-	constructor(data?: T) {
+	constructor({ root: rootData, comparator }: BinaryTreeOptions<T> = {}) {
 		this.#root = null;
 		this.#size = 0;
+		this.#comparator =
+			comparator ??
+			function (a: T, b: T) {
+				return a < b;
+			};
 
-		if (data) {
-			this.#root = new BinaryTreeNode(data);
+		if (rootData) {
+			this.#root = new BinaryTreeNode(rootData);
+			this.#size = 1;
 		}
 	}
 
@@ -110,34 +124,88 @@ export default class BinaryTree<T>
 	/**
 	 * The depth of a binary tree is the maximum level of any leaf in the tree.
 	 * This equals the length of the longest path from the root to any leaf. It
-	 * given -1 when the root is empty
+	 * given -Infinity when the root is empty
 	 * @return {number}
 	 */
 	depth(): number {
-		throw new Error("must be implemented");
+		/**
+		 *  calculates depth for tree
+		 * @param {BTNode<T>} tree
+		 * @private
+		 * @return {number}
+		 */
+		function _depth(tree: BTNode<T>): number {
+			if (!tree) {
+				return -Infinity;
+			}
+
+			if (tree.isLeaf()) {
+				return tree.level();
+			}
+
+			return Math.max(_depth(tree.left), _depth(tree.right));
+		}
+
+		return _depth(this.root);
 	}
+
 	/**
 	 * Compare values insert false values in the left otherwise in the right
-	 * @param {Function} comparison
 	 * @param {...T} items
 	 * @return {this}
 	 */
-	insert(comparison: Comparator<T>, ...items: T[]): this {
-		throw new Error("must be implemented");
+	insert(...items: T[]): this {
+		for (const item of items) {
+			this.insertItem(this.#comparator, item);
+		}
 
 		return this;
 	}
 
 	/**
 	 * Insert items, removing duplicates comparison is made with `Object.is`
-	 * @param {Function} comparison
 	 * @param {...T} items
 	 * @return {this}
 	 */
-	insertDistinct(comparison: Comparator<T>, ...items: T[]): this {
-		throw new Error("must be implemented");
+	insertDistinct(...items: T[]): this {
+		for (const item of items) {
+			this.insertItem(this.#comparator, item, true);
+		}
 
 		return this;
+	}
+
+	/**
+	 * Compare values insert false values in the left otherwise in the right
+	 *
+	 * @param {Function} comparator
+	 * @param {T} item
+	 * @param {boolean} distinct
+	 * @return {void}
+	 */
+	private insertItem(
+		comparator: Comparator<T> = this.#comparator,
+		item: T,
+		distinct = false
+	): void {
+		let [father, node]: [BTNode<T>, BTNode<T>] = [null, this.root];
+
+		while (node) {
+			father = node;
+
+			if (distinct && Object.is(node.data, item)) return;
+			node = comparator(item, node.data) ? node.left : node.right;
+		}
+
+		if (!father) {
+			this.#root = new BinaryTreeNode(item);
+		} else if (comparator(item, father.data)) {
+			father.setLeft(item);
+		} else {
+			father.setRight(item);
+		}
+
+		this.#size++;
 	}
 
 	/**
@@ -177,6 +245,7 @@ export default class BinaryTree<T>
 
 	postorder(callback: Callback<T>): this;
 	postorder(): Iterator<T>;
+
 	/**
 	 * Tranverse a tree in pos order
 	 * @param {Function} [callback]

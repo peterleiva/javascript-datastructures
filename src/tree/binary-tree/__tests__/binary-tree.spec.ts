@@ -13,7 +13,7 @@ describe("Binary Tree", () => {
 	// 3   9
 	//
 
-	beforeEach(() => (tree = new BinaryTree()));
+	beforeEach(() => (tree = new BinaryTree({ comparator })));
 
 	describe("Creating the tree", () => {
 		it("Gets empty root for created tree with no data", () => {
@@ -23,15 +23,16 @@ describe("Binary Tree", () => {
 
 		it("Create tree with data", () => {
 			const data = 10;
-			const tree = new BinaryTree(data);
-			expect(tree.root?.data).toBe(10);
+			const tree = new BinaryTree({ root: data });
+			expect(tree.root?.data).toBe(data);
+			expect(tree).toHaveLength(1);
 		});
 	});
 
 	describe("Properties", () => {
 		describe("root", () => {
 			it("get root when non-empty tree", () => {
-				const tree = new BinaryTree(10);
+				const tree = new BinaryTree({ root: 10 });
 				expect(tree.root).toBeDefined();
 				expect(tree.root).toBeInstanceOf(BTNode);
 			});
@@ -49,14 +50,14 @@ describe("Binary Tree", () => {
 			it("get root data when non-empty tree", () => {
 				const data = 10;
 
-				expect(new BinaryTree(10).data).toBe(data);
+				expect(new BinaryTree({ root: 10 }).data).toBe(data);
 			});
 		});
 
 		describe("left", () => {
 			let tree: BinaryTree<number>;
 
-			beforeEach(() => (tree = new BinaryTree(10)));
+			beforeEach(() => (tree = new BinaryTree({ root: 10 })));
 
 			it("gets left subtree when non-empty left subtree", () => {
 				tree.root?.setLeft(20);
@@ -79,7 +80,7 @@ describe("Binary Tree", () => {
 		describe("right", () => {
 			let tree: BinaryTree<number>;
 
-			beforeEach(() => (tree = new BinaryTree(10)));
+			beforeEach(() => (tree = new BinaryTree({ root: 10 })));
 
 			it("gets right subtree when non-empty right subtree", () => {
 				tree.root?.setRight(20);
@@ -111,12 +112,12 @@ describe("Binary Tree", () => {
 			});
 
 			it("Returns null for inexistent data", () => {
-				const tree = new BinaryTree(50);
+				const tree = new BinaryTree({ root: 50 });
 				expect(tree.search(finder)).toBeNull();
 			});
 
 			it("Returns data when is at root", () => {
-				const tree = new BinaryTree(item);
+				const tree = new BinaryTree({ root: item });
 				expect(tree.search(finder)).toBe(item);
 			});
 
@@ -125,13 +126,8 @@ describe("Binary Tree", () => {
 		});
 
 		describe("insert", () => {
-			it("comparator", () => {
-				expect(comparator).toHaveBeenCalledTimes(5);
-				// expect(comparator).toHaveBeenCalledWith();
-			});
-
 			it("creates a tree structure", () => {
-				tree.insert(comparator, ...items);
+				tree.insert(...items);
 				expect(tree.data).toBe(14);
 				expect(tree.left?.data).toBe(4);
 				expect(tree.right?.data).toBe(15);
@@ -141,7 +137,7 @@ describe("Binary Tree", () => {
 
 			it("creates a list-like structure", () => {
 				const items = [2, 4, 6, 8];
-				tree.insert(comparator, ...items);
+				tree.insert(...items);
 
 				expect(tree.data).toBe(2);
 				expect(tree.right?.data).toBe(4);
@@ -150,36 +146,37 @@ describe("Binary Tree", () => {
 			});
 
 			it("keeps tree empty with no items argument", () => {
-				tree.insert(comparator);
+				tree.insert();
 
 				expect(tree).toHaveLength(0);
 			});
 
 			it("increase size by argument value", () => {
-				tree.insert(comparator, ...items);
+				tree.insert(...items);
 				expect(tree).toHaveLength(items.length);
-				tree.insert(comparator, ...items);
+				tree.insert(...items);
 				expect(tree).toHaveLength(2 * items.length);
 			});
 
 			it("insert duplicated values", () => {
-				tree.insert(comparator, 14);
+				tree.insert(...items);
+				tree.insert(14);
+
+				expect(tree).toHaveLength(items.length + 1);
 				expect(tree.right?.left?.data).toBe(14);
 			});
 		});
 
 		describe("insertDistinct", () => {
-			const comparator = jest.fn((a, b) => a < b);
-
 			it("ignore duplicate values on insertion", () => {
-				tree.insert(comparator, 14, 14);
+				tree.insertDistinct(14, 14);
 
 				expect(tree.data).toBe(14);
 				expect(tree.root?.isLeaf()).toBe(true);
 			});
 
 			it("size is equal to distinct values", () => {
-				tree.insert(comparator, 14, 14);
+				tree.insertDistinct(14, 14);
 
 				expect(tree).toHaveLength(1);
 			});
@@ -189,7 +186,7 @@ describe("Binary Tree", () => {
 					a: "a",
 				};
 
-				tree.insert(comparator, data, 14, data);
+				tree.insertDistinct(data, 14, data);
 
 				expect(tree.data).toBe(data);
 				expect(tree).toHaveLength(2);
@@ -197,17 +194,18 @@ describe("Binary Tree", () => {
 		});
 
 		describe("depth", () => {
-			it("returns -1 for empty tree", () => {
-				expect(tree.depth()).toBe(-1);
+			it("returns -Infinity for empty tree", () => {
+				expect(tree.depth()).toBe(-Infinity);
 			});
 
 			it("returns 0 for single rooted tree", () => {
-				const tree = new BinaryTree(10);
+				const tree = new BinaryTree({ root: 10 });
 				expect(tree.depth()).toBe(0);
 			});
 
 			it("given the maximium level of any leaf of the tree", () => {
-				tree.insert(comparator, items);
+				tree.insert(...items);
+				tree.insert(-1);
 				expect(tree.depth()).toBe(3);
 			});
 		});

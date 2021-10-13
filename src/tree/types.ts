@@ -120,16 +120,14 @@ export interface BinaryTree<T> {
 	depth(): number;
 	/**
 	 * Compare values insert false values in the left otherwise in the right
-	 * @param comparison
-	 * @return {this}
 	 */
-	insert(comparison: Comparator<T>, ...items: T[]): this;
+	insert(...items: T[]): this;
 	/**
 	 * Insert items, removing duplicates comparison is made with `Object.is`
 	 * @param items
 	 * @return {this}
 	 */
-	insertDistinct(comparison: Comparator<T>, ...items: T[]): this;
+	insertDistinct(...items: T[]): this;
 	// mirror(): BinaryTree<T>;
 }
 
