@@ -15,9 +15,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Iterable mixin to transform linear data structure iterable
 
-#### [Binary Tree Node](src/tree/binary-tree-node.ts)
+#### [Binary Tree Node (BTNode)](src/tree/binary-tree/node.ts)
 
-- Add BinaryTreeNode (BTNode) to be used as a node for binary trees
+**BinaryTreeNode** (**BTNode**) is used as a node for binary trees to creates a dynamic linked representation of the tree, it is the root of binary trees.
+Note: BTNode can't be manipulated directly only through `BinaryTree.root` getter
+
+Properties:
+
+- `data` - Node's data
+- `father` - Node's father which is a node as well
+- `left` - Left subtree node
+- `right` - Right subtree node
+- `brother` - Brother subtree node, which means right subtree when is left subtree and vice-versa
+- `root` - Root from the node, it walks through the ancestors until it find the its root
+
+Methods:
+
+- `setLeft(): this` - creates a leaft to insert data in, for tree with no left son
+- `setRight(): this` - returns true whether tree is right subtree or false otherwise
+- `isRoot(): boolean` - Checks whether the tree is the root node
+- `isLeft(): boolean` - returns true whether tree is left subtree or false otherwise
+- `isRight(): boolean` - creates a leaf to insert data in, for tree with no right son
+- `isLeaf(): boolean` - returns true whether tree has no sons, also known as a leaf
+- `level(): number` - Calculates the level of the subtree
+- `ancestor(): boolean` - Checks whether the tree is ancestor of the tree
+- `descendant(): boolean` - Checks whether the tree is the root node
+
+#### [Binary Tree](src/tree/binary-tree/tree.ts)
+
+- Construct tree with options `root` and `comparator`, comparator by default is a plain equality `a < b` comparison and `root` creates a binary tree with root value
+
+Properties:
+
+- `data: T | undefined` - root data if exists
+- `root: BTNode` - root node
+- `left: BTNode` - left subtree
+- `right: BTNode` - right subtree
+- `length: number` - size of the tree
+
+Methods:
+
+- `empty(): boolean` - _alias_ for `.length`
+- `clear(): this` - remove all data from the tree
+- `depth(): number` - returns the longest path in the tree, which means the highest level or `-Infinity` if is empty
+- `insert(...items): this` - insert multiple data in the tree following the constructor option `comparator` which when is true insert at the left and right otherwise
+- `insertDistinct(...items): this` - same as `.insert` but ignores equal values using `Object.is` comparison
 
 #### [Queue](src/linear/queue.ts)
 
