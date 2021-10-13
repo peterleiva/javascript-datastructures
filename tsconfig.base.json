@@ -10,7 +10,8 @@
     "noImplicitAny": true,
     "moduleResolution": "node",
     "declaration": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "declarationDir": "./dist/types"
   },
 
   "include": ["src"]

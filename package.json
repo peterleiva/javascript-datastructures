@@ -2,23 +2,29 @@
   "name": "@algoritmos/data-structures",
   "version": "0.4.0",
   "description": "Some data structures, binary tree, general tree, queue and so on",
-  "type": "module",
+  "type": "commonjs",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
     "./linear": "./dist/linear/index.js",
     "./linear/*": "./dist/linear/*.js",
     "./linear/list/*": null,
     "./linear/deque*": null,
-    "./tree/binary-tree": "./dist/binary-tree/index.js",
-    "./tree/binary-tree/*": "./dist/binary-tree/*.js"
+    "./tree/binary-tree": "./dist/tree/binary-tree/index.js",
+    "./tree/binary-tree/*": "./dist/tree/binary-tree/*.js"
   },
+  "files": [
+    "dist",
+    "src"
+  ],
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "npm run compile",
+    "prebuild": "npm run clean",
+    "compile": "tsc --build tsconfig.build.json",
     "lint": "eslint \".\"",
     "format": "npm run prettier -- --write",
     "format:check": "npm run prettier -- --check",
@@ -27,7 +33,8 @@
     "test:watch": "npm t -- --watch",
     "coverage:reporter": "open-cli coverage/index.html",
     "generate-docs": "jsdoc -d docs/api -R README.md dist",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "clean": "npm run compile -- --clean"
   },
   "keywords": [
     "tree",
