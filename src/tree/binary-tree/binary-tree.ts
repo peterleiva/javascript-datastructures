@@ -215,7 +215,21 @@ export default class BinaryTree<T>
 	 * @return {?T}
 	 */
 	search(finder: Finder<T>): T | null {
-		throw new Error("must be implemented");
+		let node = this.root;
+
+		while (node) {
+			const comparison = finder(node.data);
+
+			if (comparison === 0) {
+				return node.data;
+			} else if (comparison < 0) {
+				node = node.left;
+			} else {
+				node = node.right;
+			}
+		}
+
+		return null;
 	}
 
 	preorder(callback: Callback<T>): this;

@@ -102,9 +102,10 @@ describe("Binary Tree", () => {
 	});
 
 	describe("Methods", () => {
-		describe.skip(".search", () => {
+		describe(".search", () => {
 			const item = 10;
-			const finder = (data: number) => data === item;
+			const finder = (data: number) =>
+				data === item ? 0 : data < item ? -1 : 1;
 
 			it("Returns null for empty tree", () => {
 				const tree = new BinaryTree<number>();

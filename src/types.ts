@@ -82,7 +82,7 @@ export type Constructor<T = Record<string, unknown>> = new (
 	...args: any[]
 ) => T;
 
-export type Finder<T> = (data: T) => boolean;
+export type Finder<T> = (data: T) => number;
 
 export interface Searchable<T> {
 	/**
