@@ -1,8 +1,9 @@
 import BinaryTree from "./binary-tree";
 
 /**
- * The **Binary Search Tree** has left subtree less than or equal its root and
- * all right subtree greater than the root
+ * The **Binary Search Tree** has the property that all elements in the left
+ * subtree of a node n are less than the contents of n, and all elements in the
+ * right subtree of n are greater than or equal to the contents
  */
 export default class BST<T> extends BinaryTree<T> {
 	/**
