@@ -1,6 +1,5 @@
+import { IndexOutOfRange, Underflow } from "linear/errors";
 import List from "../list";
-import { IndexOutOfRange } from "../errors";
-import { Underflow } from "../../errors";
 import {
 	shouldBehaveLikeCollection,
 	shouldBehaveLikeIterable,
@@ -88,52 +87,6 @@ describe("List", () => {
 			list.append(1, 2);
 			list.last();
 			expect([...list]).toStrictEqual([1, 2]);
-		});
-	});
-
-	describe(".contains", () => {
-		describe("Returns false When", () => {
-			it("List is empty", () => {
-				expect(list.contains(10)).toBe(false);
-			});
-
-			it("Don't stored the item", () => {
-				list.push(1);
-				expect(list.contains(10)).toBe(false);
-			});
-
-			it("Don't have the same type", () => {
-				list.push(1);
-				expect(list.contains("1")).toBe(false);
-			});
-		});
-
-		describe("Returns true when", () => {
-			it("Is at the start", () => {
-				list.append(1, 2, 3);
-				expect(list.contains(1)).toBe(true);
-			});
-
-			it("Item is at the end", () => {
-				list.append(1, 2, 3);
-				expect(list.contains(3)).toBe(true);
-			});
-
-			it("Has more than 1 instance stored", () => {
-				list.append(1, "2", 3, "2");
-				expect(list.contains("2")).toBe(true);
-			});
-		});
-	});
-
-	describe(".size", () => {
-		it("Is 0 when list is empty", () => {
-			expect(list.size()).toBe(0);
-		});
-
-		it("Is equals length", () => {
-			list.append(1, 2);
-			expect(list.length === list.size()).toBe(true);
 		});
 	});
 

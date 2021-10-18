@@ -3,17 +3,16 @@
  * @version 0.2.0
  */
 
-import type { DoublyNode as Node } from "../types";
-import type { List as ListADT, ComparableFn } from "./list-adt.interface";
+import type { DoublyNode as Node } from "linear/types";
+import { IndexOutOfRange, Underflow } from "linear/errors";
+import type { List as ADT } from "./types";
 import { iterable, Iterable } from "iterable";
-import { IndexOutOfRange } from "./errors";
-import { Underflow } from "../errors";
 
 @iterable
 /**
  * Ordered generic list
  */
-export default class List<T> implements ListADT<T> {
+export default class List<T> implements ADT<T> {
 	#head: Node<T>;
 	#tail: Node<T>;
 	#length: number;
@@ -60,6 +59,7 @@ export default class List<T> implements ListADT<T> {
 	toArray(): T[] {
 		return [...this];
 	}
+
 	/**
 	 *  Returns the number of elements stored in the collection
 	 */
@@ -82,6 +82,7 @@ export default class List<T> implements ListADT<T> {
 	empty(): boolean {
 		return this.#head === null;
 	}
+
 	/**
 	 * O(n). Extract the first element of a list, which must be non-empty. Alias
 	 * for {@link Stack.top}. For no argument it gives O(1)
@@ -110,6 +111,7 @@ export default class List<T> implements ListADT<T> {
 	head(length?: number): T | T[] {
 		throw new Error("must be implemented");
 	}
+
 	/**
 	 * O(n). Extract the last element of a list, which must non-empty. For no
 	 * argument it gives O(1)
@@ -138,6 +140,7 @@ export default class List<T> implements ListADT<T> {
 	last(length?: number): T | T[] {
 		throw new Error("must be implemented");
 	}
+
 	/**
 	 * O(1). Extract the elements after the head of non-empty list
 	 *
@@ -157,6 +160,7 @@ export default class List<T> implements ListADT<T> {
 	tail(): List<T> {
 		throw new Error("must be implemented");
 	}
+
 	/**
 	 * O(1). Remove the first element of non-empty list and return the value
 	 *
@@ -212,49 +216,8 @@ export default class List<T> implements ListADT<T> {
 	 * @throws {Underflow}
 	 * @return {List<T>}
 	 */
-	init(): ListADT<T> {
+	init(): List<T> {
 		throw new Error("must be implemented");
-	}
-
-	/**
-	 * Removes item from specified position
-	 * @param {number} index
-	 * @return {?T}
-	 */
-	private removeAt(index: number): T | null {
-		if (this.isOutOfIndex(index)) {
-			throw new IndexOutOfRange(this.size(), index);
-		}
-
-		const iterator = this.nodeEntries();
-		let precedence = null;
-		let current = this.#head as NonNullable<Node<T>>;
-		let i = 0;
-
-		while (i !== index) {
-			const { value } = iterator.next();
-			precedence = current;
-			({ index: i, current } = value);
-		}
-
-		const { item } = current;
-
-		// the next node after the removed one
-		const following = current.right;
-
-		// the head (index = 0) must be deleted
-		if (!precedence) {
-			this.#head = following;
-		} else {
-			precedence.right = following;
-		}
-
-		following && (following.left = precedence);
-
-		this.#length--;
-		this.markGarbageCollect(current);
-
-		return item;
 	}
 
 	/**
@@ -283,60 +246,6 @@ export default class List<T> implements ListADT<T> {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Retrieve element at some position
-	 * @param {number} index
-	 * @return {?T}
-	 */
-	at(index: number): T | null {
-		if (index >= 0) {
-			return this.get(index);
-		} else {
-			return this.at(Math.abs(index) - 1);
-		}
-	}
-
-	insert(index: number, ...data: T[]): T | T[] | null;
-	insert(comparator: ComparableFn<T>, ...data: T[]): T | T[];
-	/**
-	 * Insert a group data at the list
-	 *
-	 * @throws {IndexOutOfRangeException}
-	 * @param {number | ComparableFn<T>} criterea
-	 * @param {...T} data
-	 * @return {T | T[]}
-	 */
-	insert(criterea: number | ComparableFn<T>, ...data: T[]): T[] | T | null {
-		const newNodes = this.createNodeList(data);
-		if (newNodes.length === 0) return null;
-
-		let index = -1;
-
-		if (typeof criterea === "function") {
-			for (const [i, data] of this.entries()) {
-				if (criterea(data)) index = i;
-			}
-		}
-
-		const insertionPoint = this.getNode(index);
-		const firstNode = newNodes[0];
-		const lastNode = newNodes[newNodes.length - 1];
-
-		if (!insertionPoint || !insertionPoint.left) {
-			this.#head = firstNode;
-		} else {
-			// must be added to the head
-			if (insertionPoint.left) {
-				firstNode.left = insertionPoint.left;
-			}
-
-			insertionPoint.left = lastNode;
-			lastNode.right = insertionPoint;
-		}
-
-		return data;
 	}
 
 	/**
@@ -481,20 +390,6 @@ export default class List<T> implements ListADT<T> {
 		}
 
 		return this.#head.item;
-	}
-
-	/**
-	 * Linear search on list
-	 *
-	 * @param {T} data data to be search
-	 * @return {boolean}
-	 */
-	contains(data: T): boolean {
-		for (const item of this) {
-			if (Object.is(item, data)) return true;
-		}
-
-		return false;
 	}
 
 	/**
