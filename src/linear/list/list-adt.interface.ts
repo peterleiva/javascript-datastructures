@@ -5,16 +5,6 @@ export interface ComparableFn<T> {
 	(data: T): boolean;
 }
 
-export interface Search<T> {
-	/**
-	 * Linear search on list
-	 *
-	 * @param {T} data data to be search
-	 * @return {boolean}
-	 */
-	contains(data: T): boolean;
-}
-
 /**
  * These functions treat a list xs as a indexed collection, with indices ranging
  * from 0 to length xs - 1.
