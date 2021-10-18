@@ -23,13 +23,13 @@ describe("Binary Tree Node", () => {
 		});
 	});
 
-	describe("setLeft", () => {
+	describe("insertLeft", () => {
 		let node: BTNode<unknown>;
 		const data = 10;
 
 		beforeEach(() => {
 			node = new BTNode(null);
-			node.setLeft(data);
+			node.insertLeft(data);
 		});
 
 		it("creates left node with argument data", () => {
@@ -43,7 +43,7 @@ describe("Binary Tree Node", () => {
 		});
 
 		it("throws InvalidInsertion when left tree isn't empty", () => {
-			expect(() => node.setLeft(20)).toThrow(InvalidInsertion);
+			expect(() => node.insertLeft(20)).toThrow(InvalidInsertion);
 		});
 	});
 
@@ -53,7 +53,7 @@ describe("Binary Tree Node", () => {
 
 		beforeEach(() => {
 			node = new BTNode(null);
-			node.setRight(data);
+			node.insertRight(data);
 		});
 
 		it("creates left node with argument data", () => {
@@ -67,7 +67,7 @@ describe("Binary Tree Node", () => {
 		});
 
 		it("throws InvalidInsertion when right tree isn't empty", () => {
-			expect(() => node.setRight(20)).toThrow(InvalidInsertion);
+			expect(() => node.insertRight(20)).toThrow(InvalidInsertion);
 		});
 	});
 

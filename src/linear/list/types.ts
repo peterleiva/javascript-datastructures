@@ -206,7 +206,7 @@ export interface List<T> extends Collection, Stack<T> {
 	 */
 	shift(): T;
 	/**
-	 * O(n). Insert multiple elements at the end, keeping the specified order
+	 * O(1). Insert multiple elements at the end, keeping the specified order
 	 * Also a alias for {@link Stack.push} with multiple items
 	 *
 	 * @example <caption>Modifying list</caption>
@@ -218,7 +218,7 @@ export interface List<T> extends Collection, Stack<T> {
 	 */
 	append(...items: T[]): this;
 	/**
-	 * O(n). Adds element	 to the beginning of an array and returns the new length
+	 * O(1). Adds element	 to the beginning of an array and returns the new length
 	 * of the array.
 	 *
 	 * @example <caption>Modify list</caption>

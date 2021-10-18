@@ -87,48 +87,12 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	}
 
 	/**
-	 * creates a leaft to insert data in, for tree with no left son
-	 * @throws {InvalidInsertion}
-	 * @param {T} data
-	 * @return {this}
-	 */
-	setLeft(data: T): this {
-		if (this.left) {
-			throw new InvalidInsertion();
-		}
-
-		const left = (this.#left = new BinaryTreeNode(data));
-		left.#father = this;
-		left.#level = this.level() + 1;
-
-		return this;
-	}
-
-	/**
 	 * Getter for brother subtree
 	 * @type {BTNode<T>}
 	 * @return {BTNode<T>}
 	 */
 	get left(): BTNode<T> {
 		return this.#left;
-	}
-
-	/**
-	 * creates a leaf to insert data in, for tree with no right son
-	 * @throws {InvalidInsertion}
-	 * @param {T} data
-	 * @return {this}
-	 */
-	setRight(data: T): this {
-		if (this.right) {
-			throw new InvalidInsertion();
-		}
-
-		const right = (this.#right = new BinaryTreeNode(data));
-		right.#father = this;
-		right.#level = this.level() + 1;
-
-		return this;
 	}
 
 	/**
@@ -171,6 +135,42 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 		}
 
 		return node;
+	}
+
+	/**
+	 * creates a leaft to insert data in, for tree with no left son
+	 * @throws {InvalidInsertion}
+	 * @param {T} data
+	 * @return {this}
+	 */
+	insertLeft(data: T): this {
+		if (this.left) {
+			throw new InvalidInsertion();
+		}
+
+		const left = (this.#left = new BinaryTreeNode(data));
+		left.#father = this;
+		left.#level = this.level() + 1;
+
+		return this;
+	}
+
+	/**
+	 * creates a leaf to insert data in, for tree with no right son
+	 * @throws {InvalidInsertion}
+	 * @param {T} data
+	 * @return {this}
+	 */
+	insertRight(data: T): this {
+		if (this.right) {
+			throw new InvalidInsertion();
+		}
+
+		const right = (this.#right = new BinaryTreeNode(data));
+		right.#father = this;
+		right.#level = this.level() + 1;
+
+		return this;
 	}
 
 	/**

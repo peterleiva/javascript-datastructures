@@ -60,7 +60,7 @@ describe("Binary Tree", () => {
 			beforeEach(() => (tree = new BinaryTree({ root: 10 })));
 
 			it("gets left subtree when non-empty left subtree", () => {
-				tree.root?.setLeft(20);
+				tree.root?.insertLeft(20);
 
 				expect(tree.left).toBeDefined();
 				expect(tree.left).toBeInstanceOf(BTNode);
@@ -83,7 +83,7 @@ describe("Binary Tree", () => {
 			beforeEach(() => (tree = new BinaryTree({ root: 10 })));
 
 			it("gets right subtree when non-empty right subtree", () => {
-				tree.root?.setRight(20);
+				tree.root?.insertRight(20);
 
 				expect(tree.right).toBeDefined();
 				expect(tree.right).toBeInstanceOf(BTNode);

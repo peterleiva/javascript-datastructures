@@ -3,7 +3,7 @@
  * @version 0.2.0
  */
 
-import type { Collection, Searchable, Finder } from "../../types";
+import type { Collection, Searchable, Comparable } from "../../types";
 import type {
 	BinaryTreeNode as BTNode,
 	BinaryTree as ADT,
@@ -200,9 +200,9 @@ export default class BinaryTree<T>
 		if (!father) {
 			this.#root = new Node(item);
 		} else if (comparator(item, father.data)) {
-			father.setLeft(item);
+			father.insertLeft(item);
 		} else {
-			father.setRight(item);
+			father.insertRight(item);
 		}
 
 		this.#size++;
@@ -214,7 +214,7 @@ export default class BinaryTree<T>
 	 * @param {Function} finder
 	 * @return {?T}
 	 */
-	search(finder: Finder<T>): T | null {
+	search(finder: Comparable<T>): T | null {
 		let node = this.root;
 
 		while (node) {

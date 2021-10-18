@@ -66,14 +66,14 @@ export type BinaryTreeNode<T> = {
 	 * @param {T} data
 	 * @return {this}
 	 */
-	setLeft(data: T): BinaryTreeNode<T>;
+	insertLeft(data: T): BinaryTreeNode<T>;
 	/**
 	 * creates a leaf to insert data in, for tree with no right son
 	 * @throws {InvalidInsertion}
 	 * @param {T} data
 	 * @return {this}
 	 */
-	setRight(data: T): BinaryTreeNode<T>;
+	insertRight(data: T): BinaryTreeNode<T>;
 	/**
 	 * Calculates the level of the subtree
 	 *

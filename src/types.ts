@@ -67,7 +67,7 @@ export type Constructor<T = Record<string, unknown>> = new (
 	...args: any[]
 ) => T;
 
-export type Finder<T> = (data: T) => number;
+export type Comparable<T> = (data: T) => number;
 
 export interface Searchable<T> {
 	/**
@@ -76,5 +76,5 @@ export interface Searchable<T> {
 	 * @param {(data: T) => boolean} finder
 	 * @return {?T}
 	 */
-	search(finder: Finder<T>): T | null;
+	search(finder: Comparable<T>): T | null;
 }
