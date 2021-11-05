@@ -8,7 +8,8 @@
     "prettier/prettier": "warn",
     "max-len": ["warn", { "tabWidth": 2 }],
     "max-statements": "warn",
-    "require-jsdoc": "off"
+    "require-jsdoc": "off",
+    "valid-jsdoc": "off"
   },
 
   "overrides": [

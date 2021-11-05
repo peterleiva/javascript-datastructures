@@ -1,9 +1,4 @@
-/**
- * @file Binary tree data structure
- * @version 0.2.0
- */
-
-import type { Collection, Searchable, Comparable } from "../../types";
+import type { Collection, Searchable, Comparable } from "types";
 import type {
 	BinaryTreeNode as BTNode,
 	BinaryTree as ADT,
@@ -39,8 +34,6 @@ export default class BinaryTree<T>
 	/**
 	 * Create a binary tree with optional root data
 	 *
-	 * @param {T} [data]
-	 * @param {Function} comparator
 	 */
 	constructor({ root: rootData, comparator }: BinaryTreeOptions<T> = {}) {
 		this.#root = null;
@@ -59,7 +52,7 @@ export default class BinaryTree<T>
 
 	/**
 	 * getter for the root of the tree
-	 * @return {BTNode<T>}
+	 * @returns
 	 */
 	get root(): BTNode<T> {
 		return this.#root;
@@ -87,8 +80,7 @@ export default class BinaryTree<T>
 	}
 
 	/**
-	 * Alias for {@link Collection.size}
-	 * @return {numder}
+	 * Alias for {@link BinaryTree.size}
 	 */
 	get length(): number {
 		return this.size();
@@ -96,7 +88,6 @@ export default class BinaryTree<T>
 
 	/**
 	 * Returns the quantity of items stored
-	 * @return {number}
 	 */
 	size(): number {
 		return this.#size;
@@ -104,7 +95,6 @@ export default class BinaryTree<T>
 
 	/**
 	 * return true of false depending whether or not the stack contains any items
-	 * @return {boolean}
 	 */
 	empty(): boolean {
 		return this.#root === null;
@@ -112,7 +102,6 @@ export default class BinaryTree<T>
 
 	/**
 	 * remove all elements from the collection
-	 * @return {this}
 	 */
 	clear(): this {
 		this.#size = 0;
@@ -125,15 +114,8 @@ export default class BinaryTree<T>
 	 * The depth of a binary tree is the maximum level of any leaf in the tree.
 	 * This equals the length of the longest path from the root to any leaf. It
 	 * given -Infinity when the root is empty
-	 * @return {number}
 	 */
 	depth(): number {
-		/**
-		 *  calculates depth for tree
-		 * @param {BTNode<T>} tree
-		 * @private
-		 * @return {number}
-		 */
 		function _depth(tree: BTNode<T>): number {
 			if (!tree) {
 				return -Infinity;
@@ -151,8 +133,6 @@ export default class BinaryTree<T>
 
 	/**
 	 * Compare values insert false values in the left otherwise in the right
-	 * @param {...T} items
-	 * @return {this}
 	 */
 	insert(...items: T[]): this {
 		for (const item of items) {
@@ -164,8 +144,6 @@ export default class BinaryTree<T>
 
 	/**
 	 * Insert items, removing duplicates comparison is made with `Object.is`
-	 * @param {...T} items
-	 * @return {this}
 	 */
 	insertDistinct(...items: T[]): this {
 		for (const item of items) {
@@ -178,10 +156,6 @@ export default class BinaryTree<T>
 	/**
 	 * Compare values insert false values in the left otherwise in the right
 	 * TODO: usar outra função de comparação
-	 * @param {Function} comparator
-	 * @param {T} item
-	 * @param {boolean} distinct
-	 * @return {void}
 	 */
 	private insertItem(
 		comparator: Comparator<T> = this.#comparator,
@@ -211,8 +185,6 @@ export default class BinaryTree<T>
 	/**
 	 * Find a data inside a tree according to finder callback
 	 *
-	 * @param {Function} finder
-	 * @return {?T}
 	 */
 	search(finder: Comparable<T>): T | null {
 		let node = this.root;
@@ -234,11 +206,6 @@ export default class BinaryTree<T>
 
 	/**
 	 * search and insert an item when it doens't exists
-	 *
-	 * @param {Comparable<T>} finder
-	 * @param {T} item
-	 *
-	 * @return {T}
 	 */
 	searchAndInsert(finder: Comparable<T>, item: T): T {
 		throw new Error("not implemented");
@@ -249,9 +216,6 @@ export default class BinaryTree<T>
 	/**
 	 * Tranverse the tree in pre order
 	 *
-	 *
-	 * @param {Function} [callback]
-	 * @return {this | Iterator<T>}
 	 */
 	preorder(callback?: Callback<T>): this | Iterator<T> {
 		throw new Error("must be implemented");
@@ -261,9 +225,6 @@ export default class BinaryTree<T>
 	inorder(): Iterator<T>;
 	/**
 	 * Tranverse the tree in order
-	 *
-	 * @param {Function} [callback]
-	 * @return {this | Iterator<T>}
 	 */
 	inorder(callback?: Callback<T>): this | Iterator<T> {
 		throw new Error("must be implemented");
@@ -274,8 +235,6 @@ export default class BinaryTree<T>
 
 	/**
 	 * Tranverse a tree in pos order
-	 * @param {Function} [callback]
-	 * @return {this | Iterator<T>}
 	 */
 	postorder(callback?: Callback<T>): this | Iterator<T> {
 		throw new Error("must be implemented");
@@ -283,8 +242,6 @@ export default class BinaryTree<T>
 
 	/**
 	 * helper to traverse the tree
-	 * @param {Funtion} callback
-	 * @param {TraversalMethod} [method = TraversalMethod.PREORDER]
 	 */
 	traverse(callback: Callback<T>, method: TraversalMethod): this {
 		throw new Error("must be implemented");

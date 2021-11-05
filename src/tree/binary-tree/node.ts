@@ -1,8 +1,3 @@
-/**
- * @file Binary Tree node
- * @version 0.2.0
- */
-
 import type { BTNode } from "../types";
 import { Stack } from "linear";
 
@@ -26,41 +21,14 @@ export class InvalidInsertion extends Error {
  * **father**, each node holds some information called **data**
  */
 export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
-	/**
-	 * Getter for data
-	 * @type {T}
-	 * @private
-	 */
 	#data: T;
-	/**
-	 * Getter for father node
-	 * @type {T}
-	 * @private
-	 */
 	#father: BTNode<T>;
-	/**
-	 * Getter for left subtree
-	 * @type {T}
-	 * @private
-	 */
 	#left: BTNode<T>;
-	/**
-	 * Getter for right subtree
-	 * @type {T}
-	 * @private
-	 */
 	#right: BTNode<T>;
-	/**
-	 * Node's level
-	 * @type {number}
-	 * @private
-	 */
 	#level: number;
 
 	/**
 	 * Creates a node tree with data and no subtree
-	 *
-	 * @param {T} data new data
 	 */
 	constructor(data: T) {
 		this.#data = data;
@@ -70,8 +38,6 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * Getter for brother subtree
-	 * @type {T}
-	 * @return {T}
 	 */
 	get data(): T {
 		return this.#data;
@@ -79,8 +45,6 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * Returns father's node
-	 * @type {BTNode<T>}
-	 * @return {BTNode<T>}
 	 */
 	get father(): BTNode<T> {
 		return this.#father;
@@ -88,8 +52,6 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * Getter for brother subtree
-	 * @type {BTNode<T>}
-	 * @return {BTNode<T>}
 	 */
 	get left(): BTNode<T> {
 		return this.#left;
@@ -97,8 +59,6 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * Getter for brother subtree
-	 * @type {BTNode<T>}
-	 * @return {BTNode<T>}
 	 */
 	get right(): BTNode<T> {
 		return this.#right;
@@ -106,8 +66,6 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * Getter for brother subtree
-	 * @type {BTNode<T>}
-	 * @return {BTNode<T>}
 	 */
 	get brother(): BTNode<T> {
 		if (this.#father === null) {
@@ -123,8 +81,6 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * Returns the root of the tree
-	 * @type {BTNode<T>}
-	 * @return {BTNode<T>}
 	 */
 	get root(): BTNode<T> {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -139,9 +95,7 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * creates a leaft to insert data in, for tree with no left son
-	 * @throws {InvalidInsertion}
-	 * @param {T} data
-	 * @return {this}
+	 * @throws {@link InvalidInsertion}
 	 */
 	insertLeft(data: T): this {
 		if (this.left) {
@@ -157,9 +111,7 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * creates a leaf to insert data in, for tree with no right son
-	 * @throws {InvalidInsertion}
-	 * @param {T} data
-	 * @return {this}
+	 * @throws {@link InvalidInsertion}
 	 */
 	insertRight(data: T): this {
 		if (this.right) {
@@ -175,7 +127,6 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * Checks whether the tree is the root node
-	 * @return {boolean}
 	 */
 	isRoot(): boolean {
 		return this.#father === null;
@@ -183,7 +134,6 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * O(1). returns true whether tree has no sons, also known as a leaf
-	 * @return {boolean}
 	 */
 	isLeaf(): boolean {
 		return this.left === null && this.right === null;
@@ -191,7 +141,6 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * returns true whether tree is right subtree or false otherwise
-	 * @return {boolean}
 	 */
 	isRight(): boolean {
 		return this.father?.right === this;
@@ -199,7 +148,6 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * returns true whether tree is left subtree or false otherwise
-	 * @return {boolean}
 	 */
 	isLeft(): boolean {
 		return this.father?.left === this;
@@ -211,7 +159,6 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 	 * The root of the tree has level 0, and the level of any other node in the
 	 * tree is one more than the level of its father.
 	 *
-	 * @return {number}
 	 */
 	level(): number {
 		return this.#level;
@@ -219,8 +166,6 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * O(l). Checks whether the tree is ancestor of the tree
-	 * @param {BTNode<T>} tree
-	 * @return {boolean}
 	 */
 	ancestor(tree: BTNode<T>): boolean {
 		let node = this.father;
@@ -238,8 +183,6 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 
 	/**
 	 * Checks whether the tree is the root node
-	 * @param {BTNode<T>} tree
-	 * @return {boolean}
 	 */
 	descendant(tree: BTNode<T>): boolean {
 		const visited = new Stack<BTNode<T>>();
