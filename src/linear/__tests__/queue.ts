@@ -38,15 +38,6 @@ describe("Queue", () => {
 	});
 
 	describe("Methods", () => {
-		describe("Iterating", () => {
-			it("Gives the order of insertion", () => {
-				const elements = [1, 2, 3];
-				const queue = new Queue();
-				queue.insert(...elements);
-				expect([...queue]).toEqual(elements);
-			});
-		});
-
 		describe(".insert", () => {
 			let queue: Queue<unknown>;
 			beforeEach(() => (queue = new Queue()));
@@ -133,6 +124,17 @@ describe("Queue", () => {
 			});
 		});
 
+		describe(".peek", () => {
+			it("throws underfow for empty queue", () => {
+				expect(() => queue.peek()).toThrow(Underflow);
+			});
+
+			it("return the next item of the queue", () => {
+				queue.insert(1, 2, 3);
+				expect(queue.peek()).toBe(1);
+			});
+		});
+
 		describe(".empty", () => {
 			it("Returns true after insert item", () => {
 				const queue = new Queue();
@@ -179,28 +181,6 @@ describe("Queue", () => {
 			it("Returns queued number of items", () => {
 				const queue = new Queue(1, 2, 3, 4);
 				expect(queue.size()).toBe(4);
-			});
-		});
-
-		describe(".clear", () => {
-			it("Modify size equals 0", () => {
-				queue.insert(1, 2, 3, 4);
-				queue.clear();
-
-				expect(queue).toHaveLength(0);
-			});
-
-			it("Remove all items", () => {
-				queue.insert(1, 2, 3, 4);
-				queue.clear();
-				expect([...queue]).toEqual([]);
-			});
-
-			it("Keeps the queue empty", () => {
-				const queue = new Queue();
-				queue.clear();
-
-				expect(queue).toHaveLength(0);
 			});
 		});
 	});
