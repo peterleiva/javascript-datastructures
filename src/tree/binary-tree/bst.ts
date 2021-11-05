@@ -1,4 +1,4 @@
-import BinaryTree from "./binary-tree";
+import BinaryTree from "./tree";
 
 /**
  * The **Binary Search Tree** has the property that all elements in the left

@@ -177,7 +177,7 @@ export default class BinaryTree<T>
 
 	/**
 	 * Compare values insert false values in the left otherwise in the right
-	 *
+	 * TODO: usar outra função de comparação
 	 * @param {Function} comparator
 	 * @param {T} item
 	 * @param {boolean} distinct
@@ -230,6 +230,18 @@ export default class BinaryTree<T>
 		}
 
 		return null;
+	}
+
+	/**
+	 * search and insert an item when it doens't exists
+	 *
+	 * @param {Comparable<T>} finder
+	 * @param {T} item
+	 *
+	 * @return {T}
+	 */
+	searchAndInsert(finder: Comparable<T>, item: T): T {
+		throw new Error("not implemented");
 	}
 
 	preorder(callback: Callback<T>): this;

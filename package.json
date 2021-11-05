@@ -32,7 +32,7 @@
     "test": "jest",
     "test:watch": "npm t -- --watch",
     "coverage:reporter": "open-cli coverage/index.html",
-    "generate-docs": "echo \"no implemented\"",
+    "generate-docs": "typedoc",
     "prepare": "npm run build",
     "clean": "npm run compile -- --clean"
   },
@@ -66,6 +66,7 @@
     "open-cli": "^6.0.1",
     "prettier": "^2.1.2",
     "ts-jest": "^27.0.5",
+    "typedoc": "^0.22.7",
     "typescript": "^4.4.3"
   }
 }
