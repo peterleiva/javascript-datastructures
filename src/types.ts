@@ -56,11 +56,11 @@ export type Constructor<T = Record<string, unknown>> = new (
 	...args: any[]
 ) => T;
 
-export type Comparable<T> = (data: T) => number;
+export type Predicate<T> = (data: T) => number;
 
 export interface Searchable<T> {
 	/**
 	 * Find a data inside a tree according to finder callback
 	 */
-	search(finder: Comparable<T>): T | null;
+	search(finder: Predicate<T>): T | null;
 }

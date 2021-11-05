@@ -1,4 +1,4 @@
-import type { Collection, Searchable, Comparable } from "types";
+import type { Collection, Searchable, Predicate } from "types";
 import {
 	Traversable,
 	Comparator,
@@ -147,11 +147,11 @@ export default class BinaryTree<T>
 		this.#size++;
 	}
 
-	search(finder: Comparable<T>): T | null {
+	search(predicate: Predicate<T>): T | null {
 		let node = this.root;
 
 		while (node) {
-			const comparison = finder(node.data);
+			const comparison = predicate(node.data);
 
 			if (comparison === 0) {
 				return node.data;
@@ -168,8 +168,14 @@ export default class BinaryTree<T>
 	/**
 	 * search and insert an item when it doens't exists
 	 */
-	searchAndInsert(finder: Comparable<T>, item: T): T {
-		throw new Error("not implemented");
+	searchAndInsert(predicate: Predicate<T>, data: T): T {
+		const found = this.search(predicate);
+
+		if (!found) {
+			this.insert(data);
+		}
+
+		return data;
 	}
 
 	preorder(): Iterable<T>;
