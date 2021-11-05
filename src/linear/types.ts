@@ -68,16 +68,21 @@ export interface StackADT<T> {
 	 *
 	 * @throws {@link Underflow}
 	 * Throws when empty
+	 *
 	 */
 	top(): T;
 	/**
 	 * O(1). Remove the last item inserted
 	 * @throws {@link Underflow}
 	 * Throws when Empty
+	 *
+	 * @returns item popped
 	 */
 	pop(): T;
 	/**
 	 * O(1). Insert item at the beginning of the stack
+	 *
+	 * @returns item pushed
 	 */
 	push(item: T): T;
 }

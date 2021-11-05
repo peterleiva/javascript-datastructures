@@ -85,11 +85,11 @@ export default class Queue<T> implements QueueADT<T>, Collection {
 	}
 
 	peek(): T {
-		if (this.#rear === null) {
+		if (!this.#front) {
 			throw new Underflow();
 		}
 
-		return this.#rear.item;
+		return this.#front.item;
 	}
 
 	insert(...items: Array<T>): T | Array<T> | null {

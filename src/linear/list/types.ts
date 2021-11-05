@@ -92,15 +92,15 @@ export interface Set<T> {
 }
 
 export interface Sublist<T> {
-	take(length: number): List<T>;
-	drop(length: number): List<T>;
+	take(length: number): ListADT<T>;
+	drop(length: number): ListADT<T>;
 }
 
 export interface Ordered<T> {
 	insert(comparator: ComparableFn<T>, ...data: T[]): T | T[];
 }
 
-export interface List<T> extends Collection, StackADT<T>, Iterable<T> {
+export interface ListADT<T> extends Collection, StackADT<T>, Iterable<T> {
 	/**
 	 * O(n). Extract the first element of a list, which must be non-empty. Alias
 	 * for {@link Stack.top}. For no argument it gives O(1)
@@ -123,10 +123,10 @@ export interface List<T> extends Collection, StackADT<T>, Iterable<T> {
 	 *
 	 * @throws {ArgumentError}
 	 * @param {number} [length = 1]
-	 * @return {List<T> | T}
+	 * @return {ListADT<T> | T}
 	 */
 	head(): T;
-	head(length: number): List<T>;
+	head(length: number): ListADT<T>;
 	/**
 	 * O(n). Extract the last element of a list, which must non-empty. For no
 	 * argument it gives O(1)
@@ -147,33 +147,46 @@ export interface List<T> extends Collection, StackADT<T>, Iterable<T> {
 	 * const l = new List(1, 2, 3)
 	 * l.last(-1) // Error: IndexOutOfRange
 	 *
-	 * @throws {Underflow}
-	 * @throws {IndexOutOfRange}
-	 * @param {number} [length = 1]
-	 * @return {!T | T[]}
+	 * @throws {@link Underflow}
+	 * Throws when list is empty
+	 *
+	 * @throws {@link ArgumentError}
+	 * Throws when length is negative
 	 */
-	last(length?: number): List<T> | T;
+	last(): T;
+	last(length: number): ListADT<T>;
 	/**
 	 * O(1). Extract the elements after the head of non-empty list
 	 *
-	 * @example
-	 * const l = new List(1, 2, 3);
-	 * l.tail(); // [2, 3]
+	 * @throws {@link Underflow}
 	 *
+	 * @example
+	 * extracting tail
+	 *
+	 * const l = new List(1, 2, 3, 4);
+	 * l.tail(); // [2, 3, 4]
+	 *
+	 * @example
+	 * tail is empty list when single item is stored
 	 * const l = new List(1);
 	 * l.tail(); // []
+	 *
+	 * @example
+	 * throws Underflow when list is empty
 	 *
 	 * const l = new List();
 	 * l.tail(); // Error: Underflow
 	 *
-	 * @throws {Underflow}
-	 * @return {List<T>}
 	 */
-	tail(): List<T>;
+	tail(): ListADT<T>;
 	/**
-	 * O(n). Return all the elements of non-empty list except the last one
+	 * O(n). Create list with all elements but the last
+	 *
+	 * It's quite similar to {@link ListADT.last} but remove the last item
 	 *
 	 * @example
+	 *
+	 * ```
 	 * const l = new List(1, 2, 3);
 	 * l.init() // returns [1, 2]
 	 *
@@ -182,11 +195,12 @@ export interface List<T> extends Collection, StackADT<T>, Iterable<T> {
 	 *
 	 * const l = new List();
 	 * l.init() // Error: Underflow
+	 * ```
 	 *
-	 * @throws {Underflow}
-	 * @return {List<T>}
+	 * @throws {@link Underflow}
+	 * When list is empty
 	 */
-	init(): List<T>;
+	init(): ListADT<T>;
 	/**
 	 * O(1). Remove the first element of non-empty list and return the value
 	 *
@@ -203,7 +217,7 @@ export interface List<T> extends Collection, StackADT<T>, Iterable<T> {
 	 * l.shift() // returns 1 -> List: []
 	 *
 	 * @throws {Underflow}
-	 * @return {!T}
+	 * Throws when empty
 	 */
 	shift(): T;
 	/**
@@ -214,8 +228,6 @@ export interface List<T> extends Collection, StackADT<T>, Iterable<T> {
 	 * const l = new List(1, 2, 3)
 	 * l.append(4, 5, 6) // gives [1, 2, 3, 4, 5, 6];
 	 *
-	 * @param {...T[]} items
-	 * @return {this}
 	 */
 	append(...items: T[]): this;
 	/**
@@ -226,8 +238,6 @@ export interface List<T> extends Collection, StackADT<T>, Iterable<T> {
 	 * const l = new List()
 	 * l.prepend(1, 2, 3) // > List [1, 2, 3]
 	 *
-	 * @param {...T[]} items
-	 * @return {this}
 	 */
 	prepend(...items: T[]): this;
 }

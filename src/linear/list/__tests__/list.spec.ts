@@ -48,7 +48,6 @@ describe("List", () => {
 		});
 
 		it("extract empty list when length is 0", () => {
-			list = new List();
 			const head = list.head(0);
 
 			expect(head).toBeInstanceOf(List);
@@ -56,7 +55,13 @@ describe("List", () => {
 		});
 
 		it.todo("throws ArgumentError when length is negative");
-		it.todo("returns list with first element when length = 1");
+		it("returns list with first element when length = 1", () => {
+			const head = list.head(1);
+
+			expect(head).toBeInstanceOf(List);
+			expect(head).toHaveLength(1);
+			expect(head.top()).toBe(items[0]);
+		});
 	});
 
 	describe(".last", () => {
@@ -94,42 +99,60 @@ describe("List", () => {
 
 		describe("With stored items", () => {
 			beforeEach(() => {
-				list.append(1);
+				list.append(1, 2, 3);
 			});
 
-			it("throws IndexOutOfRangeException when index is equal the length", () => {
+			it("throws IndexOutOfRange when index is equal the length", () => {
 				expect(() => list.get(list.length)).toThrow(IndexOutOfRange);
 			});
 
-			it("throws IndexOutOfRangeException when index is negative", () => {
+			it("throws IndexOutOfRange when index is negative", () => {
 				expect(() => list.get(-1)).toThrow(IndexOutOfRange);
 			});
 
-			it("Get the correct item when is between bound", () => {
+			it("Get item at 0", () => {
 				expect(list.get(0)).toBe(1);
+			});
+
+			it("Get the last item", () => {
+				expect(list.get(list.length - 1)).toBe(3);
+			});
+
+			it("Get the non-extremity item", () => {
+				expect(list.get(1)).toBe(2);
 			});
 		});
 	});
 
 	describe(".tail", () => {
-		it("Get null when list is empty", () => {
-			expect(list.last()).toBeNull();
+		it("Throws Underflow when list is empty", () => {
+			expect(() => list.tail()).toThrow(Underflow);
 		});
 
-		it("Get single element stored", () => {
-			list.append(1);
-			expect(list.last()).toBe(1);
+		it("Returns list of all items but the first", () => {
+			const items = [1, 2, 3, 4, 5];
+			const tail = list.append(...items).tail();
+
+			expect([...tail]).toStrictEqual([2, 3, 4, 5]);
 		});
 
-		it("Get the last element", () => {
-			list.append(1, 2, 3, 4);
-			expect(list.last()).toBe(list.get(list.length - 1));
+		it("Get empty list when one item is stored", () => {
+			list.push(1);
+			expect(list.tail()).toHaveLength(0);
+		});
+
+		it("Get the list with last item when length = 2", () => {
+			const tail = list.append(1, 2).tail();
+
+			expect(tail).toHaveLength(1);
+			expect([...tail]).toStrictEqual([2]);
 		});
 
 		it("Do not modify the list", () => {
 			list.append(1, 2);
-			list.last();
+			list.tail();
 			expect([...list]).toStrictEqual([1, 2]);
+			expect(list).toHaveLength(2);
 		});
 	});
 
@@ -168,7 +191,7 @@ describe("List", () => {
 
 		it("Returns the first item of the list", () => {
 			list.append(1, "2");
-			expect(list.shift()).toBe("2");
+			expect(list.shift()).toBe(1);
 		});
 
 		it("Leaves list empty when has a single item", () => {
@@ -178,42 +201,28 @@ describe("List", () => {
 		});
 
 		it("Leaves list without first item", () => {
-			list.push(3);
-			list.push(2);
-			list.push(1);
+			list.append(1, 2, 3);
 			list.shift();
 			expect([...list]).toStrictEqual([2, 3]);
 		});
 	});
 
 	describe(".append", () => {
-		describe("arguments is a List", () => {
-			it("concatenate all lists", () => {
-				const list1 = new List(1, 2, 3);
-				const list2 = new List(4, 5, 6);
-				const l = new List();
-
-				expect([...l.append(list1, list2)]).toEqual([1, 2, 3, 4, 5, 6]);
-			});
+		it("returns the own list reference", () => {
+			const l = new List();
+			expect(l.append(1)).toBe(l);
 		});
 
-		describe("arguments isn't a List", () => {
-			it("returns the own list reference", () => {
-				const l = new List();
-				expect(l.append(1)).toBe(l);
-			});
+		it("mutates list", () => {
+			const l = new List(1, 2, 3);
+			l.append(4, 5);
+			expect([...l]).toEqual([1, 2, 3, 4, 5]);
+		});
 
-			it("mutates list", () => {
-				const l = new List(1, 2, 3);
-				l.append(4, 5);
-				expect([...l]).toEqual([1, 2, 3, 4, 5]);
-			});
-
-			it("adds items ordered by argument order", () => {
-				const l = new List();
-				l.append(3, 4, 5);
-				expect([...l]).toEqual([3, 4, 5]);
-			});
+		it("adds items ordered by argument order", () => {
+			const l = new List();
+			l.append(3, 4, 5);
+			expect([...l]).toEqual([3, 4, 5]);
 		});
 	});
 });
