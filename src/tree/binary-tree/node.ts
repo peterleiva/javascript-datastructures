@@ -1,4 +1,4 @@
-import type { BTNode } from "../types";
+import type { BTNode } from "./types";
 import { Stack } from "linear";
 
 /**

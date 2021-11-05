@@ -1,12 +1,13 @@
 import type { Collection, Searchable, Comparable } from "types";
 import type {
-	BinaryTreeNode as BTNode,
-	BinaryTree as ADT,
 	Traversable,
 	Comparator,
 	Callback,
 	TraversalMethod,
-} from "../types";
+	BTNode,
+	BinaryTree as ADT,
+} from "tree";
+
 import Node from "./node";
 
 type BinaryTreeOptions<T> = Partial<{
