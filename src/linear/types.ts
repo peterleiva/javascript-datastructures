@@ -82,7 +82,7 @@ export interface StackADT<T> {
 	push(item: T): T;
 }
 
-export interface Deque<T> {
+export interface DequeADT<T> {
 	/**
 	 * Insert item at the left end
 	 */
