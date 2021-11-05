@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`List should behave like iterable entries return tuple of index and values 1`] = `
+Array [
+  Array [
+    0,
+    1,
+  ],
+  Array [
+    1,
+    2,
+  ],
+  Array [
+    2,
+    3,
+  ],
+]
+`;
+
+exports[`List should behave like iterable keys returns indices from collection 1`] = `
+Array [
+  0,
+  1,
+  2,
+]
+`;
+
+exports[`List should behave like iterable must be iterator 1`] = `
+Array [
+  1,
+  2,
+  3,
+]
+`;
+
+exports[`List should behave like iterable values returns values of collection 1`] = `
+Array [
+  1,
+  2,
+  3,
+]
+`;

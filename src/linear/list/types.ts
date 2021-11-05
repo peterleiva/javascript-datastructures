@@ -1,5 +1,6 @@
 import type { Collection } from "../../types";
 import type { Stack } from "../types";
+import { Iterable } from "iterable";
 
 export interface ComparableFn<T> {
 	(data: T): boolean;
@@ -99,7 +100,7 @@ export interface Ordered<T> {
 	insert(comparator: ComparableFn<T>, ...data: T[]): T | T[];
 }
 
-export interface List<T> extends Collection, Stack<T> {
+export interface List<T> extends Collection, Stack<T>, Iterable<T> {
 	/**
 	 * O(n). Extract the first element of a list, which must be non-empty. Alias
 	 * for {@link Stack.top}. For no argument it gives O(1)
@@ -108,24 +109,24 @@ export interface List<T> extends Collection, Stack<T> {
 	 * const l = new List(1, 2, 3)
 	 * l.head() // returns 1
 	 *
-	 * @example <caption>Head of empty list throws Underflow</caption>
+	 * @example <caption>Head of empty list returns empty list</caption>
 	 * const l = new List()
-	 * l.head() // Error: Underflow
+	 * console.log(l) // List: []
 	 *
 	 * @example <caption>Fist n elements</caption>
 	 * const l = new List(1, 2, 3, 4)
 	 * l.head(3) // returns [1, 2, 3]
 	 *
-	 * @example <caption>Head of Negative length throws IndexOutOfRange</caption>
+	 * @example <caption>Negative length throws ArgumentError</caption>
 	 * const l = new List(1, 2, 3)
-	 * l.head(-1) // Error: IndexOutOfRange
+	 * l.head(-1) // Error: ArgumentError negative array size
 	 *
-	 * @throws {Underflow}
-	 * @throws {IndexOutOfRange}
+	 * @throws {ArgumentError}
 	 * @param {number} [length = 1]
-	 * @return {!T | T[]}
+	 * @return {List<T> | T}
 	 */
-	head(length?: number): T | T[];
+	head(): T;
+	head(length: number): List<T>;
 	/**
 	 * O(n). Extract the last element of a list, which must non-empty. For no
 	 * argument it gives O(1)
@@ -151,7 +152,7 @@ export interface List<T> extends Collection, Stack<T> {
 	 * @param {number} [length = 1]
 	 * @return {!T | T[]}
 	 */
-	last(length?: number): T | T[];
+	last(length?: number): List<T> | T;
 	/**
 	 * O(1). Extract the elements after the head of non-empty list
 	 *

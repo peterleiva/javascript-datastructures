@@ -18,12 +18,55 @@ describe("List", () => {
 	shouldBehaveLikeIterable(new List(1, 2, 3));
 
 	describe(".head", () => {
-		it.todo("extract the first element of the list");
-		it.todo("throws Underflow when list is empty");
-		it.todo("extract n first element of the list");
-		it.todo("extract all list when length is greater than list");
+		const items = [10, 20, 30, 40, 50, 60];
+
+		beforeEach(() => {
+			list = List.of(items);
+		});
+
+		afterEach(() => {
+			// eslint-disable-next-line jest/no-standalone-expect
+			expect(list).toHaveLength(items.length);
+		});
+
+		it("extract the first element of the list when length is missing", () => {
+			const head = list.head();
+
+			expect(head).not.toBeInstanceOf(List);
+			expect(list.head()).toBe(10);
+		});
+
+		it("returns whole list for length = n", () => {
+			const heads = list.head(items.length);
+
+			expect(heads).toBeInstanceOf(List);
+			expect([...heads]).toEqual(items);
+		});
+
+		it("extract n first element of the list", () => {
+			expect([...list.head(2)]).toEqual([10, 20]);
+		});
+
+		it("extract empty list when length is 0", () => {
+			list = new List();
+			const head = list.head(0);
+
+			expect(head).toBeInstanceOf(List);
+			expect(head).toHaveLength(0);
+		});
+
+		it.todo("throws ArgumentError when length is negative");
+		it.todo("returns list with first element when length = 1");
+	});
+
+	describe(".last", () => {
+		it.todo("extract the last element of the list");
+		it.todo("returns whole list for length = n");
+		it.todo("extract n last element of the list");
 		it.todo("extract empty list when length is 0");
-		it.todo("throws IndexOutOfRange when length is negative");
+		it.todo("throws ArgumentError when length is negative");
+		it.todo("return last element when list length is missing");
+		it.todo("returns list with last element when length = 1");
 	});
 
 	describe(".insert", () => {
@@ -140,49 +183,6 @@ describe("List", () => {
 			list.push(1);
 			list.shift();
 			expect([...list]).toStrictEqual([2, 3]);
-		});
-	});
-
-	describe(".at", () => {
-		it("Throws Underflow when list is empty", () => {
-			expect(() => list.at(10)).toThrow(Underflow);
-		});
-
-		it("Throws Exception when index n", () => {
-			list.push(1);
-			expect(() => list.at(1)).toThrow(IndexOutOfRange);
-		});
-
-		it("Throws IndexOutOfRangeException when index is -(n + 1)", () => {
-			list.push(1);
-
-			expect(() => list.at(-2)).toThrow(IndexOutOfRange);
-		});
-
-		it("Get the first item when index = 0", () => {
-			list.push(1);
-
-			expect(list.at(0)).toBe(1);
-		});
-
-		it("Get the last item when index is the n - 1", () => {
-			list.append(1, 2);
-			expect(list.at(list.length - 1)).toBe(2);
-		});
-
-		it("Get last item when index = -1", () => {
-			list.append(1, 2);
-			expect(list.at(-1)).toBe(2);
-		});
-
-		it("Get last item when index = -n", () => {
-			list.append(1, 4);
-			expect(list.at(-list.length)).toBe(1);
-		});
-
-		it("Get the correct item from the index", () => {
-			list.append(1, 2, 3);
-			expect(list.at(2)).toBe(3);
 		});
 	});
 

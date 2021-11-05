@@ -29,6 +29,15 @@ export default class List<T> implements ADT<T> {
 	}
 
 	/**
+	 * Creates a List from a given iterable
+	 * @param {Iterable<T>} items
+	 * @return {List<T>}
+	 */
+	static of<T>(items: Iterable<T>): List<T> {
+		return new List(...items);
+	}
+
+	/**
 	 * FIXME: T pode retornar null também aqui está como as T
 	 */
 	*entries(): IterableIterator<[number, T]> {
@@ -83,6 +92,8 @@ export default class List<T> implements ADT<T> {
 		return this.#head === null;
 	}
 
+	head(length: number): ADT<T>;
+	head(): T;
 	/**
 	 * O(n). Extract the first element of a list, which must be non-empty. Alias
 	 * for {@link Stack.top}. For no argument it gives O(1)
@@ -91,24 +102,23 @@ export default class List<T> implements ADT<T> {
 	 * const l = new List(1, 2, 3)
 	 * l.head() // returns 1
 	 *
-	 * @example <caption>Head of empty list throws Underflow</caption>
+	 * @example <caption>Head of empty list returns empty list</caption>
 	 * const l = new List()
-	 * l.head() // Error: Underflow
+	 * console.log(l) // List: []
 	 *
 	 * @example <caption>Fist n elements</caption>
 	 * const l = new List(1, 2, 3, 4)
 	 * l.head(3) // returns [1, 2, 3]
 	 *
-	 * @example <caption>Head of Negative length throws IndexOutOfRange</caption>
+	 * @example <caption>Negative length throws ArgumentError</caption>
 	 * const l = new List(1, 2, 3)
-	 * l.head(-1) // Error: IndexOutOfRange
+	 * l.head(-1) // Error: ArgumentError negative array size
 	 *
-	 * @throws {Underflow}
-	 * @throws {IndexOutOfRange}
+	 * @throws {ArgumentError}
 	 * @param {number} [length = 1]
-	 * @return {!T | T[]}
+	 * @return {ADT<T> | T}
 	 */
-	head(length?: number): T | T[] {
+	head(length?: number): ADT<T> | T {
 		throw new Error("must be implemented");
 	}
 
@@ -135,9 +145,9 @@ export default class List<T> implements ADT<T> {
 	 * @throws {Underflow}
 	 * @throws {IndexOutOfRange}
 	 * @param {number} [length = 1]
-	 * @return {!T | T[]}
+	 * @return {List<T> | T}
 	 */
-	last(length?: number): T | T[] {
+	last(length?: number): ADT<T> | T {
 		throw new Error("must be implemented");
 	}
 
@@ -214,9 +224,9 @@ export default class List<T> implements ADT<T> {
 	 * l.init() // Error: Underflow
 	 *
 	 * @throws {Underflow}
-	 * @return {List<T>}
+	 * @return {ADT<T>}
 	 */
-	init(): List<T> {
+	init(): ADT<T> {
 		throw new Error("must be implemented");
 	}
 
@@ -314,6 +324,16 @@ export default class List<T> implements ADT<T> {
 		}
 
 		return this;
+	}
+
+	/**
+	 * insert the element at the beginning of the list
+	 *
+	 * @param {T} item
+	 * @return {T}
+	 */
+	private unshift(item: T): T {
+		throw new Error("not implemented");
 	}
 
 	/**
