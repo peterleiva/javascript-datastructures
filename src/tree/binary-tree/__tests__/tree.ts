@@ -1,5 +1,6 @@
 import BinaryTree from "../tree";
 import BTNode from "../node";
+import { shouldBehaveLikeTraversable } from "shared";
 
 describe("Binary Tree", () => {
 	let tree: BinaryTree<unknown>;
@@ -12,6 +13,8 @@ describe("Binary Tree", () => {
 	// /  \
 	// 3   9
 	//
+
+	shouldBehaveLikeTraversable(data => new BinaryTree<number>().insert(...data));
 
 	beforeEach(() => (tree = new BinaryTree({ comparator })));
 

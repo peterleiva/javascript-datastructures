@@ -1,9 +1,7 @@
-export type Callback<T> = (data: T) => unknown;
+export type Mapper<T, R> = (data: T) => R;
 export type Comparator<T> = (a: T, b: T) => boolean;
 
 export enum TraversalMethod {
-	ASC,
-	DESC,
 	PREORDER = 0,
 	POSTORDER,
 	INORDER,
@@ -20,20 +18,20 @@ export interface Traversable<T> {
 	/**
 	 * Tranverse the tree in pre order
 	 */
-	preorder(callback: Callback<T>): this;
-	preorder(): Iterator<T>;
+	preorder(): Iterable<T>;
+	preorder<R>(callback: Mapper<T, R>): Iterable<R>;
 	/**
 	 * Tranverse the tree in order
 	 */
-	inorder(callback: Callback<T>): this;
-	inorder(): Iterator<T>;
+	inorder(): Iterable<T>;
+	inorder<R>(callback: Mapper<T, R>): Iterable<R>;
 	/**
 	 * Tranverse a tree in pos order
 	 */
-	postorder(callback: Callback<T>): this;
-	postorder(): Iterator<T>;
+	postorder(): Iterable<T>;
+	postorder<R>(callback: Mapper<T, R>): Iterable<R>;
 	/**
-	 * helper to traverse the tree
+	 * traverse tree returning mapped value
 	 */
-	traverse(callback: Callback<T>, method: TraversalMethod): this;
+	traverse<R>(callback: Mapper<T, R>, method: TraversalMethod): Array<R>;
 }

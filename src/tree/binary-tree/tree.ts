@@ -1,11 +1,11 @@
 import type { Collection, Searchable, Comparable } from "types";
-import type {
+import {
 	Traversable,
 	Comparator,
-	Callback,
-	TraversalMethod,
+	Mapper,
 	BTNode,
 	BinaryTreeADT,
+	TraversalMethod,
 } from "tree";
 
 import Node from "./node";
@@ -172,25 +172,78 @@ export default class BinaryTree<T>
 		throw new Error("not implemented");
 	}
 
-	preorder(callback: Callback<T>): this;
-	preorder(): Iterator<T>;
-	preorder(callback?: Callback<T>): this | Iterator<T> {
-		throw new Error("must be implemented");
+	preorder(): Iterable<T>;
+	preorder<R>(callback: Mapper<T, R>): Iterable<R>;
+	*preorder<R>(callback?: Mapper<T, R>): Iterable<T | R> {
+		function* helper(
+			tree: BTNode<T>,
+			callback?: Mapper<T, R>
+		): Iterable<T | R> {
+			if (!tree) {
+				return;
+			}
+
+			const data = tree.data;
+
+			yield callback?.(data) ?? data;
+			yield* helper(tree.left, callback);
+			yield* helper(tree.right, callback);
+		}
+
+		yield* helper(this.root, callback);
 	}
 
-	inorder(callback: Callback<T>): this;
-	inorder(): Iterator<T>;
-	inorder(callback?: Callback<T>): this | Iterator<T> {
-		throw new Error("must be implemented");
+	inorder(): Iterable<T>;
+	inorder<R>(callback: Mapper<T, R>): Iterable<R>;
+	*inorder<R>(callback?: Mapper<T, R>): Iterable<T | R> {
+		function* helper(
+			tree: BTNode<T>,
+			callback?: Mapper<T, R>
+		): Iterable<T | R> {
+			if (!tree) {
+				return;
+			}
+
+			const data = tree.data;
+
+			yield* helper(tree.left, callback);
+			yield callback?.(data) ?? data;
+			yield* helper(tree.right, callback);
+		}
+
+		yield* helper(this.root, callback);
 	}
 
-	postorder(callback: Callback<T>): this;
-	postorder(): Iterator<T>;
-	postorder(callback?: Callback<T>): this | Iterator<T> {
-		throw new Error("must be implemented");
+	postorder(): Iterable<T>;
+	postorder<R>(callback: Mapper<T, R>): Iterable<R>;
+	*postorder<R>(callback?: Mapper<T, R>): Iterable<T | R> {
+		function* helper(
+			tree: BTNode<T>,
+			callback?: Mapper<T, R>
+		): Iterable<T | R> {
+			if (!tree) {
+				return;
+			}
+
+			const data = tree.data;
+
+			yield* helper(tree.left, callback);
+			yield* helper(tree.right, callback);
+			yield callback?.(data) ?? data;
+		}
+
+		yield* helper(this.root, callback);
 	}
 
-	traverse(callback: Callback<T>, method: TraversalMethod): this {
-		throw new Error("must be implemented");
+	traverse<R>(callback: Mapper<T, R>, method: TraversalMethod): Array<R> {
+		if (method === TraversalMethod.POSTORDER) {
+			return [...this.postorder(callback)];
+		}
+
+		if (method === TraversalMethod.PREORDER) {
+			return [...this.preorder(callback)];
+		}
+
+		return [...this.inorder(callback)];
 	}
 }
