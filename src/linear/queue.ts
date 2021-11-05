@@ -1,10 +1,5 @@
-/**
- * @file Implementation of queue data structure usingo FIFO access collection
- * @version 0.5.0
- */
-
 import type { Collection } from "../types";
-import type { List, Queue as QueueADT, Node } from "./types";
+import type { QueueADT, Node } from "./types";
 import { iterable, Iterable } from "../iterable";
 import { Underflow } from "./errors";
 
@@ -16,9 +11,6 @@ import { Underflow } from "./errors";
  * at one end (called front of the queue)  and into which items  may be
  * inserted  at other end (called rear of the queue), which are implemented as
  * a linked list
- *
- * @template T
- * @implements {Iterable<T>}
  *
  * @example <caption>Enqueing item</caption>
  * const queue = new Queue()
@@ -37,21 +29,15 @@ import { Underflow } from "./errors";
  */
 export default class Queue<T> implements QueueADT<T>, Collection {
 	/**
-	 * Keeps track of queue size
-	 * @type {number}
-	 * @private
+	 * tracks queue size to give O(1) complexity
 	 */
 	#size: number;
 	/**
-	 * Place where items get removed
-	 * @type {Queue~Node}
-	 * @private
+	 * Head of the queue
 	 */
 	#front: Node<T>;
 	/**
-	 * Place where items get inserted
-	 * @type {Queue~Node}
-	 * @private
+	 * Rear of the queue. Place where items get inserted
 	 */
 	#rear: Node<T>;
 
@@ -63,6 +49,25 @@ export default class Queue<T> implements QueueADT<T>, Collection {
 		this.#front = this.#rear = null;
 
 		this.insert(...items);
+	}
+
+	get length(): number {
+		return this.size();
+	}
+
+	size(): number {
+		return this.#size;
+	}
+
+	clear(): this {
+		this.#rear = this.#front = null;
+		this.#size = 0;
+
+		return this;
+	}
+
+	empty(): boolean {
+		return this.size() === 0;
 	}
 
 	/**
@@ -79,11 +84,6 @@ export default class Queue<T> implements QueueADT<T>, Collection {
 		}
 	}
 
-	/**
-	 * Retrieve the first element from the queue, the next to be removed
-	 * @throws {Underflow}
-	 * @return {T}
-	 */
 	peek(): T {
 		if (this.#rear === null) {
 			throw new Underflow();
@@ -92,41 +92,7 @@ export default class Queue<T> implements QueueADT<T>, Collection {
 		return this.#rear.item;
 	}
 
-	/**
-	 * Alias for .size method
-	 *
-	 * @readonly
-	 * @return {number}
-	 */
-	get length(): number {
-		return this.size();
-	}
-
-	/**
-	 * Returns the quantity of stored items
-	 *
-	 * @return {number}
-	 */
-	size(): number {
-		return this.#size;
-	}
-
-	/**
-	 * Enqueue single or list of elements
-	 *
-	 * Enqueue always add a elements to the end of list inside datastructure. The
-	 * argument accepts a single or a list of them. enqueuem them in the order
-	 * they are, alweays at the end. A full error can be throw if the queue
-	 * exceeds. The internal structure accepts a list of 2**32 items, which is
-	 * the maximum size a array element can have in javascript. If those elements
-	 * are enqueue successfuly a copy of them is retuned as an array or a single
-	 * element
-	 *
-	 * @template T
-	 * @param {...T} items elements to be enqueued
-	 * @return {T | List<T> | null}
-	 */
-	insert(...items: Array<T>): T | List<T> | null {
+	insert(...items: Array<T>): T | Array<T> | null {
 		const inserted = [];
 
 		for (const item of items) {
@@ -150,19 +116,6 @@ export default class Queue<T> implements QueueADT<T>, Collection {
 			: inserted;
 	}
 
-	/**
-	 * Dequeue a number of elements stored in the same order as enqueued
-	 *
-	 * Dequeue is an operation with effects. The elements no long exists in queue
-	 * structure. Thereof, it removes n elements, specified by quantity argument,
-	 * returning them on success. If the queue only have one element, them this
-	 * single elements is returned otherwise it returns a array of deleted
-	 * elements, sorted by queue order.
-	 * Notice empty queue always returns null
-	 *
-	 * @throws {Underflow}
-	 * @return {T}
-	 */
 	remove(): T {
 		if (this.empty()) {
 			throw new Underflow();
@@ -182,36 +135,12 @@ export default class Queue<T> implements QueueADT<T>, Collection {
 	}
 
 	/**
-	 * Removes all elements turning the queue empty
-	 *
-	 * @return {this}
-	 */
-	clear(): this {
-		this.#rear = this.#front = null;
-		this.#size = 0;
-
-		return this;
-	}
-
-	/**
-	 * Check if the queue is empty
-	 *
-	 * @return {boolean}
-	 */
-	empty(): boolean {
-		return this.size() === 0;
-	}
-
-	/**
 	 * Create a list node to be inserted at the queue
 	 *
 	 * Each node is a item from the perpective of the internal linked list. A
 	 * single node is then created by this method to be inserted at
-	 * {@link Queue#insert}
+	 * {@link Queue.insert}
 	 *
-	 * @private
-	 * @param {T} item queue item information
-	 * @return {Node<T>}
 	 */
 	private getnode(item: T): NonNullable<Node<T>> {
 		return {

@@ -1,5 +1,5 @@
 import type { Collection } from "../../types";
-import type { Stack } from "../types";
+import type { StackADT } from "../types";
 import { Iterable } from "iterable";
 
 export interface ComparableFn<T> {
@@ -100,7 +100,7 @@ export interface Ordered<T> {
 	insert(comparator: ComparableFn<T>, ...data: T[]): T | T[];
 }
 
-export interface List<T> extends Collection, Stack<T>, Iterable<T> {
+export interface List<T> extends Collection, StackADT<T>, Iterable<T> {
 	/**
 	 * O(n). Extract the first element of a list, which must be non-empty. Alias
 	 * for {@link Stack.top}. For no argument it gives O(1)

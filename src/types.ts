@@ -1,6 +1,7 @@
 export interface Collection {
 	/**
-	 * Alias for {@link Collection.size}
+	 * Alias for {@link Collection.size | size()}
+	 * @readonly
 	 */
 	length: number;
 	/**

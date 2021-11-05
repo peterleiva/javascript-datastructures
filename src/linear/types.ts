@@ -1,14 +1,5 @@
 /**
- * Queue list to enqueue things and dequeue them
- */
-export type List<T> = ArrayLike<T>;
-
-/**
  * Node represents a single node item with two link to next node
- * @template T
- * @typedef {?Object} Node
- * @property {T} data - The actual item
- * @property {Node} next - next item of the queue
  */
 export type Node<T> = {
 	item: T;
@@ -18,11 +9,6 @@ export type Node<T> = {
 /**
  * Node represents a single node item with two link to previous and next node
  * stored in the queue
- * @template T
- * @typedef {?Object} Node
- * @property {T} data - The actual item
- * @property {Node} prev - prev item of the queue
- * @property {Node} next - next item of the queue
  */
 export type DoublyNode<T> = {
 	item: T;
@@ -32,29 +18,44 @@ export type DoublyNode<T> = {
 
 /**
  * Queue Abstract Data Type
- * @interface
- * @template T
  */
-export interface Queue<T> {
+export interface QueueADT<T> {
 	/**
-	 * Insert several items in the queue, which can grow indefinitely
+	 * Enqueue single or list of elements
+	 *
+	 * Enqueue always add a elements to the end of list inside datastructure. The
+	 * argument accepts a single or a list of them. enqueuem them in the order
+	 * they are, alweays at the end. A full error can be throw if the queue
+	 * exceeds. The internal structure accepts a list of 2**32 items, which is
+	 * the maximum size a array element can have in javascript. If those elements
+	 * are enqueue successfuly a copy of them is retuned as an array or a single
+	 * element
 	 */
-	insert(...items: Array<T>): T | List<T> | null;
+	insert(...items: Array<T>): T | Array<T> | null;
 	/**
-	 * Remove the last first element inserted, applied when the queue is nonempty
-	 * @throws {QueueUnderflow}
-	 * @return {T}
+	 * Dequeue a number of elements stored in the same order as enqueued
+	 *
+	 * Dequeue is an operation with effects. The elements no long exists in queue
+	 * structure. Thereof, it removes n elements, specified by quantity argument,
+	 * returning them on success. If the queue only have one element, them this
+	 * single elements is returned otherwise it returns a array of deleted
+	 * elements, sorted by queue order.
+	 * Notice empty queue always returns null
+	 *
+	 * @throws {@link Underflow}
+	 * Throws when empty
 	 */
 	remove(): T;
 	/**
 	 * Retrieve the first element from the queue, the next to be removed
-	 * @throws {QueueUnderflow}
-	 * @return {T}
+	 *
+	 * @throws {@link Underflow}
+	 * Throws for empty queue
 	 */
 	peek(): T;
 }
 
-export interface Stack<T> {
+export interface StackADT<T> {
 	/**
 	 * O(1). Extract the first element of a stack, which must be non-empty
 	 *
@@ -65,21 +66,18 @@ export interface Stack<T> {
 	 * const l = new Stack()
 	 * s.top() // Error: Underflow
 	 *
-	 * @throws {Underflow}
-	 * @return {!T}
+	 * @throws {@link Underflow}
+	 * Throws when empty
 	 */
 	top(): T;
 	/**
 	 * O(1). Remove the last item inserted
-	 * @throws {Underflow}
-	 * @return {T}
+	 * @throws {@link Underflow}
+	 * Throws when Empty
 	 */
 	pop(): T;
 	/**
 	 * O(1). Insert item at the beginning of the stack
-	 *
-	 * @param {T} item new data to be inserted
-	 * @return {T}
 	 */
 	push(item: T): T;
 }
@@ -87,12 +85,10 @@ export interface Stack<T> {
 export interface Deque<T> {
 	/**
 	 * Insert item at the left end
-	 * @param item
 	 */
 	insertLeft(item: T): T;
 	/**
 	 * Insert item at the right end
-	 * @param item
 	 */
 	insertRight(item: T): T;
 	/**

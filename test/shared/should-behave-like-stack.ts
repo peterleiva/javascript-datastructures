@@ -1,13 +1,13 @@
-import type { Stack } from "linear/types";
+import type { StackADT } from "linear/types";
 import { Underflow } from "linear/errors";
 import { shouldBehaveLike } from "should-behave-like";
 
 interface StackConstructor<T> {
-	new (...items: T[]): Stack<T>;
+	new (...items: T[]): StackADT<T>;
 }
 
 export function shouldBehaveLikeStack(Stack: StackConstructor<unknown>): void {
-	let stack: Stack<unknown>;
+	let stack: StackADT<unknown>;
 
 	beforeEach(() => (stack = new Stack()));
 

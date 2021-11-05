@@ -1,12 +1,6 @@
-/**
- * @file implementation of stack data structure, following to Last In, First Out
- *  order
- * @version 0.4.0
- */
-
 import { iterable, Iterable } from "../iterable";
 import type { Collection } from "../types";
-import type { Stack as StackADT, Node } from "./types";
+import type { StackADT as StackADT, Node } from "./types";
 import { Underflow } from "./errors";
 
 @iterable
