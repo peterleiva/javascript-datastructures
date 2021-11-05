@@ -72,7 +72,7 @@ export type BinaryTreeNode<T> = {
 	descendant(tree: BinaryTreeNode<T>): boolean;
 } | null;
 
-export interface BinaryTree<T> {
+export interface BinaryTreeADT<T> {
 	/**
 	 * getter for the root of the tree
 	 */

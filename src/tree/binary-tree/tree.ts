@@ -5,7 +5,7 @@ import type {
 	Callback,
 	TraversalMethod,
 	BTNode,
-	BinaryTree as ADT,
+	BinaryTreeADT,
 } from "tree";
 
 import Node from "./node";
@@ -26,7 +26,7 @@ type BinaryTreeOptions<T> = Partial<{
  * of the tree.
  */
 export default class BinaryTree<T>
-	implements Collection, ADT<T>, Searchable<T>, Traversable<T>
+	implements BinaryTreeADT<T>, Collection, Searchable<T>, Traversable<T>
 {
 	#root: BTNode<T>;
 	#size: number;
@@ -51,59 +51,34 @@ export default class BinaryTree<T>
 		}
 	}
 
-	/**
-	 * getter for the root of the tree
-	 * @returns
-	 */
 	get root(): BTNode<T> {
 		return this.#root;
 	}
 
-	/**
-	 * getter for the root of the tree
-	 */
 	get data(): T | undefined {
 		return this.root?.data;
 	}
 
-	/**
-	 * getter for left subtree
-	 */
 	get left(): BTNode<T> {
 		return this.root?.left ?? null;
 	}
 
-	/**
-	 * getter for right subtree
-	 */
 	get right(): BTNode<T> {
 		return this.root?.right ?? null;
 	}
 
-	/**
-	 * Alias for {@link BinaryTree.size}
-	 */
 	get length(): number {
 		return this.size();
 	}
 
-	/**
-	 * Returns the quantity of items stored
-	 */
 	size(): number {
 		return this.#size;
 	}
 
-	/**
-	 * return true of false depending whether or not the stack contains any items
-	 */
 	empty(): boolean {
 		return this.#root === null;
 	}
 
-	/**
-	 * remove all elements from the collection
-	 */
 	clear(): this {
 		this.#size = 0;
 		this.#root = null;
@@ -111,11 +86,6 @@ export default class BinaryTree<T>
 		return this;
 	}
 
-	/**
-	 * The depth of a binary tree is the maximum level of any leaf in the tree.
-	 * This equals the length of the longest path from the root to any leaf. It
-	 * given -Infinity when the root is empty
-	 */
 	depth(): number {
 		function _depth(tree: BTNode<T>): number {
 			if (!tree) {
@@ -132,9 +102,6 @@ export default class BinaryTree<T>
 		return _depth(this.root);
 	}
 
-	/**
-	 * Compare values insert false values in the left otherwise in the right
-	 */
 	insert(...items: T[]): this {
 		for (const item of items) {
 			this.insertItem(this.#comparator, item);
@@ -143,9 +110,6 @@ export default class BinaryTree<T>
 		return this;
 	}
 
-	/**
-	 * Insert items, removing duplicates comparison is made with `Object.is`
-	 */
 	insertDistinct(...items: T[]): this {
 		for (const item of items) {
 			this.insertItem(this.#comparator, item, true);
@@ -183,10 +147,6 @@ export default class BinaryTree<T>
 		this.#size++;
 	}
 
-	/**
-	 * Find a data inside a tree according to finder callback
-	 *
-	 */
 	search(finder: Comparable<T>): T | null {
 		let node = this.root;
 
@@ -214,36 +174,22 @@ export default class BinaryTree<T>
 
 	preorder(callback: Callback<T>): this;
 	preorder(): Iterator<T>;
-	/**
-	 * Tranverse the tree in pre order
-	 *
-	 */
 	preorder(callback?: Callback<T>): this | Iterator<T> {
 		throw new Error("must be implemented");
 	}
 
 	inorder(callback: Callback<T>): this;
 	inorder(): Iterator<T>;
-	/**
-	 * Tranverse the tree in order
-	 */
 	inorder(callback?: Callback<T>): this | Iterator<T> {
 		throw new Error("must be implemented");
 	}
 
 	postorder(callback: Callback<T>): this;
 	postorder(): Iterator<T>;
-
-	/**
-	 * Tranverse a tree in pos order
-	 */
 	postorder(callback?: Callback<T>): this | Iterator<T> {
 		throw new Error("must be implemented");
 	}
 
-	/**
-	 * helper to traverse the tree
-	 */
 	traverse(callback: Callback<T>, method: TraversalMethod): this {
 		throw new Error("must be implemented");
 	}
