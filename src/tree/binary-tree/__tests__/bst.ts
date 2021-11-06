@@ -1,4 +1,4 @@
-import { setupBST } from "factory/binary-tree";
+import { setupBST } from "factory";
 import { Underflow } from "linear";
 import BST from "../bst";
 

@@ -1,12 +1,7 @@
 import type { Collection, Searchable, Predicate } from "types";
-import {
-	Traversable,
-	Comparator,
-	Mapper,
-	BTNode,
-	BinaryTreeADT,
-	TraversalMethod,
-} from "tree";
+import type { BTNode, BinaryTreeADT } from "./types";
+
+import { Traversable, Comparator, Mapper, TraversalMethod } from "../types";
 
 import Node from "./node";
 
