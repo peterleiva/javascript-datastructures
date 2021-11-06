@@ -57,6 +57,11 @@ export default class BinaryTreeNode<T> implements NonNullable<BTNode<T>> {
 		return this.#left;
 	}
 
+	// TODO: check cicles
+	set left(node: BTNode<T>) {
+		this.#left = node;
+	}
+
 	/**
 	 * Getter for brother subtree
 	 */

@@ -8,27 +8,27 @@ export type BinaryTreeNode<T> = {
 	/**
 	 * Getter for data
 	 */
-	data: T;
+	readonly data: T;
 	/**
 	 * Getter for father node
 	 */
-	father: BinaryTreeNode<T>;
+	readonly father: BinaryTreeNode<T>;
 	/**
-	 * Getter for left subtree
+	 * left subtree
 	 */
 	left: BinaryTreeNode<T>;
 	/**
 	 * Getter for right subtree
 	 */
-	right: BinaryTreeNode<T>;
+	readonly right: BinaryTreeNode<T>;
 	/**
 	 * Getter for brother subtree
 	 */
-	brother: BinaryTreeNode<T>;
+	readonly brother: BinaryTreeNode<T>;
 	/**
 	 * Returns the root of the tree
 	 */
-	root: BinaryTreeNode<T>;
+	readonly root: BinaryTreeNode<T>;
 	/**
 	 * Checks whether the tree is the root node
 	 */
