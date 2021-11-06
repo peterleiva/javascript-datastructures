@@ -1,6 +1,6 @@
 {
   "name": "@algoritmos/data-structures",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Some data structures, binary tree, general tree, queue and so on",
   "type": "commonjs",
   "main": "dist/index.js",
