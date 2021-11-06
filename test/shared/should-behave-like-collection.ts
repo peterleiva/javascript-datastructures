@@ -1,41 +1,39 @@
 import { shouldBehaveLike } from "should-behave-like";
-import type { Collection } from "types";
+import { setupCollection, CollectionFactory } from "factory";
 
-interface CollectionConstructor {
-	new (...items: unknown[]): Collection;
-}
-export function shouldBehaveLikeCollection(
-	Collection: CollectionConstructor
-): void {
+export function shouldBehaveLikeCollection(factory: CollectionFactory): void {
 	shouldBehaveLike("collection", () => {
 		describe("#length", () => {
-			it("is zero for new collection", () => {
-				const collection = new Collection();
+			it("is zero for empty collection", () => {
+				const collection = setupCollection(factory, 0);
 				expect(collection).toHaveLength(0);
+				expect(collection.size()).toBe(0);
 			});
 
-			it("Returns 1 after creating with argument", () => {
-				const collection = new Collection(1);
-				expect(collection).toHaveLength(1);
-			});
-
-			it("is the number of pushes", () => {
-				const collection = new Collection(1, "abc", 3);
-				expect(collection).toHaveLength(3);
+			it("equal to data stored size", () => {
+				const collection = setupCollection(factory, 10);
+				expect(collection).toHaveLength(10);
+				expect(collection.size()).toBe(10);
 			});
 		});
 
 		describe("#clear", () => {
 			it("returns collection", () => {
-				const c = new Collection(1, 2, 3);
-				expect(c.clear()).toBe(c);
+				const collection = setupCollection(factory, 2);
+				expect(collection.clear()).toHaveLength(0);
+				expect(collection.empty()).toBe(true);
+			});
+		});
+
+		describe("#empty", () => {
+			it("true for empty collection", () => {
+				const collection = setupCollection(factory, 0);
+				expect(collection.empty()).toBe(true);
 			});
 
-			it("removes all elements", () => {
-				const c = new Collection(1, 2, 3);
-				c.clear();
-
-				expect(c).toHaveLength(0);
+			it("false for non-empty collection", () => {
+				const collection = setupCollection(factory, 2);
+				expect(collection.empty()).toBe(false);
 			});
 		});
 	});

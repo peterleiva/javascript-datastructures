@@ -14,7 +14,7 @@ describe("List", () => {
 	});
 
 	shouldBehaveLikeStack(List);
-	shouldBehaveLikeCollection(List);
+	shouldBehaveLikeCollection(data => new List(...data));
 	shouldBehaveLikeIterable(new List(1, 2, 3));
 
 	describe(".head", () => {

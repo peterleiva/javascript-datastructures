@@ -9,7 +9,7 @@ describe("Queue", () => {
 		queue = new Queue();
 	});
 	shouldBehaveLikeIterable(new Queue(1, 2, 3));
-	shouldBehaveLikeCollection(Queue);
+	shouldBehaveLikeCollection(data => new Queue(...data));
 
 	describe("Queue creation", () => {
 		describe("With Argument", () => {

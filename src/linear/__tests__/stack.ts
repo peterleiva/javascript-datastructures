@@ -8,7 +8,7 @@ import {
 describe("Stack", () => {
 	shouldBehaveLikeIterable(new Stack(1, 2, 3));
 	shouldBehaveLikeStack(Stack);
-	shouldBehaveLikeCollection(Stack);
+	shouldBehaveLikeCollection(data => new Stack(...data));
 
 	describe("Initiating", () => {
 		it("push in order of arguments", () => {

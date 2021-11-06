@@ -1,10 +1,12 @@
 import BinaryTree from "../tree";
 import BTNode from "../node";
-import { shouldBehaveLikeTraversable } from "shared";
+import {
+	shouldBehaveLikeCollection,
+	shouldBehaveLikeTraversable,
+} from "shared";
 
 describe("Binary Tree", () => {
 	let tree: BinaryTree<unknown>;
-	const comparator = jest.fn((a, b) => a < b);
 	const items = [14, 15, 4, 9, 3];
 	// should create the following tree:
 	//    14
@@ -15,8 +17,9 @@ describe("Binary Tree", () => {
 	//
 
 	shouldBehaveLikeTraversable(data => new BinaryTree<number>().insert(...data));
+	shouldBehaveLikeCollection(data => new BinaryTree().insert(...data));
 
-	beforeEach(() => (tree = new BinaryTree({ comparator })));
+	beforeEach(() => (tree = new BinaryTree()));
 
 	describe("Creating the tree", () => {
 		it("Gets empty root for created tree with no data", () => {
