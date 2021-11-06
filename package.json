@@ -3,6 +3,9 @@
   "version": "0.5.0",
   "description": "Some data structures, binary tree, general tree, queue and so on",
   "type": "commonjs",
+  "engines": {
+    "node": ">=12"
+  },
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "exports": {
@@ -11,8 +14,7 @@
     "./linear/*": "./dist/linear/*.js",
     "./linear/list/*": null,
     "./linear/deque*": null,
-    "./tree/binary-tree": "./dist/tree/binary-tree/index.js",
-    "./tree/binary-tree/*": "./dist/tree/binary-tree/*.js"
+    "./tree/binary-tree": "./dist/tree/binary-tree/index.js"
   },
   "files": [
     "dist",
