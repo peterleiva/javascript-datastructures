@@ -17,7 +17,7 @@ module.exports = {
 	coverageDirectory: resolve(__dirname, "coverage"),
 	coverageReporters: ["lcov", "text", "html"],
 	coverageProvider: "v8",
-	coveragePathIgnorePatterns: ["<rootDir>/test"],
+	coveragePathIgnorePatterns: ["<rootDir>/test", "node_modules"],
 
 	watchPlugins: [
 		"jest-watch-typeahead/filename",
