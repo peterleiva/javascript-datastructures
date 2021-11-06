@@ -55,6 +55,10 @@ export default class BinaryTree<T>
 		return this.#root;
 	}
 
+	protected set root(newRoot: BTNode<T>) {
+		this.#root = newRoot;
+	}
+
 	get data(): T | undefined {
 		return this.root?.data;
 	}
@@ -69,6 +73,10 @@ export default class BinaryTree<T>
 
 	get length(): number {
 		return this.size();
+	}
+
+	protected set length(value: number) {
+		this.#size = value;
 	}
 
 	size(): number {
