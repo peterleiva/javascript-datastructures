@@ -1,5 +1,5 @@
 export type Mapper<T, R> = (data: T) => R;
-export type Comparator<T> = (a: T, b: T) => boolean;
+export type Comparator<T> = (a: T, b: T) => number;
 
 export enum TraversalMethod {
 	PREORDER = 0,

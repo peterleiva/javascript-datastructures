@@ -42,7 +42,7 @@ export default class BinaryTree<T>
 		this.#comparator =
 			comparator ??
 			function (a: T, b: T) {
-				return a < b;
+				return Object.is(a, b) ? 0 : a < b ? -1 : 1;
 			};
 
 		if (rootData) {
@@ -132,13 +132,13 @@ export default class BinaryTree<T>
 		while (node) {
 			father = node;
 
-			if (distinct && Object.is(node.data, item)) return;
-			node = comparator(item, node.data) ? node.left : node.right;
+			if (distinct && comparator(item, node.data) === 0) return;
+			node = comparator(item, node.data) < 0 ? node.left : node.right;
 		}
 
 		if (!father) {
 			this.#root = new Node(item);
-		} else if (comparator(item, father.data)) {
+		} else if (comparator(item, father.data) < 0) {
 			father.insertLeft(item);
 		} else {
 			father.insertRight(item);
