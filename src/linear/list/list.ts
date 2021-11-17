@@ -4,8 +4,8 @@
  */
 
 import type { DoublyNode as Node, ListADT } from "linear";
-import { iterable, Iterable } from "iterable";
-import { IndexOutOfRange, Underflow } from "linear/errors";
+import { iterable, Iterable } from "../../iterable";
+import { IndexOutOfRange, Underflow } from "../errors";
 
 @iterable
 /**

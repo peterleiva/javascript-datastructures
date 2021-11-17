@@ -1,6 +1,6 @@
-import type { Collection } from "../../types";
-import type { StackADT } from "../types";
-import { Iterable } from "iterable";
+import type { Collection } from "types";
+import type { StackADT } from "linear";
+import type { Iterable } from "iterable";
 
 export interface ComparableFn<T> {
 	(data: T): boolean;

@@ -1,4 +1,4 @@
-import { Underflow } from "linear";
+import { Underflow } from "../../linear/errors";
 import BinaryTree from "./tree";
 
 /**
@@ -13,7 +13,6 @@ export default class BST<T> extends BinaryTree<T> {
 
 	/**
 	 * Delete the minimium element of binary search tree
-	 *
 	 * @throws {@link Underflow}
 	 * Throws when empty
 	 */

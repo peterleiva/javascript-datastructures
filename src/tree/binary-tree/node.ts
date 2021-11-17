@@ -1,5 +1,5 @@
 import type { BTNode } from "./types";
-import { Stack } from "linear";
+import { Stack } from "../../linear";
 
 /**
  * Incorrect insertion of tree

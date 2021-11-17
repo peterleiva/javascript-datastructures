@@ -24,6 +24,7 @@ describe("Binary Search Tree", () => {
 		test("remove minimium item from the tree", () => {
 			tree.deleteMin();
 
+			// TODO: check for value 0
 			expect(tree.search(s => s - min)).toBeNull();
 		});
 
