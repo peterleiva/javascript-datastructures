@@ -1,0 +1,22 @@
+{
+  // Use o IntelliSense para saber mais sobre os atributos possíveis.
+  // Focalizar para exibir as descrições dos atributos existentes.
+  // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Jest Tests",
+      "type": "node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**", "dist/**", "coverage/**", "docs/**"],
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/node_modules/.bin/jest",
+        "--runInBand",
+        "--watch"
+      ],
+      "console": "integratedTerminal",
+      "port": 9229
+    }
+  ]
+}
