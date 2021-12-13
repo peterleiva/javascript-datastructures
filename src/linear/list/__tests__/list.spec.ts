@@ -29,49 +29,90 @@ describe("List", () => {
 			expect(list).toHaveLength(items.length);
 		});
 
-		it("extract the first element of the list when length is missing", () => {
-			const head = list.head();
+		it("keep items on original list", () => {
+			expect([...list.head(items.length)]).toStrictEqual(items);
 
-			expect(head).not.toBeInstanceOf(List);
-			expect(list.head()).toBe(10);
+			list.head();
+			expect([...list]).toStrictEqual(items);
 		});
 
-		it("returns whole list for length = n", () => {
-			const heads = list.head(items.length);
+		describe("missing length", () => {
+			it("return null when list is empty", () => {
+				const list = new List();
+				expect(list.head()).toBeNull();
+			});
 
-			expect(heads).toBeInstanceOf(List);
-			expect([...heads]).toEqual(items);
+			it("head returns non-list type", () => {
+				expect(list.head()).not.toBeInstanceOf(List);
+			});
+
+			it("extract first element", () => {
+				expect(list.head()).toBe(items[0]);
+			});
 		});
 
-		it("extract n first element of the list", () => {
-			expect([...list.head(2)]).toEqual([10, 20]);
-		});
+		describe("with length argument", () => {
+			it("head returns list when length is specified", () => {
+				expect(list.head(2)).toBeInstanceOf(List);
+			});
 
-		it("extract empty list when length is 0", () => {
-			const head = list.head(0);
+			it("extract whole list when length >= n", () => {
+				expect([...list.head(items.length + 1)]).toStrictEqual(items);
+				expect([...list.head(items.length)]).toStrictEqual(items);
+			});
 
-			expect(head).toBeInstanceOf(List);
-			expect(head).toHaveLength(0);
-		});
+			it("extract elements with length argument", () => {
+				expect([...list.head(2)]).toEqual([items[0], items[1]]);
+			});
 
-		it.todo("throws ArgumentError when length is negative");
-		it("returns list with first element when length = 1", () => {
-			const head = list.head(1);
+			it("extract empty list when length is 0", () => {
+				expect(list.head(0)).toHaveLength(0);
+			});
 
-			expect(head).toBeInstanceOf(List);
-			expect(head).toHaveLength(1);
-			expect(head.top()).toBe(items[0]);
+			it("extract list with first item when length = 1", () => {
+				expect([...list.head(1)]).toStrictEqual([items[0]]);
+			});
+
+			it("throws ArgumentError when length is negative", () => {
+				expect(() => list.head(-1)).toThrow(ArgumentError);
+			});
 		});
 	});
 
 	describe(".last", () => {
-		it.todo("extract the last element of the list");
-		it.todo("returns whole list for length = n");
-		it.todo("extract n last element of the list");
-		it.todo("extract empty list when length is 0");
-		it.todo("throws ArgumentError when length is negative");
-		it.todo("return last element when list length is missing");
-		it.todo("returns list with last element when length = 1");
+		let list: List<number>;
+		const data = [1, 2, 3, 4];
+
+		beforeEach(() => {
+			list = new List(...data);
+		});
+
+		it("extract the last element of the list", () => {
+			expect(list.last()).toBe(data[data.length - 1]);
+		});
+
+		it("extract last n items", () => {
+			const tail = list.last(3);
+			expect([...tail]).toStrictEqual([2, 3, 4]);
+		});
+
+		it("returns whole list for length = n", () => {
+			const data = [1, 2, 3];
+			expect(list.last(data.length)).toStrictEqual(data);
+		});
+
+		it("extract empty list when length is 0", () => {
+			expect(list.last(0)).toHaveLength(0);
+		});
+
+		it.skip("throws ArgumentError when length is negative", () => {
+			expect(list.last(-1)).toThrow(Underflow);
+		});
+
+		it("returns list with last element when length = 1", () => {
+			const tail = list.last(1);
+			expect([...tail]).toStrictEqual([data[data.length - 1]]);
+		});
 	});
 
 	describe(".insert", () => {
