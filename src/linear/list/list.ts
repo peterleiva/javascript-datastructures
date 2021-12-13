@@ -1,6 +1,5 @@
 /**
  * List implemented with doubly linked list
- * @version 0.2.0
  */
 
 import type { DoublyNode as Node, ListADT } from "linear";
@@ -18,7 +17,6 @@ export default class List<T> implements ListADT<T> {
 
 	/**
 	 * Initializes list optionally with multiple items
-	 * @param {...T} items
 	 */
 	constructor(...items: T[]) {
 		this.#head = this.#tail = null;
@@ -75,31 +73,42 @@ export default class List<T> implements ListADT<T> {
 		return this.#head === null;
 	}
 
-	head(): T;
+	head(): T | null;
 	head(length: number): List<T>;
-	head(length?: number): List<T> | T {
-		if (length == undefined && this.#head) {
-			return this.#head.item;
+	head(length?: number): List<T> | T | null {
+		if (typeof length === "undefined") {
+			return this.#head?.item ?? null;
 		}
-
-		length ??= 1;
 
 		const list = new List<T>();
 		let node = this.#head;
 		let i = 0;
 
-		while (node && i++ < length) {
-			list.append(node.item);
-			node = node.right;
+		while (node && i < length) {
+			list.push(node.item);
+			[node, i] = [node.right, i + 1];
 		}
 
 		return list;
 	}
 
-	last(): T;
-	last(length: number): ListADT<T>;
-	last(length?: number): ListADT<T> | T {
-		throw new Error("must be implemented");
+	last(): T | null;
+	last(length: number): List<T>;
+	last(length?: number): List<T> | T | null {
+		if (typeof length === "undefined") {
+			return this.#tail?.item ?? null;
+		}
+
+		const list = new List<T>();
+		let i = 0;
+		let node: Node<T> = this.#tail;
+
+		while (node && i < length) {
+			list.unshift(node.item);
+			[node, i] = [node.left, i + 1];
+		}
+
+		return list;
 	}
 
 	tail(): List<T> {
