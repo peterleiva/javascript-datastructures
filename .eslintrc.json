@@ -7,7 +7,7 @@
   "rules": {
     "prettier/prettier": "warn",
     "max-len": ["warn", { "tabWidth": 2 }],
-    "max-statements": "warn",
+    "max-statements": ["warn", { "max": 20 }],
     "require-jsdoc": "off",
     "valid-jsdoc": "off"
   },
