@@ -6,6 +6,10 @@ export interface ComparableFn<T> {
 	(data: T): boolean;
 }
 
+export type ElementOrList<T, R extends number | undefined> = R extends number
+	? ListADT<T>
+	: T | null;
+
 /**
  * These functions treat a list xs as a indexed collection, with indices ranging
  * from 0 to length xs - 1.
@@ -122,11 +126,9 @@ export interface ListADT<T> extends Collection, StackADT<T>, Iterable<T> {
 	 * l.head(-1) // Error: ArgumentError negative array size
 	 *
 	 * @throws {ArgumentError}
-	 * @param {number} [length = 1]
-	 * @return {ListADT<T> | T}
+	 * @param length - aosdkasd
 	 */
-	head(): T;
-	head(length: number): ListADT<T>;
+	head<L extends number | undefined>(length: L): ElementOrList<T, L>;
 	/**
 	 * O(n). Extract the last element of a list, which must non-empty. For no
 	 * argument it gives O(1)
@@ -153,8 +155,7 @@ export interface ListADT<T> extends Collection, StackADT<T>, Iterable<T> {
 	 * @throws {@link ArgumentError}
 	 * Throws when length is negative
 	 */
-	last(): T;
-	last(length: number): ListADT<T>;
+	last<L extends number | undefined>(length: L): ElementOrList<T, L>;
 	/**
 	 * O(1). Extract the elements after the head of non-empty list
 	 *
